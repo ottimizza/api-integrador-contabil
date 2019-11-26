@@ -2,10 +2,15 @@ package br.com.ottimizza.integradorcloud.controllers.v1;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
+import br.com.ottimizza.integradorcloud.services.LancamentoService;
 
 import java.math.BigInteger;
+import java.security.Principal;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RestController
 @RequestMapping("/api/v1/lancamentos")
 public class LancamentoController {
+
+    @Inject
+    private LancamentoService lancamentoService;
 
     @GetMapping
     public ResponseEntity<?> fetchAll() throws Exception {
@@ -31,6 +39,12 @@ public class LancamentoController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody List<LancamentoDTO> lancamentos) throws Exception {
         return ResponseEntity.ok(lancamentos);
+    }
+
+    @PostMapping("/importar")
+    public ResponseEntity<?> importar(@RequestBody ImportacaoLancamentosRequest importacaoLancamentos,
+                                      Principal principal) throws Exception {
+        return ResponseEntity.ok(lancamentoService.importar(importacaoLancamentos, principal));
     }
 
 }
