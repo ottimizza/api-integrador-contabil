@@ -1,0 +1,8 @@
+version: "3.0"
+
+services:
+  web:
+    image: ottimizza/integrador-contabil:latest
+    ports: 
+      - 9475:9475
+    # depends_on: db
