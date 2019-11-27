@@ -34,6 +34,8 @@ class LancamentoServiceTest {
     @Autowired
     LancamentoService lancamentoService;
 
+    BigInteger idLancamento;
+
     LancamentoDTO lancamento = LancamentoDTO.builder()
         .dataMovimento(LocalDate.now())
         .documento("7835")
@@ -67,13 +69,11 @@ class LancamentoServiceTest {
         .idRoteiro("h4ub5ijfdASd")
     .build();
 
-    
-    
-
     @Test
     public void dadoLancamentoDTO_quandoSalvaLancamento_entaoOK() throws Exception { 
         Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
         LancamentoDTO created = lancamentoService.salvar(lancamento, principal);
+        this.idLancamento = created.getId();
         Assertions.assertNotNull(created);
         Assertions.assertNotNull(created.getId());
         Assertions.assertNotNull(created.getDocumento()); // DADOS
@@ -344,7 +344,7 @@ class LancamentoServiceTest {
     @Test
     public void dadoIdLancamento_quandoBuscaLancamento_entaoOK() throws Exception { 
         Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
-        LancamentoDTO lancamento = lancamentoService.buscarPorId(BigInteger.ONE, principal);
+        LancamentoDTO lancamento = lancamentoService.buscarPorId(idLancamento, principal);
         Assertions.assertNotNull(lancamento);
         Assertions.assertNotNull(lancamento.getId());
         Assertions.assertNotNull(lancamento.getDocumento()); // DADOS
@@ -364,4 +364,5 @@ class LancamentoServiceTest {
         Assertions.assertNotNull(lancamento.getComplemento04());
         Assertions.assertNotNull(lancamento.getComplemento05());
 	}
+
 }
