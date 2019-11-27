@@ -43,6 +43,8 @@ public class LancamentoDTO implements Serializable {
 
     private String contaContraPartida;
 
+    private Short tipoConta;
+
     private Double valorOriginal;
 
     private Double valorPago;
@@ -75,6 +77,9 @@ public class LancamentoDTO implements Serializable {
         }
         if (contaContraPartida != null && !contaContraPartida.equals("")) {
             lancamento.setContaContraPartida(contaContraPartida);
+        }
+        if (tipoConta != null) {
+            lancamento.setTipoConta(tipoConta);
         }
 
         return lancamento;
