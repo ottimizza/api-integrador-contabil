@@ -33,8 +33,8 @@ public class LancamentoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> fetchById(@PathVariable BigInteger id) throws Exception {
-        return ResponseEntity.ok("[]");
+    public ResponseEntity<?> fetchById(@PathVariable BigInteger id, Principal principal) throws Exception {
+        return ResponseEntity.ok(lancamentoService.buscarPorId(id, principal));
     }
 
     @PostMapping
@@ -43,14 +43,14 @@ public class LancamentoController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> patch(@PathVariable BigInteger id, @RequestBody LancamentoDTO lancamento, Principal principal) 
-            throws Exception {
+    public ResponseEntity<?> patch(@PathVariable BigInteger id, @RequestBody LancamentoDTO lancamento,
+            Principal principal) throws Exception {
         return ResponseEntity.ok(lancamentoService.salvar(id, lancamento, principal));
     }
 
     @PostMapping("/importar")
     public ResponseEntity<?> importar(@RequestBody ImportacaoLancamentosRequest importacaoLancamentos,
-                                      Principal principal) throws Exception {
+            Principal principal) throws Exception {
         return ResponseEntity.ok(lancamentoService.importar(importacaoLancamentos, principal));
     }
 

@@ -3,6 +3,7 @@ package br.com.ottimizza.integradorcloud.domain.exceptions;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
 import br.com.ottimizza.integradorcloud.domain.responses.ErrorResponse;
 import feign.FeignException;
 
@@ -59,6 +60,11 @@ public class ExceptionHandling {
     @ExceptionHandler(FeignException.TooManyRequests.class)
     public HttpEntity<?> handleFeignTooManyRequestsException(FeignException e) {
         return error(HttpStatus.valueOf(e.status()), "too_many_requests", e.contentUTF8(), e);
+    }
+
+    @ExceptionHandler(LancamentoNaoEncontradoException.class)
+    public HttpEntity<?> handleLancamentoNaoEncontradoException(LancamentoNaoEncontradoException e) {
+        return error(NOT_FOUND, "transaction_not_found", e.getMessage(), e);
     }
 
     private HttpEntity<?> error(HttpStatus status, String error, String errorDescription, Exception e) {
