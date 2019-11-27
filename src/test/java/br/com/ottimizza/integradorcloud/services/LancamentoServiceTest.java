@@ -80,7 +80,7 @@ class LancamentoServiceTest {
         Assertions.assertNotNull(created.getId());
         Assertions.assertNotNull(created.getDocumento()); // DADOS
         Assertions.assertNotNull(created.getDescricao());
-        Assertions.assertNotNull(created.getPortador());
+        Assertions.assertNotNull(created.getPortador()); 
         Assertions.assertNotNull(created.getCentroCusto());
         Assertions.assertNotNull(created.getContaMovimento()); // CONTAS CONTABEIS
         Assertions.assertNotNull(created.getContaContraPartida()); 
