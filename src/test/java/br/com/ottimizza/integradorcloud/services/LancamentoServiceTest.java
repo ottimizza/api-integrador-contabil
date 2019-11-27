@@ -3,6 +3,7 @@ package br.com.ottimizza.integradorcloud.services;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.math.BigInteger;
 import java.security.Principal;
 
 import org.junit.jupiter.api.Assertions;
@@ -78,6 +79,38 @@ class LancamentoServiceTest {
         Assertions.assertNotNull(created.getCentroCusto());
         Assertions.assertNotNull(created.getContaMovimento()); // CONTAS CONTABEIS
         Assertions.assertNotNull(created.getContaContraPartida()); 
+        Assertions.assertNotNull(created.getValorOriginal()); // VALORES
+        Assertions.assertNotNull(created.getValorPago());
+        Assertions.assertNotNull(created.getValorDesconto());
+        Assertions.assertNotNull(created.getValorJuros());
+        Assertions.assertNotNull(created.getValorMulta()); 
+        Assertions.assertNotNull(created.getComplemento01());  // COMPLEMENTOS
+        Assertions.assertNotNull(created.getComplemento02());
+        Assertions.assertNotNull(created.getComplemento03());
+        Assertions.assertNotNull(created.getComplemento04());
+        Assertions.assertNotNull(created.getComplemento05());
+	}
+    
+    @Test
+    public void dadoLancamentoDTO_quandoAtualizaLancamento_entaoOK() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+
+        // Altera Campos 
+        LancamentoDTO lancamento = new LancamentoDTO();
+        lancamento.setContaMovimento("2578");
+        lancamento.setContaContraPartida("7645");
+
+        LancamentoDTO created = lancamentoService.salvar(BigInteger.ONE, lancamento, principal);
+        Assertions.assertNotNull(created);
+        Assertions.assertNotNull(created.getId());
+        Assertions.assertNotNull(created.getDocumento()); // DADOS
+        Assertions.assertNotNull(created.getDescricao());
+        Assertions.assertNotNull(created.getPortador());
+        Assertions.assertNotNull(created.getCentroCusto());
+        Assertions.assertNotNull(created.getContaMovimento()); // CONTAS CONTABEIS
+        Assertions.assertNotNull(created.getContaContraPartida()); 
+        Assertions.assertEquals(created.getContaMovimento(), "2578");
+        Assertions.assertEquals(created.getContaContraPartida(), "7645");
         Assertions.assertNotNull(created.getValorOriginal()); // VALORES
         Assertions.assertNotNull(created.getValorPago());
         Assertions.assertNotNull(created.getValorDesconto());
