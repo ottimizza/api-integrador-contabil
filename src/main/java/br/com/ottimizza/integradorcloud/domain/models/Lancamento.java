@@ -42,12 +42,16 @@ public class Lancamento implements Serializable {
 
     private LocalDate dataMovimento;
 
+    @Column(columnDefinition = "varchar(255) default ''")
     private String documento;
 
+    @Column(columnDefinition = "varchar(255) default ''")
     private String descricao;
 
+    @Column(columnDefinition = "varchar(255) default ''")
     private String portador;
 
+    @Column(columnDefinition = "varchar(255) default ''")
     private String centroCusto;
 
     private String tipoPlanilha;
@@ -66,24 +70,34 @@ public class Lancamento implements Serializable {
     @JoinColumn(name = "fk_arquivos_id", nullable = true)
     private Arquivo arquivo;
 
+    @Column(columnDefinition="decimal(10,2) default '0.00'")
     private Double valorOriginal;
 
+    @Column(columnDefinition="decimal(10,2) default '0.00'")
     private Double valorPago;
 
+    @Column(columnDefinition="decimal(10,2) default '0.00'")
     private Double valorJuros;
 
+    @Column(columnDefinition="decimal(10,2) default '0.00'")
     private Double valorDesconto;
-
+    
+    @Column(columnDefinition="decimal(10,2) default '0.00'")
     private Double valorMulta;
 
+    @Column(columnDefinition = "varchar(255) default ''")
     private String complemento01;
 
+    @Column(columnDefinition = "varchar(255) default ''")
     private String complemento02;
 
+    @Column(columnDefinition = "varchar(255) default ''")
     private String complemento03;
 
+    @Column(columnDefinition = "varchar(255) default ''")
     private String complemento04;
 
+    @Column(columnDefinition = "varchar(255) default ''")
     private String complemento05;
 
     private String cnpjEmpresa;
@@ -102,6 +116,23 @@ public class Lancamento implements Serializable {
     public void prePersist() {
         this.dataCriacao = new Date();
         this.dataAtualizacao = new Date();
+
+        if (documento == null) documento = "";
+        if (descricao == null) descricao = "";
+        if (portador == null) portador = "";
+        if (centroCusto == null) centroCusto = "";
+
+        if (valorPago == null) valorPago = 0.00;
+        if (valorJuros == null) valorJuros = 0.00;
+        if (valorDesconto == null) valorDesconto = 0.00;
+        if (valorMulta == null) valorMulta = 0.00;
+
+        if (complemento01 == null) complemento01 = "";
+        if (complemento03 == null) complemento03 = "";
+        if (complemento03 == null) complemento03 = "";
+        if (complemento04 == null) complemento04 = "";
+        if (complemento05 == null) complemento05 = "";
+
     }
 
     @PreUpdate

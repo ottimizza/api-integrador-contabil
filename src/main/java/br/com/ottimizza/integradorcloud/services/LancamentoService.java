@@ -2,11 +2,10 @@ package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -22,7 +21,7 @@ import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.repositories.arquivo.ArquivoRepository;
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
 
-@Service
+@Service // @formatter:off
 public class LancamentoService {
 
     @Inject
@@ -36,17 +35,25 @@ public class LancamentoService {
     }
 
     public LancamentoDTO buscarPorId(BigInteger id) throws Exception {
-        return new LancamentoDTO();
+        return LancamentoMapper.fromEntity(lancamentoRepository.findById(id).orElseThrow(() -> new Exception("")));
     }
 
-    public LancamentoDTO criar(LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
+    public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
         Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
         lancamento.setArquivo(arquivoRepository.save(lancamento.getArquivo()));
         validaLancamento(lancamento);
         return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
     }
 
-    @Transactional(rollbackFor = Exception.class) // @formatter:off
+    public LancamentoDTO salvar(BigInteger id, LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
+        Lancamento lancamento = lancamentoDTO.patch(
+            lancamentoRepository.findById(id).orElseThrow(() -> new Exception(""))
+        );
+        validaLancamento(lancamento);
+        return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
+    }
+
+    @Transactional(rollbackFor = Exception.class) 
     public List<LancamentoDTO> importar(ImportacaoLancamentosRequest importaLancamentos, Principal principal) throws Exception { 
         List<Lancamento> results = new ArrayList<>();
         Arquivo arquivo = arquivoRepository.save(
@@ -55,8 +62,8 @@ public class LancamentoService {
                 .cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
                 .cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).build()
         );
-        List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((l) -> {
-            return LancamentoMapper.fromDto(l).toBuilder()
+        List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
+            return LancamentoMapper.fromDto(o).toBuilder()
                 .arquivo(arquivo)
                 .cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
                 .cnpjEmpresa(importaLancamentos.getCnpjEmpresa())
@@ -88,12 +95,22 @@ public class LancamentoService {
         if (lancamento.getTipoMovimento() == null || lancamento.getTipoMovimento().equals("")) {
             throw new IllegalArgumentException("Informe o tipo de movimento do lançamento!");
         }
+        if (lancamento.getTipoPlanilha() == null || lancamento.getTipoPlanilha().equals("")) {
+            throw new IllegalArgumentException("Informe o tipo da planilha!");
+        }
         if (lancamento.getArquivo() == null || lancamento.getArquivo().getId() == null) {
             throw new IllegalArgumentException("Informe o arquivo relacionado ao lançamento!");
         }
         if (lancamento.getDataMovimento() == null) {
             throw new IllegalArgumentException("Informe a data do lançamento!");
         }
+        if (lancamento.getDataMovimento().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("A data do lançamento não pode ser maior que hoje!");
+        }
+        if (lancamento.getValorOriginal() == null || lancamento.getValorOriginal() <= 0) {
+            throw new IllegalArgumentException("Informe o valor do lançamento!");
+        }
         return true;
     }
+
 }

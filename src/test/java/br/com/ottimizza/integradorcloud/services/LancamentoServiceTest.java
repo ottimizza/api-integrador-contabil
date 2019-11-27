@@ -41,7 +41,7 @@ class LancamentoServiceTest {
         .centroCusto("")
         .arquivo(
             ArquivoDTO.builder()
-                .nome("Lançamentos 10/2019.xlsx")
+                .nome("Lançamentos 10-2019.xlsx")
                 .cnpjEmpresa("99097492000142")
                 .cnpjContabilidade("82910893000177")
             .build()
@@ -53,14 +53,14 @@ class LancamentoServiceTest {
         .contaContraPartida("")
         .valorOriginal(422.25)
         .valorPago(0.0)
-        .valorJuros(0.0)
-        .valorDesconto(0.0)
-        .valorMulta(0.0)
+        .valorJuros(null)
+        .valorDesconto(null)
+        .valorMulta(null)
         .complemento01("REF 10/2019")
         .complemento02("SERVIÇO")
         .complemento03("À VISTA")
         .complemento04("")
-        .complemento05("")
+        .complemento05(null)
         .cnpjEmpresa("99097492000142")
         .cnpjContabilidade("82910893000177")
         .idRoteiro("h4ub5ijfdASd")
@@ -69,9 +69,162 @@ class LancamentoServiceTest {
     @Test
     public void dadoLancamentoDTO_quandoSalvaLancamento_entaoOK() throws Exception { 
         Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
-        LancamentoDTO created = lancamentoService.criar(lancamento, principal);
+        LancamentoDTO created = lancamentoService.salvar(lancamento, principal);
         Assertions.assertNotNull(created);
         Assertions.assertNotNull(created.getId());
+        Assertions.assertNotNull(created.getDocumento()); // DADOS
+        Assertions.assertNotNull(created.getDescricao());
+        Assertions.assertNotNull(created.getPortador());
+        Assertions.assertNotNull(created.getCentroCusto());
+        Assertions.assertNotNull(created.getContaMovimento()); // CONTAS CONTABEIS
+        Assertions.assertNotNull(created.getContaContraPartida()); 
+        Assertions.assertNotNull(created.getValorOriginal()); // VALORES
+        Assertions.assertNotNull(created.getValorPago());
+        Assertions.assertNotNull(created.getValorDesconto());
+        Assertions.assertNotNull(created.getValorJuros());
+        Assertions.assertNotNull(created.getValorMulta()); 
+        Assertions.assertNotNull(created.getComplemento01());  // COMPLEMENTOS
+        Assertions.assertNotNull(created.getComplemento02());
+        Assertions.assertNotNull(created.getComplemento03());
+        Assertions.assertNotNull(created.getComplemento04());
+        Assertions.assertNotNull(created.getComplemento05());
+	}
+
+
+    /** *********************************************************************************************************************
+     * Data Movimento
+     * ******************************************************************************************************************  */
+    @Test
+    public void dadoLancamentoDTO_quandoSalvaLancamentoDataMovimentoNull_entaoThrowIllegalArgumentsException() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        lancamento = lancamento.toBuilder()
+                .dataMovimento(null)
+            .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            lancamentoService.salvar(lancamento, principal);
+        });
+	}
+
+    @Test
+    public void dadoLancamentoDTO_quandoSalvaLancamentoDataMovimentoFuturo_entaoThrowIllegalArgumentsException() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        lancamento = lancamento.toBuilder()
+                .dataMovimento(LocalDate.now().plusDays(1))
+            .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            lancamentoService.salvar(lancamento, principal);
+        });
+	}
+
+    /** *********************************************************************************************************************
+     * Tipo Planilha
+     * ******************************************************************************************************************  */
+    @Test
+    public void dadoLancamentoDTO_quandoSalvaLancamentoTipoPlanilhaNull_entaoThrowIllegalArgumentsException() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        lancamento = lancamento.toBuilder()
+                .tipoPlanilha(null)
+            .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            lancamentoService.salvar(lancamento, principal);
+        });
+	}
+
+    @Test
+    public void dadoLancamentoDTO_quandoSalvaLancamentoTipoPlanilhaBranco_entaoThrowIllegalArgumentsException() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        lancamento = lancamento.toBuilder()
+                .tipoPlanilha("")
+            .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            lancamentoService.salvar(lancamento, principal);
+        });
+	}
+    
+    /** *********************************************************************************************************************
+     * Tipo Lancamento
+     * ******************************************************************************************************************  */
+    @Test
+    public void dadoLancamentoDTO_quandoSalvaLancamentoTipoLancamentoNull_entaoThrowIllegalArgumentsException() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        lancamento = lancamento.toBuilder()
+                .tipoLancamento(null)
+            .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            lancamentoService.salvar(lancamento, principal);
+        });
+	}
+
+    @Test
+    public void dadoLancamentoDTO_quandoSalvaLancamentoTipoLancamentoInvalido_entaoThrowIllegalArgumentsException() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        lancamento = lancamento.toBuilder()
+                .tipoLancamento(Short.valueOf("88"))
+            .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            lancamentoService.salvar(lancamento, principal);
+        });
+	}
+
+    /** *********************************************************************************************************************
+     * Tipo Movimento
+     * ******************************************************************************************************************  */
+    @Test
+    public void dadoLancamentoDTO_quandoSalvaLancamentoTipoMovimentoNull_entaoThrowIllegalArgumentsException() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        lancamento = lancamento.toBuilder()
+                .tipoMovimento(null)
+            .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            lancamentoService.salvar(lancamento, principal);
+        });
+	}
+
+    @Test
+    public void dadoLancamentoDTO_quandoSalvaLancamentoTipoMovimentoBranco_entaoThrowIllegalArgumentsException() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        lancamento = lancamento.toBuilder()
+                .tipoMovimento("")
+            .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            lancamentoService.salvar(lancamento, principal);
+        });
+	}
+
+    /** *********************************************************************************************************************
+     * Valor Original
+     * ******************************************************************************************************************  */
+    @Test
+    public void dadoLancamentoDTO_quandoSalvaLancamentoValorOriginalNull_entaoThrowIllegalArgumentsException() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        lancamento = lancamento.toBuilder()
+                .valorOriginal(null)
+            .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            lancamentoService.salvar(lancamento, principal);
+        });
+	}
+
+    @Test
+    public void dadoLancamentoDTO_quandoSalvaLancamentoValorOriginalZero_entaoThrowIllegalArgumentsException() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        lancamento = lancamento.toBuilder()
+                .valorOriginal(0.0)
+            .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            lancamentoService.salvar(lancamento, principal);
+        });
+	}
+
+    @Test
+    public void dadoLancamentoDTO_quandoSalvaLancamentoValorOriginalMenorZero_entaoThrowIllegalArgumentsException() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        lancamento = lancamento.toBuilder()
+                .valorOriginal(-345.0)
+            .build();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            lancamentoService.salvar(lancamento, principal);
+        });
 	}
 
     /** *********************************************************************************************************************
@@ -84,7 +237,7 @@ class LancamentoServiceTest {
                 .cnpjEmpresa(null)
             .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            lancamentoService.criar(lancamento, principal);
+            lancamentoService.salvar(lancamento, principal);
         });
 	}
 
@@ -95,7 +248,7 @@ class LancamentoServiceTest {
                 .cnpjEmpresa("")
             .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            lancamentoService.criar(lancamento, principal);
+            lancamentoService.salvar(lancamento, principal);
         });
 	}
 
@@ -109,7 +262,7 @@ class LancamentoServiceTest {
                 .cnpjContabilidade(null)
             .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            lancamentoService.criar(lancamento, principal);
+            lancamentoService.salvar(lancamento, principal);
         });
 	}
 
@@ -120,7 +273,7 @@ class LancamentoServiceTest {
                 .cnpjContabilidade("")
             .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            lancamentoService.criar(lancamento, principal);
+            lancamentoService.salvar(lancamento, principal);
         });
 	}
 
@@ -134,7 +287,7 @@ class LancamentoServiceTest {
                 .idRoteiro(null)
             .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            lancamentoService.criar(lancamento, principal);
+            lancamentoService.salvar(lancamento, principal);
         });
 	}
 
@@ -145,7 +298,7 @@ class LancamentoServiceTest {
                 .idRoteiro("")
             .build();
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            lancamentoService.criar(lancamento, principal);
+            lancamentoService.salvar(lancamento, principal);
         });
 	}
 

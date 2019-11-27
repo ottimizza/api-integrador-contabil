@@ -37,8 +37,8 @@ public class LancamentoController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody List<LancamentoDTO> lancamentos) throws Exception {
-        return ResponseEntity.ok(lancamentos);
+    public ResponseEntity<?> create(@RequestBody LancamentoDTO lancamento, Principal principal) throws Exception {
+        return ResponseEntity.ok(lancamentoService.salvar(lancamento, principal));
     }
 
     @PostMapping("/importar")

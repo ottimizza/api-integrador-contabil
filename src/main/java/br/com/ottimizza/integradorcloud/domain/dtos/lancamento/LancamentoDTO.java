@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
+import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -67,5 +68,16 @@ public class LancamentoDTO implements Serializable {
     private String cnpjContabilidade;
 
     private String idRoteiro;
+
+    public Lancamento patch(Lancamento lancamento) {
+        if (contaMovimento != null && !contaMovimento.equals("")) {
+            lancamento.setContaMovimento(contaMovimento);
+        }
+        if (contaContraPartida != null && !contaContraPartida.equals("")) {
+            lancamento.setContaContraPartida(contaContraPartida);
+        }
+
+        return lancamento;
+    }
 
 }
