@@ -7,7 +7,10 @@ import java.math.BigInteger;
 import java.security.Principal;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +24,7 @@ import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import java.time.LocalDate;
 
 @RunWith(SpringRunner.class)
+@TestMethodOrder(OrderAnnotation.class)
 @SpringBootTest(classes = IntegradorCloudApplication.class) // @formatter:off
 class LancamentoServiceTest {
 
@@ -68,6 +72,7 @@ class LancamentoServiceTest {
     .build();
 
     @Test
+    @Order(1)
     public void dadoLancamentoDTO_quandoSalvaLancamento_entaoOK() throws Exception { 
         Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
         LancamentoDTO created = lancamentoService.salvar(lancamento, principal);
@@ -92,6 +97,7 @@ class LancamentoServiceTest {
 	}
     
     @Test
+    @Order(2)
     public void dadoLancamentoDTO_quandoAtualizaLancamento_entaoOK() throws Exception { 
         Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
 
