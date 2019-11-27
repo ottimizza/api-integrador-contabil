@@ -66,7 +66,6 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
-            - v1-dependencies-
 
       - run: mvn dependency:go-offline
 
@@ -92,7 +91,6 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
-            - v1-dependencies-
 
       - run: mvn dependency:go-offline
 
