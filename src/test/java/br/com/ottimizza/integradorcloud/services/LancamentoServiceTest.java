@@ -7,7 +7,10 @@ import java.math.BigInteger;
 import java.security.Principal;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +24,7 @@ import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import java.time.LocalDate;
 
 @RunWith(SpringRunner.class)
+@TestMethodOrder(OrderAnnotation.class)
 @SpringBootTest(classes = IntegradorCloudApplication.class) // @formatter:off
 class LancamentoServiceTest {
 
@@ -68,6 +72,7 @@ class LancamentoServiceTest {
     .build();
 
     @Test
+    @Order(1)
     public void dadoLancamentoDTO_quandoSalvaLancamento_entaoOK() throws Exception { 
         Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
         LancamentoDTO created = lancamentoService.salvar(lancamento, principal);
@@ -92,6 +97,7 @@ class LancamentoServiceTest {
 	}
     
     @Test
+    @Order(2)
     public void dadoLancamentoDTO_quandoAtualizaLancamento_entaoOK() throws Exception { 
         Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
 
@@ -123,7 +129,33 @@ class LancamentoServiceTest {
         Assertions.assertNotNull(created.getComplemento05());
 	}
 
-
+    /** *********************************************************************************************************************
+     * Buscar Lancamento por Id 
+     * ******************************************************************************************************************  */
+    @Test
+    public void dadoIdLancamento_quandoBuscaLancamento_entaoOK() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        LancamentoDTO lancamento = lancamentoService.buscarPorId(BigInteger.ONE, principal);
+        Assertions.assertNotNull(lancamento);
+        Assertions.assertNotNull(lancamento.getId());
+        Assertions.assertNotNull(lancamento.getDocumento()); // DADOS
+        Assertions.assertNotNull(lancamento.getDescricao());
+        Assertions.assertNotNull(lancamento.getPortador());
+        Assertions.assertNotNull(lancamento.getCentroCusto());
+        Assertions.assertNotNull(lancamento.getContaMovimento()); // CONTAS CONTABEIS
+        Assertions.assertNotNull(lancamento.getContaContraPartida()); 
+        Assertions.assertNotNull(lancamento.getValorOriginal()); // VALORES
+        Assertions.assertNotNull(lancamento.getValorPago());
+        Assertions.assertNotNull(lancamento.getValorDesconto());
+        Assertions.assertNotNull(lancamento.getValorJuros());
+        Assertions.assertNotNull(lancamento.getValorMulta()); 
+        Assertions.assertNotNull(lancamento.getComplemento01());  // COMPLEMENTOS
+        Assertions.assertNotNull(lancamento.getComplemento02());
+        Assertions.assertNotNull(lancamento.getComplemento03());
+        Assertions.assertNotNull(lancamento.getComplemento04());
+        Assertions.assertNotNull(lancamento.getComplemento05());
+	}
+    
     /** *********************************************************************************************************************
      * Data Movimento
      * ******************************************************************************************************************  */
@@ -334,5 +366,7 @@ class LancamentoServiceTest {
             lancamentoService.salvar(lancamento, principal);
         });
 	}
-
+    
+    
+    
 }

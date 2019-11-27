@@ -89,6 +89,14 @@ jobs:
 
       - checkout
 
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+
+      - run: mvn dependency:go-offline
+
+      - run: mvn test
+
       - run:
           name: Save test results
           command: |
@@ -101,14 +109,6 @@ jobs:
 
       - store_artifacts:
           path: ~/test-results/junit      
-
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-
-      - run: mvn dependency:go-offline
-
-      - run: mvn test
 
 workflows:
   version: 2

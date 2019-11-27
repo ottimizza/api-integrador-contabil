@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
+import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
 import br.com.ottimizza.integradorcloud.domain.mappers.lancamento.LancamentoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
@@ -30,12 +31,17 @@ public class LancamentoService {
     @Inject
     ArquivoRepository arquivoRepository;
 
+    public Lancamento buscarPorId(BigInteger id) throws LancamentoNaoEncontradoException {
+        return lancamentoRepository.findById(id)
+            .orElseThrow(() -> new LancamentoNaoEncontradoException("Não foi encontrado nenhum lançamento com o Id especificado!"));
+    }
+
     public List<LancamentoDTO> buscarTodos() throws Exception {
         return Arrays.asList(new LancamentoDTO[] {});
     }
 
-    public LancamentoDTO buscarPorId(BigInteger id) throws Exception {
-        return LancamentoMapper.fromEntity(lancamentoRepository.findById(id).orElseThrow(() -> new Exception("")));
+    public LancamentoDTO buscarPorId(BigInteger id, Principal principal) throws LancamentoNaoEncontradoException {
+        return LancamentoMapper.fromEntity(buscarPorId(id));
     }
 
     public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
@@ -46,9 +52,7 @@ public class LancamentoService {
     }
 
     public LancamentoDTO salvar(BigInteger id, LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
-        Lancamento lancamento = lancamentoDTO.patch(
-            lancamentoRepository.findById(id).orElseThrow(() -> new Exception(""))
-        );
+        Lancamento lancamento = lancamentoDTO.patch(lancamentoRepository.findById(id).orElseThrow(() -> new Exception("")));
         validaLancamento(lancamento);
         return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
     }
