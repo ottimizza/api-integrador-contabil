@@ -91,9 +91,7 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
-
-      - run: mvn dependency:go-offline
-
+            
       - run: mvn test
 
 workflows:
