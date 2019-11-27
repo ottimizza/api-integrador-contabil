@@ -67,6 +67,9 @@ class LancamentoServiceTest {
         .idRoteiro("h4ub5ijfdASd")
     .build();
 
+    
+    
+
     @Test
     public void dadoLancamentoDTO_quandoSalvaLancamento_entaoOK() throws Exception { 
         Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
@@ -334,5 +337,31 @@ class LancamentoServiceTest {
             lancamentoService.salvar(lancamento, principal);
         });
 	}
-
+    
+    /** *********************************************************************************************************************
+     * Buscar Lancamento por Id 
+     * ******************************************************************************************************************  */
+    @Test
+    public void dadoIdLancamento_quandoBuscaLancamento_entaoOK() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+        LancamentoDTO lancamento = lancamentoService.buscarPorId(BigInteger.ONE, principal);
+        Assertions.assertNotNull(lancamento);
+        Assertions.assertNotNull(lancamento.getId());
+        Assertions.assertNotNull(lancamento.getDocumento()); // DADOS
+        Assertions.assertNotNull(lancamento.getDescricao());
+        Assertions.assertNotNull(lancamento.getPortador());
+        Assertions.assertNotNull(lancamento.getCentroCusto());
+        Assertions.assertNotNull(lancamento.getContaMovimento()); // CONTAS CONTABEIS
+        Assertions.assertNotNull(lancamento.getContaContraPartida()); 
+        Assertions.assertNotNull(lancamento.getValorOriginal()); // VALORES
+        Assertions.assertNotNull(lancamento.getValorPago());
+        Assertions.assertNotNull(lancamento.getValorDesconto());
+        Assertions.assertNotNull(lancamento.getValorJuros());
+        Assertions.assertNotNull(lancamento.getValorMulta()); 
+        Assertions.assertNotNull(lancamento.getComplemento01());  // COMPLEMENTOS
+        Assertions.assertNotNull(lancamento.getComplemento02());
+        Assertions.assertNotNull(lancamento.getComplemento03());
+        Assertions.assertNotNull(lancamento.getComplemento04());
+        Assertions.assertNotNull(lancamento.getComplemento05());
+	}
 }
