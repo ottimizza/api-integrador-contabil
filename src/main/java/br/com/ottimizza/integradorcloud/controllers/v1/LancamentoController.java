@@ -34,10 +34,10 @@ public class LancamentoController {
     private LancamentoService lancamentoService;
 
     @GetMapping
-    public ResponseEntity<?> fetchAll(@ModelAttribute SearchCriteria<Lancamento> criteria, 
+    public ResponseEntity<?> fetchAll(@ModelAttribute SearchCriteria<LancamentoDTO> criteria, 
                                       Principal principal) throws Exception {
         GenericPageableResponse<LancamentoDTO> response = new GenericPageableResponse<LancamentoDTO>(
-
+            lancamentoService.buscarTodos(criteria, principal)
         );
         return ResponseEntity.ok(response);
     }

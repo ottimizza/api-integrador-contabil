@@ -4,6 +4,11 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import br.com.ottimizza.integradorcloud.domain.criterias.SearchCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import lombok.AllArgsConstructor;
@@ -83,6 +88,34 @@ public class LancamentoDTO implements Serializable {
         }
 
         return lancamento;
+    }
+
+    public static Pageable getPageRequest(SearchCriteria searchCriteria) {
+        return PageRequest.of(searchCriteria.getPageIndex(), searchCriteria.getPageSize(), getSort(searchCriteria));
+    }
+
+    public static Sort getSort(SearchCriteria searchCriteria) {
+        Sort sort = Sort.unsorted();
+
+        if (searchCriteria.getSort() != null && searchCriteria.getSort().getOrder() != null
+                && searchCriteria.getSort().getAttribute() != null) {
+            String order = searchCriteria.getSort().getOrder();
+            String attribute = searchCriteria.getSort().getAttribute();
+            return getSort(attribute, order);
+        }
+
+        return sort;
+    }
+
+    public static Sort getSort(String attribute, String order) {
+        Sort sort = Sort.unsorted();
+        sort = Sort.by(attribute);
+        if (order.equals("asc")) {
+            sort = sort.ascending();
+        } else if (order.equals("desc")) {
+            sort = sort.descending();
+        }
+        return sort;
     }
 
 }

@@ -10,10 +10,12 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
+import br.com.ottimizza.integradorcloud.domain.criterias.SearchCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
 import br.com.ottimizza.integradorcloud.domain.mappers.lancamento.LancamentoMapper;
@@ -36,8 +38,9 @@ public class LancamentoService {
             .orElseThrow(() -> new LancamentoNaoEncontradoException("Não foi encontrado nenhum lançamento com o Id especificado!"));
     }
 
-    public List<LancamentoDTO> buscarTodos() throws Exception {
-        return Arrays.asList(new LancamentoDTO[] {});
+    public Page<LancamentoDTO> buscarTodos(SearchCriteria<LancamentoDTO> criteria, Principal principal) throws Exception {
+        return lancamentoRepository.fetchAll(criteria.getFilter(), LancamentoDTO.getPageRequest(criteria))
+                                   .map(LancamentoMapper::fromEntity);
     }
 
     public LancamentoDTO buscarPorId(BigInteger id, Principal principal) throws LancamentoNaoEncontradoException {

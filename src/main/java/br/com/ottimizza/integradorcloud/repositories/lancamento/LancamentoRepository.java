@@ -8,6 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 
 @Repository
-public interface LancamentoRepository extends PagingAndSortingRepository<Lancamento, BigInteger> {
+public interface LancamentoRepository
+        extends PagingAndSortingRepository<Lancamento, BigInteger>, LancamentoRepositoryCustom {
 
 }
