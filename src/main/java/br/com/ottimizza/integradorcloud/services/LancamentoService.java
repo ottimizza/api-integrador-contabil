@@ -44,6 +44,8 @@ public class LancamentoService {
         return LancamentoMapper.fromEntity(buscarPorId(id));
     }
 
+    //
+    //
     public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
         Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
         lancamento.setArquivo(arquivoRepository.save(lancamento.getArquivo()));
@@ -52,11 +54,45 @@ public class LancamentoService {
     }
 
     public LancamentoDTO salvar(BigInteger id, LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
-        Lancamento lancamento = lancamentoDTO.patch(lancamentoRepository.findById(id).orElseThrow(() -> new Exception("")));
+        Lancamento lancamento = lancamentoDTO.patch(buscarPorId(id));
         validaLancamento(lancamento);
         return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
     }
 
+    //
+    //
+    public LancamentoDTO salvarTransacaoComoDePara(BigInteger id, String contaMovimento, Principal principal) throws Exception {
+        return LancamentoMapper.fromEntity(lancamentoRepository.save(
+            buscarPorId(id)
+            .toBuilder()
+                .contaMovimento(contaMovimento)
+                .tipoConta(Short.parseShort("1"))
+            .build()
+        ));
+    }
+
+    public LancamentoDTO salvarTransacaoComoOutrasContas(BigInteger id, String contaMovimento, Principal principal) throws Exception {
+        return LancamentoMapper.fromEntity(lancamentoRepository.save(
+            buscarPorId(id)
+            .toBuilder()
+                .contaMovimento(contaMovimento)
+                .tipoConta(Short.parseShort("2"))
+            .build()
+        ));
+    }
+
+    public LancamentoDTO salvarTransacaoComoIgnorar(BigInteger id, String contaMovimento, Principal principal) throws Exception {
+        return LancamentoMapper.fromEntity(lancamentoRepository.save(
+            buscarPorId(id)
+            .toBuilder()
+                .contaMovimento("IGNORAR")
+                .tipoConta(Short.parseShort("3"))
+            .build()
+        ));
+    }
+
+    //
+    //
     @Transactional(rollbackFor = Exception.class) 
     public List<LancamentoDTO> importar(ImportacaoLancamentosRequest importaLancamentos, Principal principal) throws Exception { 
         List<Lancamento> results = new ArrayList<>();
