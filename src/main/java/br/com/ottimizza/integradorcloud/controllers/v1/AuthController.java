@@ -40,8 +40,8 @@ public class AuthController {
             String uri = MessageFormat.format("{0}/oauth/token?grant_type={1}&code={2}&redirect_uri={3}",
                     OAUTH2_SERVER_URL, "authorization_code", code, redirectUri);
 
-            // System.out.println("URI ............: " + uri);
-            // System.out.println("Credentials ....: " + credentials);
+            System.out.println("URI ............: " + uri);
+            System.out.println("Credentials ....: " + credentials);
 
             HttpPost httpPost = new HttpPost(uri);
             httpPost.setHeader("Authorization", "Basic " + encodedCredentials);
@@ -50,8 +50,8 @@ public class AuthController {
 
             Integer status = httpResponse.getStatusLine().getStatusCode();
             String response = EntityUtils.toString(responseEntity, "UTF-8");
-            // System.out.println("Status .........: " + status);
-            // System.out.println("Response .......: " + response);
+            System.out.println("Status .........: " + status);
+            System.out.println("Response .......: " + response);
 
             return ResponseEntity.status(status).body(response);
         } catch (Exception ex) {
