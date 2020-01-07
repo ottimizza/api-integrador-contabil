@@ -30,7 +30,7 @@ public class AuthController {
     @Value("${oauth2-config.client-secret}")
     private String OAUTH2_CLIENT_SECRET;
 
-    @PostMapping("/auth/callback")
+    @PostMapping(value = "/auth/callback", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> oauthCallback(@RequestParam("code") String code,
             @RequestParam("redirect_uri") String redirectUri) throws IOException {
         String credentials = OAUTH2_CLIENT_ID + ":" + OAUTH2_CLIENT_SECRET;
