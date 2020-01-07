@@ -5,14 +5,12 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.SearchCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
-import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.LancamentoService;
 
 import java.math.BigInteger;
 import java.security.Principal;
-import java.util.List;
 
 import javax.inject.Inject;
 

@@ -64,6 +64,8 @@ public class Lancamento implements Serializable {
 
     private String contaContraPartida;
 
+    private String contaSugerida;
+
     private Short tipoConta;
 
     private String historico;
