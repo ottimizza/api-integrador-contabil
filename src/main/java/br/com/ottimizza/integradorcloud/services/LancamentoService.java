@@ -107,7 +107,7 @@ public class LancamentoService {
                 .contaCredito(lancamento.getTipoLancamento().equals(Lancamento.Tipo.RECEBIMENTO) ? contaMovimento : null)
             .build();
 
-        deParaContaClient.salvar(deParaContaDTO, authorization)
+        deParaContaClient.salvar(deParaContaDTO, "Bearer " + accessToken);
 
         return LancamentoMapper.fromEntity(lancamento);
     }
