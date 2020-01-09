@@ -15,6 +15,7 @@ import java.security.Principal;
 import javax.inject.Inject;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -70,10 +71,10 @@ public class LancamentoController {
 
     //
     //
-    @PostMapping("/{id}/de_para")
+    @PostMapping("/{id}/depara")
     public ResponseEntity<?> salvarTransacaoComoDePara(@PathVariable BigInteger id, @RequestParam String contaMovimento,
-            Principal principal) throws Exception {
-        return ResponseEntity.ok(lancamentoService.salvarTransacaoComoDePara(id, contaMovimento, principal));
+            OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(lancamentoService.salvarTransacaoComoDePara(id, contaMovimento, authentication));
     }
 
     @PostMapping("/{id}/outras_contas")

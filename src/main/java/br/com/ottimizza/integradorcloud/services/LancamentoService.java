@@ -10,12 +10,19 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.ottimizza.integradorcloud.client.DeParaClient;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.SearchCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.depara.DeParaContaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
 import br.com.ottimizza.integradorcloud.domain.mappers.lancamento.LancamentoMapper;
@@ -32,6 +39,19 @@ public class LancamentoService {
 
     @Inject
     ArquivoRepository arquivoRepository;
+
+    @Inject
+    DeParaClient deParaContaClient;
+
+    @Autowired
+    public LancamentoService() {
+        OAuth2Authentication authentication = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
+        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+
+        String accessToken = details.getTokenValue(); 
+
+        System.out.println("Access Token >> 1 " + accessToken);
+    }
 
     public Lancamento buscarPorId(BigInteger id) throws LancamentoNaoEncontradoException {
         return lancamentoRepository.findById(id)
@@ -64,14 +84,32 @@ public class LancamentoService {
 
     //
     //
-    public LancamentoDTO salvarTransacaoComoDePara(BigInteger id, String contaMovimento, Principal principal) throws Exception {
-        return LancamentoMapper.fromEntity(lancamentoRepository.save(
-            buscarPorId(id)
+    public LancamentoDTO salvarTransacaoComoDePara(BigInteger id, String contaMovimento, OAuth2Authentication authentication) throws Exception {
+        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+        String accessToken = details.getTokenValue();
+
+        System.out.println("Access Token >> " + accessToken);
+
+
+        Lancamento lancamento = lancamentoRepository.save(
+            this.buscarPorId(id)
             .toBuilder()
                 .contaMovimento(contaMovimento)
-                .tipoConta(Short.parseShort("1"))
+                .tipoConta(Lancamento.TipoConta.DEPARA)
             .build()
-        ));
+        );
+
+        DeParaContaDTO deParaContaDTO = DeParaContaDTO.builder()
+                .cnpjContabilidade(lancamento.getCnpjContabilidade())
+                .cnpjEmpresa(lancamento.getCnpjEmpresa())
+                .descricao(lancamento.getDescricao())
+                .contaDebito(lancamento.getTipoLancamento().equals(Lancamento.Tipo.PAGAMENTO) ? contaMovimento : null)
+                .contaCredito(lancamento.getTipoLancamento().equals(Lancamento.Tipo.RECEBIMENTO) ? contaMovimento : null)
+            .build();
+
+        deParaContaClient.salvar(deParaContaDTO, authorization)
+
+        return LancamentoMapper.fromEntity(lancamento);
     }
 
     public LancamentoDTO salvarTransacaoComoOutrasContas(BigInteger id, String contaMovimento, Principal principal) throws Exception {

@@ -148,4 +148,12 @@ public class Lancamento implements Serializable {
         public static final Short PAGAMENTO = 1;
         public static final Short RECEBIMENTO = 2;
     }
+
+    public static class TipoConta { 
+        public static final Short DEPARA        = 1;
+        public static final Short OUTRAS_CONTAS = 2;
+        public static final Short IGNORAR       = 3;
+        public static final Short PULAR         = 4;
+    }
+
 }
