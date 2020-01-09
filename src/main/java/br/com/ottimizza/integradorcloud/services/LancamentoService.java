@@ -43,16 +43,6 @@ public class LancamentoService {
     @Inject
     DeParaClient deParaContaClient;
 
-    @Autowired
-    public LancamentoService() {
-        OAuth2Authentication authentication = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-
-        String accessToken = details.getTokenValue(); 
-
-        System.out.println("Access Token >> 1 " + accessToken);
-    }
-
     public Lancamento buscarPorId(BigInteger id) throws LancamentoNaoEncontradoException {
         return lancamentoRepository.findById(id)
             .orElseThrow(() -> new LancamentoNaoEncontradoException("Não foi encontrado nenhum lançamento com o Id especificado!"));
