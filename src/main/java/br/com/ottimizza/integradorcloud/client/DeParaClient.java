@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.depara.DeParaContaDTO;
 
-@FeignClient(name = "DeParaService", url = "${clients.depara.base-url}")
+@FeignClient(name = "depara_service", url = "${clients.depara.base-url}")
 public interface DeParaClient {
 
     @PostMapping("/api/v1/depara_contas")
