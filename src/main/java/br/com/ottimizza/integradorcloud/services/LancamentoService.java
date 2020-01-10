@@ -57,10 +57,7 @@ public class LancamentoService {
         return lancamentoRepository.fetchAll(criteria.getFilter(), LancamentoDTO.getPageRequest(criteria))
                                    .map(LancamentoMapper::fromEntity);
     }
-
-    public String apagarTodos(SearchCriteria<LancamentoDTO> criteria, Principal principal) throws Exception {
-        return this.apagarTodos(criteria, false, principal);
-    }
+    
     public String apagarTodos(SearchCriteria<LancamentoDTO> criteria, boolean limparRegras, Principal principal) throws Exception {
         long affectedRows = lancamentoRepository.deleteAll(criteria.getFilter());
         if (limparRegras) {
