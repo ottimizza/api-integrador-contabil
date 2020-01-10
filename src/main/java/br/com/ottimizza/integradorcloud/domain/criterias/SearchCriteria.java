@@ -31,6 +31,10 @@ public class SearchCriteria<T> implements Serializable {
 
     public T filter;
 
+    public <E> T getFilter(Class<E> clazz) {
+        return (T) filter;
+    }
+
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
