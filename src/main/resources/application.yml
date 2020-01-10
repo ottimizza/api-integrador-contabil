@@ -29,7 +29,7 @@ oauth2-config:
 
 depara:
   service:
-    name: depara_service
+    name: depara-service
     url: {DEPARA_BASE_URL}
 
 security:
