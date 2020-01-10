@@ -36,17 +36,23 @@ public class GrupoRegraRepositoryImpl implements GrupoRegraRepositoryCustom {
 
     QRegra regra = QRegra.regra;
 
+    @Modifying
+    @Transactional
     public long apagarTodosPorCnpjEmpresa(String cnpjEmpresa) {
         this.apagarRegraPorCnpjEmpresa(cnpjEmpresa);
         return this.apagarGrupoRegraPorCnpjEmpresa(cnpjEmpresa);
     }
 
+    @Modifying
+    @Transactional
     private long apagarGrupoRegraPorCnpjEmpresa(String cnpjEmpresa) {
         JPADeleteClause delete = new JPADeleteClause(em, grupoRegra);
         delete.where(grupoRegra.arquivo.cnpjEmpresa.eq(cnpjEmpresa));
         return delete.execute();
     }
 
+    @Modifying
+    @Transactional
     private long apagarRegraPorCnpjEmpresa(String cnpjEmpresa) {
         JPADeleteClause delete = new JPADeleteClause(em, regra);
         delete.where(regra.grupoRegra.arquivo.cnpjEmpresa.eq(cnpjEmpresa));
