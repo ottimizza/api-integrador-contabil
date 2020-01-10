@@ -78,9 +78,6 @@ public class LancamentoService {
         final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
         String accessToken = details.getTokenValue();
 
-        System.out.println("Access Token >> " + accessToken);
-
-
         Lancamento lancamento = lancamentoRepository.save(
             this.buscarPorId(id)
             .toBuilder()
@@ -112,14 +109,29 @@ public class LancamentoService {
         ));
     }
 
-    public LancamentoDTO salvarTransacaoComoIgnorar(BigInteger id, String contaMovimento, Principal principal) throws Exception {
-        return LancamentoMapper.fromEntity(lancamentoRepository.save(
-            buscarPorId(id)
+    public LancamentoDTO salvarTransacaoComoIgnorar(BigInteger id, OAuth2Authentication authentication) throws Exception {
+        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+        String accessToken = details.getTokenValue();
+
+        Lancamento lancamento = lancamentoRepository.save(
+            this.buscarPorId(id)
             .toBuilder()
                 .contaMovimento("IGNORAR")
-                .tipoConta(Short.parseShort("3"))
+                .tipoConta(Lancamento.TipoConta.IGNORAR)
             .build()
-        ));
+        );
+
+        DeParaContaDTO deParaContaDTO = DeParaContaDTO.builder()
+                .cnpjContabilidade(lancamento.getCnpjContabilidade())
+                .cnpjEmpresa(lancamento.getCnpjEmpresa())
+                .descricao(lancamento.getDescricao())
+                .contaDebito(lancamento.getTipoLancamento().equals(Lancamento.Tipo.PAGAMENTO) ? "IGNORAR" : null)
+                .contaCredito(lancamento.getTipoLancamento().equals(Lancamento.Tipo.RECEBIMENTO) ? "IGNORAR" : null)
+            .build();
+
+        deParaContaClient.salvar(deParaContaDTO, "Bearer " + accessToken);
+
+        return LancamentoMapper.fromEntity(lancamento);
     }
 
     //
