@@ -20,22 +20,40 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "grupo_regras")
+@Table(name = "regras")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor // @formatter:off
-public class GrupoRegra implements Serializable {
+public class Regra implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "id", nullable = false)
-    @SequenceGenerator(name = "grupo_regras_sequence", sequenceName = "grupo_regras_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "grupo_regras_sequence")
+    @SequenceGenerator(name = "regras_sequence", sequenceName = "regras_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "regras_sequence")
     private BigInteger id;
-    
+
+    private String campo;
+
+    private Short condicao;
+
+    private String valor;
+
     @ManyToOne
-    @JoinColumn(name = "fk_arquivos_id", nullable = true)
-    private Arquivo arquivo;
+    @JoinColumn(name = "fk_grupo_regras_id")
+    private GrupoRegra grupoRegra;
+
+    public static class Condicao {
+
+        public static final Short CONTEM = 1;
+
+        public static final Short NAO_CONTEM = 2;
+
+        public static final Short COMECAO_COM = 3;
+
+        public static final Short IGUAL = 4;
+
+    }
 
 }

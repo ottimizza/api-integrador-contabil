@@ -47,8 +47,6 @@ class LancamentoServiceTest {
         .arquivo(
             ArquivoDTO.builder()
                 .nome("Lançamentos 10-2019.xlsx")
-                .cnpjEmpresa("99097492000142")
-                .cnpjContabilidade("82910893000177")
             .build()
         )
         .tipoPlanilha("MOVIMENTO")
@@ -367,6 +365,15 @@ class LancamentoServiceTest {
         });
 	}
     
+    @Test
+    public void dadoLancamentoDTO_quandoSalvaLancamentoArquivoCNPJVazio_entaoUsaCNPJLancamento() throws Exception { 
+        Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
+
+        LancamentoDTO created =  lancamentoService.salvar(lancamento, principal);
+
+        Assertions.assertEquals(lancamento.getCnpjContabilidade(), created.getCnpjContabilidade());
+        Assertions.assertEquals(lancamento.getCnpjEmpresa(), created.getCnpjEmpresa());
+	}
     
     
 }

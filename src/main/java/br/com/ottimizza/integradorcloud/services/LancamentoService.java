@@ -30,6 +30,7 @@ import br.com.ottimizza.integradorcloud.domain.mappers.lancamento.LancamentoMapp
 import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.repositories.arquivo.ArquivoRepository;
+import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
 
 @Service // @formatter:off
@@ -37,6 +38,9 @@ public class LancamentoService {
 
     @Inject
     LancamentoRepository lancamentoRepository;
+    
+    @Inject
+    GrupoRegraRepository grupoRegraRepository;
 
     @Inject
     ArquivoRepository arquivoRepository;
@@ -55,10 +59,18 @@ public class LancamentoService {
     }
 
     public String apagarTodos(SearchCriteria<LancamentoDTO> criteria, Principal principal) throws Exception {
+        return this.apagarTodos(criteria, false, principal);
+    }
+    public String apagarTodos(SearchCriteria<LancamentoDTO> criteria, boolean limparRegras, Principal principal) throws Exception {
         long affectedRows = lancamentoRepository.deleteAll(criteria.getFilter());
+        if (limparRegras) {
+            grupoRegraRepository.apagarTodosPorCnpjEmpresa(criteria.getFilter().getCnpjEmpresa());
+        }
         if (affectedRows > 0) {
             return MessageFormat.format("{0} registros excluídos", affectedRows);
         }
+        
+
         return "Nenhum registro excluído!";
     }
 
@@ -70,8 +82,6 @@ public class LancamentoService {
     //
     public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
         Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
-
-        validaLancamento(lancamento);
         
         lancamento.setArquivo(arquivoRepository.save(
             lancamento.getArquivo().toBuilder()
@@ -79,6 +89,8 @@ public class LancamentoService {
                 .cnpjEmpresa(lancamentoDTO.getCnpjEmpresa())
             .build()
         ));
+    
+        validaLancamento(lancamento);
 
         return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
     }

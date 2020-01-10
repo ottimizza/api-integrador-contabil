@@ -1,5 +1,7 @@
 package br.com.ottimizza.integradorcloud.repositories.lancamento;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,7 +14,8 @@ public interface LancamentoRepositoryCustom { // LancamentoRepositoryImpl
     Page<Lancamento> fetchAll(LancamentoDTO filter, Pageable pageRequest);
 
     @Modifying
-    @javax.transaction.Transactional
+    @Transactional
     long deleteAll(LancamentoDTO filter);
+
 
 }
