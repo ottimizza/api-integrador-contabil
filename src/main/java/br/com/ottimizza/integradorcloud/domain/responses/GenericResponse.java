@@ -21,6 +21,11 @@ public class GenericResponse<T> implements Serializable {
 
     @Getter
     @Setter
+    @JsonProperty("message")
+    private String message;
+
+    @Getter
+    @Setter
     @JsonProperty("record")
     private T record;
 
@@ -35,6 +40,10 @@ public class GenericResponse<T> implements Serializable {
 
     public GenericResponse(T record) {
         this.record = record;
+    }
+
+    public GenericResponse(String message) {
+        this.message = message;
     }
 
 }

@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
 import java.security.Principal;
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +52,14 @@ public class LancamentoService {
     public Page<LancamentoDTO> buscarTodos(SearchCriteria<LancamentoDTO> criteria, Principal principal) throws Exception {
         return lancamentoRepository.fetchAll(criteria.getFilter(), LancamentoDTO.getPageRequest(criteria))
                                    .map(LancamentoMapper::fromEntity);
+    }
+
+    public String apagarTodos(SearchCriteria<LancamentoDTO> criteria, Principal principal) throws Exception {
+        long affectedRows = lancamentoRepository.deleteAll(criteria.getFilter());
+        if (affectedRows > 0) {
+            return MessageFormat.format("{0} registros excluídos", affectedRows);
+        }
+        return "Nenhum registro excluído!";
     }
 
     public LancamentoDTO buscarPorId(BigInteger id, Principal principal) throws LancamentoNaoEncontradoException {

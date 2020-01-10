@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,6 +38,15 @@ public class LancamentoController {
                                       Principal principal) throws Exception {
         GenericPageableResponse<LancamentoDTO> response = new GenericPageableResponse<LancamentoDTO>(
             lancamentoService.buscarTodos(criteria, principal)
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteAll(@ModelAttribute SearchCriteria<LancamentoDTO> criteria, 
+                                      Principal principal) throws Exception {
+        GenericResponse response = new GenericResponse(
+            lancamentoService.apagarTodos(criteria, principal)
         );
         return ResponseEntity.ok(response);
     }

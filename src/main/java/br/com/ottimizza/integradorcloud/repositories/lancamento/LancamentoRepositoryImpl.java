@@ -13,8 +13,9 @@ import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.QLancamento;
 
+import com.querydsl.jpa.impl.JPADeleteClause;
 import com.querydsl.jpa.impl.JPAQuery;
-
+import com.querydsl.core.Query;
 // Sort
 import com.querydsl.core.types.Order;
 import org.springframework.data.domain.Sort;
@@ -38,6 +39,28 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         sort(query, pageable, Lancamento.class, QLANCAMENTO_NAME);
         paginate(query, pageable);
         return new PageImpl<Lancamento>(query.fetch(), pageable, totalElements);
+    }
+
+    public long deleteAll(LancamentoDTO filter) {
+        JPADeleteClause delete = new JPADeleteClause(em, lancamento);
+        if (filter != null) {
+            if (filter.getId() != null) {
+                delete.where(lancamento.id.eq(filter.getId()));
+            }
+            if (filter.getCnpjContabilidade() != null && !filter.getCnpjContabilidade().isEmpty()) {
+                delete.where(lancamento.cnpjContabilidade.like(filter.getCnpjContabilidade()));
+            }
+            if (filter.getCnpjEmpresa() != null && !filter.getCnpjEmpresa().isEmpty()) {
+                delete.where(lancamento.cnpjEmpresa.like(filter.getCnpjEmpresa()));
+            }
+            if (filter.getIdRoteiro() != null && !filter.getIdRoteiro().isEmpty()) {
+                delete.where(lancamento.idRoteiro.like(filter.getIdRoteiro()));
+            }
+            if (filter.getDescricao() != null && !filter.getDescricao().isEmpty()) {
+                delete.where(lancamento.descricao.like("%" + filter.getDescricao() + "%"));
+            }
+        }
+        return delete.execute();
     }
 
     private <T> long filter(JPAQuery<T> query, LancamentoDTO filter) {
