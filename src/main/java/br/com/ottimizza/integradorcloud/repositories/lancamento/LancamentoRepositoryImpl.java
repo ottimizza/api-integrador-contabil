@@ -53,10 +53,10 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
                 delete.where(lancamento.id.eq(filter.getId()));
             }
             if (filter.getCnpjContabilidade() != null && !filter.getCnpjContabilidade().isEmpty()) {
-                delete.where(lancamento.cnpjContabilidade.like(filter.getCnpjContabilidade()));
+                delete.where(lancamento.cnpjContabilidade.like(filter.getCnpjContabilidade().replaceAll("\\D*", "")));
             }
             if (filter.getCnpjEmpresa() != null && !filter.getCnpjEmpresa().isEmpty()) {
-                delete.where(lancamento.cnpjEmpresa.like(filter.getCnpjEmpresa()));
+                delete.where(lancamento.cnpjEmpresa.like(filter.getCnpjEmpresa().replaceAll("\\D*", "")));
             }
             if (filter.getIdRoteiro() != null && !filter.getIdRoteiro().isEmpty()) {
                 delete.where(lancamento.idRoteiro.like(filter.getIdRoteiro()));
