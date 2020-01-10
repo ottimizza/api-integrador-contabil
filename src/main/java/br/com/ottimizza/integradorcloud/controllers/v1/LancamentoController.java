@@ -36,6 +36,9 @@ public class LancamentoController {
     @GetMapping
     public ResponseEntity<?> fetchAll(@ModelAttribute SearchCriteria<LancamentoDTO> criteria, 
                                       Principal principal) throws Exception {
+
+        System.out.println((LancamentoDTO) criteria.getFilter());
+
         GenericPageableResponse<LancamentoDTO> response = new GenericPageableResponse<LancamentoDTO>(
             lancamentoService.buscarTodos(criteria, principal)
         );
@@ -46,20 +49,13 @@ public class LancamentoController {
     public ResponseEntity<?> deleteAll(@ModelAttribute SearchCriteria<LancamentoDTO> criteria, 
                                        @RequestParam(defaultValue = "false", required = false) boolean limparRegras,
                                        Principal principal) throws Exception {
-
-        LancamentoDTO l = new LancamentoDTO();
-        l = criteria.getFilter();
-
         try {
             System.out.println((LancamentoDTO) criteria.getFilter());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
-        criteria.setFilter(l);
-
         try {
-            System.out.println("" + (LancamentoDTO) criteria.getFilter());
+            System.out.println("" + criteria.getFilter(LancamentoDTO.class));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
