@@ -49,6 +49,17 @@ public class LancamentoController {
     public ResponseEntity<?> deleteAll(@ModelAttribute SearchCriteria<LancamentoDTO> criteria, 
                                        @RequestParam(defaultValue = "false", required = false) boolean limparRegras,
                                        Principal principal) throws Exception {
+        try {
+            System.out.println((LancamentoDTO) criteria.getFilter());
+        } catch (Exception e) {
+            System.out.println("\n\n1.2" + e.getMessage());
+        }
+        try {
+            System.out.println("" + criteria.getFilter(LancamentoDTO.class));
+            System.out.println("" + criteria.getFilter(LancamentoDTO.class).getCnpjEmpresa());
+        } catch (Exception e) {
+            System.out.println("\n\n1.1" + e.getMessage());
+        }
 
         GenericResponse response = new GenericResponse(
             lancamentoService.apagarTodos(criteria, limparRegras, principal)
