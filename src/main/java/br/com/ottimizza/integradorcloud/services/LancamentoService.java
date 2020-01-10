@@ -59,14 +59,13 @@ public class LancamentoService {
     }
     
     public String apagarTodos(SearchCriteria<LancamentoDTO> criteria, boolean limparRegras, Principal principal) throws Exception {
-        long affectedRows = lancamentoRepository.deleteAll(criteria.getFilter());
+        long affectedRows = lancamentoRepository.deleteAll((LancamentoDTO) criteria.getFilter());
         if (limparRegras) {
-            grupoRegraRepository.apagarTodosPorCnpjEmpresa(criteria.getFilter().getCnpjEmpresa());
+            grupoRegraRepository.apagarTodosPorCnpjEmpresa(((LancamentoDTO) criteria.getFilter()).getCnpjEmpresa());
         }
         if (affectedRows > 0) {
             return MessageFormat.format("{0} registros excluídos", affectedRows);
         }
-        
 
         return "Nenhum registro excluído!";
     }
