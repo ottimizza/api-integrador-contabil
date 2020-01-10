@@ -59,7 +59,7 @@ public class LancamentoController {
         criteria.setFilter(l);
 
         try {
-            System.out.println(LancamentoDTO) criteria.getFilter());
+            System.out.println("" + (LancamentoDTO) criteria.getFilter());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
