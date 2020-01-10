@@ -52,12 +52,12 @@ public class LancamentoController {
         try {
             System.out.println((LancamentoDTO) criteria.getFilter());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("\n\n1.2" + e.getMessage());
         }
         try {
             System.out.println("" + criteria.getFilter(LancamentoDTO.class));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("\n\n1.1" + e.getMessage());
         }
 
         System.out.println((LancamentoDTO) criteria.getFilter());
