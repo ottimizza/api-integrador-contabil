@@ -31,8 +31,8 @@ public class SearchCriteria<T> implements Serializable {
 
     public T filter;
 
-    public <T> T getFilter(Class<T> clazz) {
-        return (T) filter;
+    public T getFilter(Class<T> clazz) {
+        return clazz.cast(filter);
     }
 
     @Getter

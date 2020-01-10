@@ -55,7 +55,7 @@ public class LancamentoController {
             System.out.println("\n\n1.2" + e.getMessage());
         }
         try {
-            System.out.println("" + criteria.getFilter(LancamentoDTO.class));
+            System.out.println("" + ((LancamentoDTO) criteria.getFilter(LancamentoDTO.class)).getCnpjEmpresa());
             System.out.println("" + criteria.getFilter(LancamentoDTO.class).getCnpjEmpresa());
         } catch (Exception e) {
             System.out.println("\n\n1.1" + e.getMessage());
