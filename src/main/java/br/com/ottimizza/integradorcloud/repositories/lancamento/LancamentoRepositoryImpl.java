@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,6 +20,8 @@ import com.querydsl.core.Query;
 // Sort
 import com.querydsl.core.types.Order;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Modifying;
+
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.PathBuilder;
 
@@ -41,6 +44,8 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         return new PageImpl<Lancamento>(query.fetch(), pageable, totalElements);
     }
 
+    @Modifying
+    @Transactional
     public long deleteAll(LancamentoDTO filter) {
         JPADeleteClause delete = new JPADeleteClause(em, lancamento);
         if (filter != null) {
