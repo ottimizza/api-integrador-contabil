@@ -44,9 +44,10 @@ public class LancamentoController {
 
     @DeleteMapping
     public ResponseEntity<?> deleteAll(@ModelAttribute SearchCriteria<LancamentoDTO> criteria, 
-                                      Principal principal) throws Exception {
+                                       @RequestParam(defaultValue = "false", required = false) boolean limparRegras,
+                                       Principal principal) throws Exception {
         GenericResponse response = new GenericResponse(
-            lancamentoService.apagarTodos(criteria, principal)
+            lancamentoService.apagarTodos(criteria, limparRegras, principal)
         );
         return ResponseEntity.ok(response);
     }
@@ -94,7 +95,8 @@ public class LancamentoController {
     }
 
     @PostMapping("/{id}/ignorar")
-    public ResponseEntity<?> salvarTransacaoComoIgnorar(@PathVariable BigInteger id, OAuth2Authentication authentication) throws Exception {
+    public ResponseEntity<?> salvarTransacaoComoIgnorar(@PathVariable BigInteger id,
+                                                        OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(lancamentoService.salvarTransacaoComoIgnorar(id, authentication));
     }
 
