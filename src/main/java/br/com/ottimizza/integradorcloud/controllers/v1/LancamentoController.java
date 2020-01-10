@@ -85,8 +85,8 @@ public class LancamentoController {
 
     @PostMapping("/{id}/ignorar")
     public ResponseEntity<?> salvarTransacaoComoIgnorar(@PathVariable BigInteger id,
-            @RequestParam String contaMovimento, Principal principal) throws Exception {
-        return ResponseEntity.ok(lancamentoService.salvarTransacaoComoIgnorar(id, contaMovimento, principal));
+            @RequestParam String contaMovimento, OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(lancamentoService.salvarTransacaoComoIgnorar(id, authentication));
     }
 
     //
