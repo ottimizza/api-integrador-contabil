@@ -70,8 +70,16 @@ public class LancamentoService {
     //
     public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
         Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
-        lancamento.setArquivo(arquivoRepository.save(lancamento.getArquivo()));
+
         validaLancamento(lancamento);
+        
+        lancamento.setArquivo(arquivoRepository.save(
+            lancamento.getArquivo().toBuilder()
+                .cnpjContabilidade(lancamentoDTO.getCnpjContabilidade())
+                .cnpjEmpresa(lancamentoDTO.getCnpjEmpresa())
+            .build()
+        ));
+
         return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
     }
 
