@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.ottimizza.integradorcloud.client.DeParaClient;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
-import br.com.ottimizza.integradorcloud.domain.criterias.SearchCriteria;
+import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.depara.DeParaContaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
@@ -53,18 +53,18 @@ public class LancamentoService {
             .orElseThrow(() -> new LancamentoNaoEncontradoException("Não foi encontrado nenhum lançamento com o Id especificado!"));
     }
 
-    public Page<LancamentoDTO> buscarTodos(SearchCriteria<LancamentoDTO> criteria, Principal principal) throws Exception {
-        return lancamentoRepository.fetchAll(criteria.getFilter(), LancamentoDTO.getPageRequest(criteria))
+    public Page<LancamentoDTO> buscarTodos(LancamentoDTO filter, PageCriteria criteria, Principal principal) throws Exception {
+        return lancamentoRepository.fetchAll(filter, LancamentoDTO.getPageRequest(criteria))
                                    .map(LancamentoMapper::fromEntity);
     }
     
-    public String apagarTodos(SearchCriteria<LancamentoDTO> criteria, boolean limparRegras, Principal principal) throws Exception {
-        long affectedRows = lancamentoRepository.deleteAll(criteria.getFilter());
+    public String apagarTodos(LancamentoDTO filter, PageCriteria criteria, boolean limparRegras, Principal principal) throws Exception {
+        long affectedRows = lancamentoRepository.deleteAll(filter);
         if (limparRegras) {
-            grupoRegraRepository.apagarTodosPorCnpjEmpresa(criteria.getFilter().getCnpjEmpresa());
+            grupoRegraRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
         }
         if (affectedRows > 0) {
-            return MessageFormat.format("{0} registros excluídos", affectedRows);
+            return MessageFormat.format("{0} lançamentos excluídos. ", affectedRows);
         }
 
         return "Nenhum registro excluído!";

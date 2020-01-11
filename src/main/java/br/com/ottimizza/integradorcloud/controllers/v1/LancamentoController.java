@@ -3,7 +3,7 @@ package br.com.ottimizza.integradorcloud.controllers.v1;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
-import br.com.ottimizza.integradorcloud.domain.criterias.SearchCriteria;
+import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
@@ -34,35 +34,22 @@ public class LancamentoController {
     private LancamentoService lancamentoService;
 
     @GetMapping
-    public ResponseEntity<?> fetchAll(@ModelAttribute SearchCriteria<LancamentoDTO> criteria, 
+    public ResponseEntity<?> fetchAll(@RequestParam LancamentoDTO filter, 
+                                      @RequestParam PageCriteria pageCriteria, 
                                       Principal principal) throws Exception {
-
-        System.out.println((LancamentoDTO) criteria.getFilter());
-
         GenericPageableResponse<LancamentoDTO> response = new GenericPageableResponse<LancamentoDTO>(
-            lancamentoService.buscarTodos(criteria, principal)
+            lancamentoService.buscarTodos(filter, pageCriteria, principal)
         );
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteAll(@ModelAttribute SearchCriteria<LancamentoDTO> criteria, 
+    public ResponseEntity<?> deleteAll(@RequestParam LancamentoDTO filter, 
+                                       @RequestParam PageCriteria pageCriteria, 
                                        @RequestParam(defaultValue = "false", required = false) boolean limparRegras,
                                        Principal principal) throws Exception {
-        try {
-            System.out.println((LancamentoDTO) criteria.getFilter());
-        } catch (Exception e) {
-            System.out.println("\n\n1.2" + e.getMessage());
-        }
-        // try {
-        //     System.out.println("" + ((LancamentoDTO) criteria.getFilter(LancamentoDTO.class)).getCnpjEmpresa());
-        //     System.out.println("" + criteria.getFilter(LancamentoDTO.class).getCnpjEmpresa());
-        // } catch (Exception e) {
-        //     System.out.println("\n\n1.1" + e.getMessage());
-        // }
-
         GenericResponse response = new GenericResponse(
-            lancamentoService.apagarTodos(criteria, limparRegras, principal)
+            lancamentoService.apagarTodos(filter, pageCriteria, limparRegras, principal)
         );
         return ResponseEntity.ok(response);
     }
