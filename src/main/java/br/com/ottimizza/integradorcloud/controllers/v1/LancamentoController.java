@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.security.Principal;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -33,8 +34,8 @@ public class LancamentoController {
     private LancamentoService lancamentoService;
 
     @GetMapping
-    public ResponseEntity<?> fetchAll(@RequestParam LancamentoDTO filter, 
-                                      @RequestParam PageCriteria pageCriteria, 
+    public ResponseEntity<?> fetchAll(@Valid LancamentoDTO filter, 
+                                      @Valid PageCriteria pageCriteria, 
                                       Principal principal) throws Exception {
         GenericPageableResponse<LancamentoDTO> response = new GenericPageableResponse<LancamentoDTO>(
             lancamentoService.buscarTodos(filter, pageCriteria, principal)
@@ -43,8 +44,8 @@ public class LancamentoController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteAll(@RequestParam LancamentoDTO filter, 
-                                       @RequestParam PageCriteria pageCriteria, 
+    public ResponseEntity<?> deleteAll(@Valid LancamentoDTO filter, 
+                                       @Valid PageCriteria pageCriteria, 
                                        @RequestParam(defaultValue = "false", required = false) boolean limparRegras,
                                        Principal principal) throws Exception {
         GenericResponse response = new GenericResponse(
