@@ -78,6 +78,8 @@ public class LancamentoService {
     //
     public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
         Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
+
+        validaLancamento(lancamento);
         
         lancamento.setArquivo(arquivoRepository.save(
             lancamento.getArquivo().toBuilder()
@@ -86,7 +88,6 @@ public class LancamentoService {
             .build()
         ));
     
-        validaLancamento(lancamento);
 
         lancamento.setCnpjContabilidade(lancamento.getCnpjContabilidade().replaceAll("\\D*", ""));
         lancamento.setCnpjEmpresa(lancamento.getCnpjEmpresa().replaceAll("\\D*", ""));
@@ -209,8 +210,8 @@ public class LancamentoService {
         if (lancamento.getTipoPlanilha() == null || lancamento.getTipoPlanilha().equals("")) {
             throw new IllegalArgumentException("Informe o tipo da planilha!");
         }
-        if (lancamento.getArquivo() == null || lancamento.getArquivo().getId() == null) {
-            throw new IllegalArgumentException("Informe o arquivo relacionado ao lançamento!");
+        if (lancamento.getArquivo() == null || lancamento.getArquivo().getNome() == null) {
+            throw new IllegalArgumentException("Informe o nome do arquivo relacionado ao lançamento!");
         }
         if (lancamento.getDataMovimento() == null) {
             throw new IllegalArgumentException("Informe a data do lançamento!");
