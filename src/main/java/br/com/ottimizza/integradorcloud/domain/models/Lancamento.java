@@ -120,6 +120,9 @@ public class Lancamento implements Serializable {
     public void prePersist() {
         this.dataCriacao = new Date();
         this.dataAtualizacao = new Date();
+        
+        this.cnpjContabilidade = this.cnpjContabilidade.replaceAll("\\D*", "");
+        this.cnpjEmpresa = this.cnpjEmpresa.replaceAll("\\D*", "");
 
         if (documento == null) documento = "";
         if (descricao == null) descricao = "";
@@ -142,6 +145,8 @@ public class Lancamento implements Serializable {
     @PreUpdate
     public void preUpdate() {
         this.dataAtualizacao = new Date();
+        this.cnpjContabilidade = this.cnpjContabilidade.replaceAll("\\D*", "");
+        this.cnpjEmpresa = this.cnpjEmpresa.replaceAll("\\D*", "");
     }
 
     public static class Tipo { 

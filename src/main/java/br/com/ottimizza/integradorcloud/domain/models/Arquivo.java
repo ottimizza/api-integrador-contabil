@@ -54,11 +54,17 @@ public class Arquivo implements Serializable {
     public void prePersist() {
         this.dataCriacao = new Date();
         this.dataAtualizacao = new Date();
+        
+        this.cnpjContabilidade = this.cnpjContabilidade.replaceAll("\\D*", "");
+        this.cnpjEmpresa = this.cnpjEmpresa.replaceAll("\\D*", "");
     }
 
     @PreUpdate
     public void preUpdate() {
         this.dataAtualizacao = new Date();
+        
+        this.cnpjContabilidade = this.cnpjContabilidade.replaceAll("\\D*", "");
+        this.cnpjEmpresa = this.cnpjEmpresa.replaceAll("\\D*", "");
     }
 
 }
