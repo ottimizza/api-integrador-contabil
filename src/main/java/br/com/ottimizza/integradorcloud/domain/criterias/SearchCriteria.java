@@ -16,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class SearchCriteria<T> implements Serializable {
+public class SearchCriteria<T extends Serializable> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,9 +31,9 @@ public class SearchCriteria<T> implements Serializable {
 
     public T filter;
 
-    public T getFilter(Class<T> clazz) {
-        return clazz.cast(filter);
-    }
+    // public T getFilter(Class<T> clazz) {
+    //     return clazz.cast(filter);
+    // }
 
     @Getter
     @NoArgsConstructor

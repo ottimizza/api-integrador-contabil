@@ -54,12 +54,12 @@ public class LancamentoController {
         } catch (Exception e) {
             System.out.println("\n\n1.2" + e.getMessage());
         }
-        try {
-            System.out.println("" + ((LancamentoDTO) criteria.getFilter(LancamentoDTO.class)).getCnpjEmpresa());
-            System.out.println("" + criteria.getFilter(LancamentoDTO.class).getCnpjEmpresa());
-        } catch (Exception e) {
-            System.out.println("\n\n1.1" + e.getMessage());
-        }
+        // try {
+        //     System.out.println("" + ((LancamentoDTO) criteria.getFilter(LancamentoDTO.class)).getCnpjEmpresa());
+        //     System.out.println("" + criteria.getFilter(LancamentoDTO.class).getCnpjEmpresa());
+        // } catch (Exception e) {
+        //     System.out.println("\n\n1.1" + e.getMessage());
+        // }
 
         GenericResponse response = new GenericResponse(
             lancamentoService.apagarTodos(criteria, limparRegras, principal)
