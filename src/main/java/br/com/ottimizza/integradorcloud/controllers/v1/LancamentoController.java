@@ -82,6 +82,12 @@ public class LancamentoController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/status")
+    public ResponseEntity<?> buscaStatusLancementosPorCNPJEmpresa(@RequestParam String cnpjEmpresa, OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(lancamentoService.buscaStatusLancementosPorCNPJEmpresa(cnpjEmpresa, authentication));
+    }
+
+
     //
     //
     @PostMapping("/{id}/depara")

@@ -28,6 +28,7 @@ import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
 import br.com.ottimizza.integradorcloud.domain.mappers.lancamento.LancamentoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
+import br.com.ottimizza.integradorcloud.domain.models.KPILancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.repositories.arquivo.ArquivoRepository;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
@@ -57,6 +58,10 @@ public class LancamentoService {
         return lancamentoRepository.fetchAll(filter, LancamentoDTO.getPageRequest(criteria))
                                    .map(LancamentoMapper::fromEntity);
     }
+
+    public KPILancamento buscaStatusLancementosPorCNPJEmpresa(String cnpjEmpresa, OAuth2Authentication authentication) throws Exception {
+        return lancamentoRepository.buscaStatusLancementosPorCNPJEmpresa(cnpjEmpresa);
+    }
     
     public String apagarTodos(LancamentoDTO filter, PageCriteria criteria, boolean limparRegras, Principal principal) throws Exception {
         long affectedRows = lancamentoRepository.deleteAll(filter);
@@ -66,7 +71,6 @@ public class LancamentoService {
         if (affectedRows > 0) {
             return MessageFormat.format("{0} lançamentos excluídos. ", affectedRows);
         }
-
         return "Nenhum registro excluído!";
     }
 
