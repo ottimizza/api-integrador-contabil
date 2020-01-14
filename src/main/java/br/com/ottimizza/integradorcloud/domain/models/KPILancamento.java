@@ -1,26 +1,15 @@
 package br.com.ottimizza.integradorcloud.domain.models;
 
-import java.io.Serializable;
+public interface KPILancamento {
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+    Integer getTotal();
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class KPILancamento implements Serializable {
+    Integer getFornecedorCliente();
 
-    private static final long serialVersionUID = 1L;
+    Integer getOutrasContas();
 
-    private Integer total;
+    Integer getIgnorar();
 
-    private Integer fornecedorCliente;
-
-    private Integer outrasContas;
-
-    private Integer ignorar;
-
-    private Integer pular;
+    Integer getPular();
 
 }
