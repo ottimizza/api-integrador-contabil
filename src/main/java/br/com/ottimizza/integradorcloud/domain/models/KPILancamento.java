@@ -2,7 +2,7 @@ package br.com.ottimizza.integradorcloud.domain.models;
 
 public interface KPILancamento {
 
-    Integer getTotal();
+    Integer getTodos();
 
     Integer getFornecedorCliente();
 
