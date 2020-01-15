@@ -35,7 +35,7 @@ depara:
 oauth:
   service:
     name: oauth-service
-    url:  ${oauth2-config.server-url}
+    url: ${OAUTH2_URL:https://development-oauth-server.herokuapp.com}
 
 security:
   oauth2:
@@ -48,4 +48,3 @@ security:
     resource:
       userInfoUri: ${oauth2-config.server-url}/user/info
       tokenInfoUri: ${oauth2-config.server-url}/oauth/check_token
-      filter_order: 3
