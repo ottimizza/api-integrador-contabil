@@ -68,7 +68,7 @@ public class LancamentoService {
     }
     
     public String apagarTodos(LancamentoDTO filter, PageCriteria criteria, boolean limparRegras, Principal principal) throws Exception {
-        long affectedRows = lancamentoRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
+        Integer affectedRows = lancamentoRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
         if (limparRegras) {
             grupoRegraRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
         }

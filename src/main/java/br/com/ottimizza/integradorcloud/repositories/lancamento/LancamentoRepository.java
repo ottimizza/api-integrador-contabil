@@ -34,6 +34,6 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
     @Modifying
     @Transactional
     @Query("delete from Lancamento l where l.cnpjEmpresa = :cnpjEmpresa")
-    long apagarTodosPorCnpjEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa);
+    Integer apagarTodosPorCnpjEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa);
 
 }
