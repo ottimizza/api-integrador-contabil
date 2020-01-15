@@ -112,8 +112,8 @@ public class LancamentoController {
     //
     @PostMapping("/importar")
     public ResponseEntity<?> importar(@RequestBody ImportacaoLancamentosRequest importacaoLancamentos,
-            Principal principal) throws Exception {
-        return ResponseEntity.ok(lancamentoService.importar(importacaoLancamentos, principal));
+                                      OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(lancamentoService.importar(importacaoLancamentos, authentication));
     }
 
 }

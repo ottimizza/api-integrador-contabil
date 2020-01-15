@@ -12,7 +12,10 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -55,8 +58,12 @@ public class LancamentoService {
     }
 
     public Page<LancamentoDTO> buscarTodos(LancamentoDTO filter, PageCriteria criteria, Principal principal) throws Exception {
-        return lancamentoRepository.fetchAll(filter, LancamentoDTO.getPageRequest(criteria))
-                                   .map(LancamentoMapper::fromEntity);
+        ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING); 
+        Example<Lancamento> example = Example.of(LancamentoMapper.fromDto(filter), matcher); 
+
+        return lancamentoRepository.findAll(example, LancamentoDTO.getPageRequest(criteria)).map(LancamentoMapper::fromEntity);
+        // return lancamentoRepository.fetchAll(filter, LancamentoDTO.getPageRequest(criteria))
+        //                            .map(LancamentoMapper::fromEntity);
     }
 
     public KPILancamento buscaStatusLancementosPorCNPJEmpresa(String cnpjEmpresa, OAuth2Authentication authentication) throws Exception {
@@ -170,14 +177,24 @@ public class LancamentoService {
     //
     //
     @Transactional(rollbackFor = Exception.class) 
-    public List<LancamentoDTO> importar(ImportacaoLancamentosRequest importaLancamentos, Principal principal) throws Exception { 
+    public List<LancamentoDTO> importar(ImportacaoLancamentosRequest importaLancamentos, OAuth2Authentication authentication) throws Exception { 
+        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+        String accessToken = details.getTokenValue();
+
         List<Lancamento> results = new ArrayList<>();
+
+        // Busca detalhes da empresa relacionada aos lançamento importados.
+        // To-do
+
+        // Cria o Arquivo 
         Arquivo arquivo = arquivoRepository.save(
             Arquivo.builder()
                 .nome(importaLancamentos.getArquivo().getNome())
                 .cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
                 .cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).build()
         );
+
+        // Iteração e construção de lista de lançamentos 
         List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
             return LancamentoMapper.fromDto(o).toBuilder()
                 .arquivo(arquivo)
@@ -185,6 +202,8 @@ public class LancamentoService {
                 .cnpjEmpresa(importaLancamentos.getCnpjEmpresa())
                 .idRoteiro(importaLancamentos.getIdRoteiro()).build();
         }).collect(Collectors.toList());
+        
+        // Iteração e validação de lista de lançamentos
         for (Lancamento lancamento : lancamentos) {
             validaLancamento(lancamento);
         }

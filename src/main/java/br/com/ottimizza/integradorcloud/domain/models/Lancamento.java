@@ -110,6 +110,15 @@ public class Lancamento implements Serializable {
 
     private String idRoteiro;
 
+    //
+    //
+    //
+    private BigInteger organizationId;
+    
+    private BigInteger accountingId;
+
+    //
+    //
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataCriacao;
 
