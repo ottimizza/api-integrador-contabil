@@ -2,8 +2,11 @@ package br.com.ottimizza.integradorcloud.repositories.lancamento;
 
 import java.math.BigInteger;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -28,6 +31,8 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
             + " from _lancamentos l limit 1                                                                     ", nativeQuery = true)
     KPILancamento buscaStatusLancementosPorCNPJEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa);
 
+    @Modifying
+    @Transactional
     @Query("delete from Lancamento l where l.cnpjEmpresa = :cnpjEmpresa")
     long apagarTodosPorCnpjEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa);
 
