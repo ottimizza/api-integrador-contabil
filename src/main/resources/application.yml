@@ -29,8 +29,13 @@ oauth2-config:
 
 depara:
   service:
-    name: depara-service
+    name: depara_service
     url: ${DEPARA_BASE_URL:https://development-api-depara.herokuapp.com}
+
+oauth:
+  service:
+    name: oauth_service
+    url:  ${oauth2-config.server-url}
 
 security:
   oauth2:
