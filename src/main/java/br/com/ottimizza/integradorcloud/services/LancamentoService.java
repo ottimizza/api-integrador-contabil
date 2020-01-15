@@ -60,10 +60,7 @@ public class LancamentoService {
     public Page<LancamentoDTO> buscarTodos(LancamentoDTO filter, PageCriteria criteria, Principal principal) throws Exception {
         ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING); 
         Example<Lancamento> example = Example.of(LancamentoMapper.fromDto(filter), matcher); 
-
         return lancamentoRepository.findAll(example, LancamentoDTO.getPageRequest(criteria)).map(LancamentoMapper::fromEntity);
-        // return lancamentoRepository.fetchAll(filter, LancamentoDTO.getPageRequest(criteria))
-        //                            .map(LancamentoMapper::fromEntity);
     }
 
     public KPILancamento buscaStatusLancementosPorCNPJEmpresa(String cnpjEmpresa, OAuth2Authentication authentication) throws Exception {
@@ -71,7 +68,7 @@ public class LancamentoService {
     }
     
     public String apagarTodos(LancamentoDTO filter, PageCriteria criteria, boolean limparRegras, Principal principal) throws Exception {
-        long affectedRows = lancamentoRepository.deleteAll(filter);
+        long affectedRows = lancamentoRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
         if (limparRegras) {
             grupoRegraRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
         }
