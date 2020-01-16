@@ -10,13 +10,13 @@ spring:
     password: sa
     driver-class-name: org.h2.Driver
     
-security:
-  basic:
-    enabled: false
+# security:
+  # basic:
+    # enabled: false
 
-  oauth2:
-    resource:
-      filter_order: 3
+  # oauth2:
+    # resource:
+      # filter_order: 3
 
 
 oauth2-config:

@@ -1,7 +1,7 @@
 server:
   servlet:
     context-path: 
-  port: ${PORT}
+  port: ${PORT:9000}
 
 spring:
   datasource:

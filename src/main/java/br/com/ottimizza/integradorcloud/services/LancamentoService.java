@@ -36,6 +36,7 @@ import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.repositories.arquivo.ArquivoRepository;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
+import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
 
 @Service // @formatter:off
 public class LancamentoService {
@@ -45,6 +46,9 @@ public class LancamentoService {
     
     @Inject
     GrupoRegraRepository grupoRegraRepository;
+
+    @Inject
+    RegraRepository regraRepository;
 
     @Inject
     ArquivoRepository arquivoRepository;
@@ -58,7 +62,8 @@ public class LancamentoService {
     }
 
     public Page<LancamentoDTO> buscarTodos(LancamentoDTO filter, PageCriteria criteria, Principal principal) throws Exception {
-        ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING); 
+        ExampleMatcher matcher = ExampleMatcher.matching()
+            .withStringMatcher(StringMatcher.CONTAINING);
         Example<Lancamento> example = Example.of(LancamentoMapper.fromDto(filter), matcher); 
         return lancamentoRepository.findAll(example, LancamentoDTO.getPageRequest(criteria)).map(LancamentoMapper::fromEntity);
     }
@@ -70,6 +75,7 @@ public class LancamentoService {
     public String apagarTodos(LancamentoDTO filter, PageCriteria criteria, boolean limparRegras, Principal principal) throws Exception {
         Integer affectedRows = lancamentoRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
         if (limparRegras) {
+            regraRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
             grupoRegraRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
         }
         if (affectedRows > 0) {
