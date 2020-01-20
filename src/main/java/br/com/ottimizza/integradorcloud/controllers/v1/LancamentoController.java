@@ -65,9 +65,9 @@ public class LancamentoController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody LancamentoDTO lancamento, 
-                                    Principal principal) throws Exception {
+                                    OAuth2Authentication authentication) throws Exception {
         GenericResponse<LancamentoDTO> response = new GenericResponse<LancamentoDTO>(
-            lancamentoService.salvar(lancamento, principal)
+            lancamentoService.salvar(lancamento, authentication)
         );
         return ResponseEntity.ok(response);
     }
