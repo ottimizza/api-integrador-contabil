@@ -51,7 +51,7 @@ public class EmpresaService {
     }
 
     public Page<EmpresaDTO> buscarEmpresas(EmpresaDTO filter, PageCriteria pageCriteria, OAuth2Authentication authentication) throws Exception {
-        UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody();
+        UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
         filter.setAccountingId(userInfo.getOrganization().getId());
         
         ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
