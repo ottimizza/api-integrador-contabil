@@ -14,6 +14,8 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.ottimizza.integradorcloud.IntegradorCloudApplication;
@@ -34,6 +36,9 @@ class LancamentoServiceTest {
 
     @Mock
     private Principal principal;
+
+    @Mock
+    private OAuth2Authentication oauth2Authentication;
 
     @Autowired
     LancamentoService lancamentoService;

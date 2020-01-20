@@ -144,6 +144,25 @@ public class LancamentoService {
         return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
     }
 
+    public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
+        Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
+
+        validaLancamento(lancamento);
+        
+        lancamento.setArquivo(arquivoRepository.save(
+            lancamento.getArquivo().toBuilder()
+                .cnpjContabilidade(lancamentoDTO.getCnpjContabilidade())
+                .cnpjEmpresa(lancamentoDTO.getCnpjEmpresa())
+            .build()
+        ));
+    
+
+        lancamento.setCnpjContabilidade(lancamento.getCnpjContabilidade().replaceAll("\\D*", ""));
+        lancamento.setCnpjEmpresa(lancamento.getCnpjEmpresa().replaceAll("\\D*", ""));
+
+        return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
+    }
+
     public LancamentoDTO salvar(BigInteger id, LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
         Lancamento lancamento = lancamentoDTO.patch(buscarPorId(id));
         validaLancamento(lancamento);
