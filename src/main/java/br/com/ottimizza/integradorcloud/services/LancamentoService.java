@@ -24,16 +24,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.ottimizza.integradorcloud.client.DeParaClient;
+import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.depara.DeParaContaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.organization.OrganizationDTO;
 import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
 import br.com.ottimizza.integradorcloud.domain.mappers.lancamento.LancamentoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
+import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 import br.com.ottimizza.integradorcloud.domain.models.KPILancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
+import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.repositories.arquivo.ArquivoRepository;
+import br.com.ottimizza.integradorcloud.repositories.empresa.EmpresaRepository;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
 import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
@@ -52,9 +57,15 @@ public class LancamentoService {
 
     @Inject
     ArquivoRepository arquivoRepository;
+    
+    @Inject
+    EmpresaRepository empresaRepository;
 
     @Inject
     DeParaClient deParaContaClient;
+
+    @Inject 
+    OAuthClient oauthClient;
 
     public Lancamento buscarPorId(BigInteger id) throws LancamentoNaoEncontradoException {
         return lancamentoRepository.findById(id)
@@ -90,8 +101,32 @@ public class LancamentoService {
 
     //
     //
-    public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
+    public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, OAuth2Authentication authentication) throws Exception {
+        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+        String accessToken = details.getTokenValue();
+        String authorization = MessageFormat.format("Bearer {0}", accessToken);
+
         Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
+
+        // Busca detalhes da empresa relacionada aos lançamento importados.
+        GenericPageableResponse<OrganizationDTO> response = oauthClient.buscarEmpresasPorCNPJ(
+                lancamentoDTO.getCnpjEmpresa(), authorization
+        ).getBody();
+        if (response.getPageInfo().getTotalElements() == 1) {
+            OrganizationDTO organizationDTO = response.getRecords().get(0);
+            Empresa empresa = Empresa.builder() 
+                .razaoSocial(organizationDTO.getName())
+                .cnpj(organizationDTO.getCnpj().replaceAll("\\D*", ""))
+                .codigoERP(organizationDTO.getCodigoERP())
+                .organizationId(organizationDTO.getId())
+                .accountingId(organizationDTO.getOrganizationId())
+                .build();
+            empresaRepository.save(empresa);
+        } else if (response.getPageInfo().getTotalElements() == 0) {
+            throw new IllegalArgumentException("O cnpj informado não stá cadastrado!");
+        } else if (response.getPageInfo().getTotalElements() > 1) {
+            throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
+        }
 
         validaLancamento(lancamento);
         
@@ -183,11 +218,30 @@ public class LancamentoService {
     public List<LancamentoDTO> importar(ImportacaoLancamentosRequest importaLancamentos, OAuth2Authentication authentication) throws Exception { 
         final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
         String accessToken = details.getTokenValue();
+        String authorization = MessageFormat.format("Bearer {0}", accessToken);
+
 
         List<Lancamento> results = new ArrayList<>();
 
         // Busca detalhes da empresa relacionada aos lançamento importados.
-        // To-do
+        GenericPageableResponse<OrganizationDTO> response = oauthClient.buscarEmpresasPorCNPJ(
+                importaLancamentos.getCnpjEmpresa(), authorization
+        ).getBody();
+        if (response.getPageInfo().getTotalElements() == 1) {
+            OrganizationDTO organizationDTO = response.getRecords().get(0);
+            Empresa empresa = Empresa.builder() 
+                .razaoSocial(organizationDTO.getName())
+                .cnpj(organizationDTO.getCnpj().replaceAll("\\D*", ""))
+                .codigoERP(organizationDTO.getCodigoERP())
+                .organizationId(organizationDTO.getId())
+                .accountingId(organizationDTO.getOrganizationId())
+                .build();
+            empresaRepository.save(empresa);
+        } else if (response.getPageInfo().getTotalElements() == 0) {
+            throw new IllegalArgumentException("O cnpj informado não stá cadastrado!");
+        } else if (response.getPageInfo().getTotalElements() > 1) {
+            throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
+        }
 
         // Cria o Arquivo 
         Arquivo arquivo = arquivoRepository.save(
