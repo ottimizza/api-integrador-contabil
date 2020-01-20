@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.empresa.EmpresaDTO;
+import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.services.EmpresaService;
 
 @RestController
@@ -18,10 +20,14 @@ public class EmpresaController {
 
     @Inject
     EmpresaService empresaService;
-    
+
     @GetMapping
-    public ResponseEntity<?> buscarEmpresas(@Valid EmpresaDTO filter, OAuth2Authentication authentication) throws Exception {
-        throw new Exception("message");
+    public ResponseEntity<?> buscarEmpresas(@Valid EmpresaDTO filter, 
+                                            @Valid PageCriteria pageCriteria, 
+                                            OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(new GenericPageableResponse<EmpresaDTO>(
+            empresaService.buscarEmpresas(filter, pageCriteria, authentication)
+        ));
     }
 
 }

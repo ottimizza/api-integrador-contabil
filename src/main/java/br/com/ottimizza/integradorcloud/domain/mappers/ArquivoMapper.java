@@ -1,4 +1,4 @@
-package br.com.ottimizza.integradorcloud.domain.mappers.lancamento;
+package br.com.ottimizza.integradorcloud.domain.mappers;
 
 import java.util.List;
 import java.util.stream.Collectors;

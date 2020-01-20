@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
+import br.com.ottimizza.integradorcloud.domain.mappers.ArquivoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 
 public class LancamentoMapper { // @formatter:off
