@@ -4,14 +4,14 @@ import java.math.BigInteger;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 
 @Repository
-public interface EmpresaRepository extends PagingAndSortingRepository<Empresa, BigInteger> {
+public interface EmpresaRepository extends JpaRepository<Empresa, BigInteger> {
 
     @Query("select e from Empresa e where e.id = :id")
     Optional<Empresa> buscarPorId(@Param("id") BigInteger id);

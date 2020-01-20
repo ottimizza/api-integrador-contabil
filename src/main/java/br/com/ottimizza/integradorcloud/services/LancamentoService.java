@@ -121,6 +121,10 @@ public class LancamentoService {
                 .organizationId(organizationDTO.getId())
                 .accountingId(organizationDTO.getOrganizationId())
                 .build();
+            Empresa existente = empresaRepository.buscarPorCNPJ(empresa.getCnpj()).orElse(null);
+            if (existente != null && existente.getId() != null) {
+                empresa.setId(existente.getId());
+            }
             empresaRepository.save(empresa);
         } else if (response.getPageInfo().getTotalElements() == 0) {
             throw new IllegalArgumentException("O cnpj informado não stá cadastrado!");
@@ -255,6 +259,10 @@ public class LancamentoService {
                 .organizationId(organizationDTO.getId())
                 .accountingId(organizationDTO.getOrganizationId())
                 .build();
+            Empresa existente = empresaRepository.buscarPorCNPJ(empresa.getCnpj()).orElse(null);
+            if (existente != null && existente.getId() != null) {
+                empresa.setId(existente.getId());
+            }
             empresaRepository.save(empresa);
         } else if (response.getPageInfo().getTotalElements() == 0) {
             throw new IllegalArgumentException("O cnpj informado não stá cadastrado!");
