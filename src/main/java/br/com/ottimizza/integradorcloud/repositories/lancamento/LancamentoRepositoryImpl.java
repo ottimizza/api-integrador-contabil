@@ -28,6 +28,18 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 
     long totalElements = 0;
 
+    public Long contarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Lancamento> root = query.from(Lancamento.class);
+
+        query.select(cb.count(query.from(Lancamento.class))).where(cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
+        for (Regra regra : regras) {
+            filter(regra, query, cb, root, Long.class);
+        }
+        return em.createQuery(query).getSingleResult();
+    }
+
     public Page<Lancamento> buscarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, Pageable pageable,
             Principal principal) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -43,11 +55,31 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 
         TypedQuery<Lancamento> typedQuery = em.createQuery(query);
 
-        return new PageImpl<>(typedQuery.getResultList(), pageable, 20);
+        return new PageImpl<>(typedQuery.getResultList(), pageable, contarLancamentosPorRegra(regras, cnpjEmpresa));
     }
 
     private CriteriaQuery<Lancamento> filter(CriteriaQuery<Lancamento> query, CriteriaBuilder cb, Root<Lancamento> root,
             Regra regra) {
+        Path<String> path = root.get(regra.getCampo());
+        switch (regra.getCondicao()) {
+        case Regra.Condicao.CONTEM:
+            query.where(cb.like(path, MessageFormat.format("%{0}%", regra.getValor())));
+            break;
+        case Regra.Condicao.NAO_CONTEM:
+            query.where(cb.notLike(path, MessageFormat.format("%{0}%", regra.getValor())));
+            break;
+        case Regra.Condicao.COMECAO_COM:
+            query.where(cb.like(path, MessageFormat.format("%{0}", regra.getValor())));
+            break;
+        case Regra.Condicao.IGUAL:
+            query.where(cb.equal(path, MessageFormat.format("{0}", regra.getValor())));
+            break;
+        }
+        return query;
+    }
+
+    private <T> CriteriaQuery<T> filter(Regra regra, CriteriaQuery<T> query, CriteriaBuilder cb, Root<Lancamento> root,
+            Class<T> clazz) {
         Path<String> path = root.get(regra.getCampo());
         switch (regra.getCondicao()) {
         case Regra.Condicao.CONTEM:
