@@ -53,6 +53,9 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
             filter(query, cb, root, regra);
         }
 
+        System.out.print("WHAT >> ");
+        System.out.println(contarLancamentosPorRegra(regras, cnpjEmpresa));
+
         TypedQuery<Lancamento> typedQuery = em.createQuery(query);
 
         return new PageImpl<>(typedQuery.getResultList(), pageable, contarLancamentosPorRegra(regras, cnpjEmpresa));
