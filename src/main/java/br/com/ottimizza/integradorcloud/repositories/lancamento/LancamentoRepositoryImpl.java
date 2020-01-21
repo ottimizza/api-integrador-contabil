@@ -33,7 +33,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Lancamento> root = query.from(Lancamento.class);
 
-        query.select(cb.count(query.from(Lancamento.class))).where(cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
+        query.select(cb.count(root)).where(cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
         for (Regra regra : regras) {
             filter(regra, query, cb, root, Long.class);
         }
