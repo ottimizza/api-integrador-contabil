@@ -17,6 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,62 +37,37 @@ public class LancamentoController {
     private LancamentoService lancamentoService;
 
     @GetMapping
-    public ResponseEntity<?> fetchAll(@Valid LancamentoDTO filter, 
-                                      @Valid PageCriteria pageCriteria, 
-                                      Principal principal) throws Exception {
-        GenericPageableResponse<LancamentoDTO> response = new GenericPageableResponse<LancamentoDTO>(
-            lancamentoService.buscarTodos(filter, pageCriteria, principal)
-        );
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping
-    public ResponseEntity<?> deleteAll(@Valid LancamentoDTO filter, 
-                                       @Valid PageCriteria pageCriteria, 
-                                       @RequestParam(defaultValue = "false", required = false) boolean limparRegras,
-                                       Principal principal) throws Exception {
-        GenericResponse<LancamentoDTO> response = new GenericResponse<LancamentoDTO>(
-            lancamentoService.apagarTodos(filter, pageCriteria, limparRegras, principal)
-        );
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> fetchById(@PathVariable BigInteger id, 
-                                       Principal principal) throws Exception {
-        GenericResponse<LancamentoDTO> response = new GenericResponse<LancamentoDTO>(
-            lancamentoService.buscarPorId(id, principal)
-        );
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> fetchAll(@Valid LancamentoDTO filter, @Valid PageCriteria pageCriteria, Principal principal) throws Exception {
+        Page<LancamentoDTO> page = lancamentoService.buscarTodos(filter, pageCriteria, principal);
+        return ResponseEntity.ok(new GenericPageableResponse<>(page));
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody LancamentoDTO lancamento, 
-                                    OAuth2Authentication authentication) throws Exception {
-        GenericResponse<LancamentoDTO> response = new GenericResponse<LancamentoDTO>(
-            lancamentoService.salvar(lancamento, authentication)
-        );
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> create(@RequestBody LancamentoDTO lancamento, OAuth2Authentication authentication) throws Exception {
+        LancamentoDTO lancamentoDTO = lancamentoService.salvar(lancamento, authentication);
+        return ResponseEntity.ok(new GenericResponse<LancamentoDTO>(lancamentoDTO));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteAll(@Valid LancamentoDTO filter, @Valid PageCriteria pageCriteria, 
+                                       @RequestParam(defaultValue = "false", required = false) boolean limparRegras,
+                                       Principal principal) throws Exception {
+        String message = lancamentoService.apagarTodos(filter, pageCriteria, limparRegras, principal);
+        return ResponseEntity.ok(new GenericResponse<>(message));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> fetchById(@PathVariable BigInteger id, Principal principal) throws Exception {
+        LancamentoDTO lancamentoDTO = lancamentoService.buscarPorId(id, principal);
+        return ResponseEntity.ok(new GenericResponse<LancamentoDTO>(lancamentoDTO));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> patch(@PathVariable BigInteger id, 
-                                   @RequestBody LancamentoDTO lancamento, 
-                                   Principal principal) throws Exception {
-        GenericResponse<LancamentoDTO> response = new GenericResponse<LancamentoDTO>(
-            lancamentoService.salvar(id, lancamento, principal)
-        );
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> patch(@PathVariable BigInteger id, @RequestBody LancamentoDTO lancamento, Principal principal) throws Exception {
+        LancamentoDTO lancamentoDTO = lancamentoService.salvar(id, lancamento, principal);
+        return ResponseEntity.ok(new GenericResponse<LancamentoDTO>(lancamentoDTO));
     }
 
-    @GetMapping("/status")
-    public ResponseEntity<?> buscaStatusLancementosPorCNPJEmpresa(@RequestParam String cnpjEmpresa, OAuth2Authentication authentication) throws Exception {
-        return ResponseEntity.ok(lancamentoService.buscaStatusLancementosPorCNPJEmpresa(cnpjEmpresa, authentication));
-    }
-
-
-    //
-    //
     @PostMapping("/{id}/depara")
     public ResponseEntity<?> salvarTransacaoComoDePara(@PathVariable BigInteger id, @RequestParam String contaMovimento,
             OAuth2Authentication authentication) throws Exception {
@@ -110,24 +86,21 @@ public class LancamentoController {
         return ResponseEntity.ok(lancamentoService.salvarTransacaoComoIgnorar(id, authentication));
     }
 
-    //
-    //
+    @GetMapping("/status")
+    public ResponseEntity<?> buscaStatusLancementosPorCNPJEmpresa(@RequestParam String cnpjEmpresa, OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(lancamentoService.buscaStatusLancementosPorCNPJEmpresa(cnpjEmpresa, authentication));
+    }
+
     @PostMapping("/regras")
     public ResponseEntity<?> buscarLancamentosPorRegra(@RequestBody List<Regra> regras, @RequestParam String cnpjEmpresa,
-                                                       @Valid PageCriteria pageCriteria, 
-                                                        Principal principal) throws Exception {
+                                                       @Valid PageCriteria pageCriteria, Principal principal) throws Exception {
         return ResponseEntity.ok(new GenericPageableResponse<>(lancamentoService.buscarLancamentosPorRegra(
             regras, cnpjEmpresa, pageCriteria, principal
         )));
     }
 
-
-
-    //
-    //
     @PostMapping("/importar")
-    public ResponseEntity<?> importar(@RequestBody ImportacaoLancamentosRequest importacaoLancamentos,
-                                      OAuth2Authentication authentication) throws Exception {
+    public ResponseEntity<?> importar(@RequestBody ImportacaoLancamentosRequest importacaoLancamentos, OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(lancamentoService.importar(importacaoLancamentos, authentication));
     }
 
