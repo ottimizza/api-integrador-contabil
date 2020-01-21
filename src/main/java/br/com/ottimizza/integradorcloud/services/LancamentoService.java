@@ -11,13 +11,11 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
@@ -36,6 +34,7 @@ import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 import br.com.ottimizza.integradorcloud.domain.models.KPILancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
+import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.repositories.arquivo.ArquivoRepository;
 import br.com.ottimizza.integradorcloud.repositories.empresa.EmpresaRepository;
@@ -233,6 +232,19 @@ public class LancamentoService {
         deParaContaClient.salvar(deParaContaDTO, "Bearer " + accessToken);
 
         return LancamentoMapper.fromEntity(lancamento);
+    }
+
+    //
+    //
+    //
+    //
+    //
+    //
+    public Page<LancamentoDTO> buscarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, PageCriteria pageCriteria, 
+                                                         Principal principal) throws Exception {
+        return lancamentoRepository.buscarLancamentosPorRegra(
+            regras, cnpjEmpresa, PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize()), principal
+        ).map(LancamentoMapper::fromEntity);
     }
 
     //

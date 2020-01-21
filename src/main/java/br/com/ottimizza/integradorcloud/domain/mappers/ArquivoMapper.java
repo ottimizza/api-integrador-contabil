@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
-import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 
 public class ArquivoMapper { // @formatter:off
 

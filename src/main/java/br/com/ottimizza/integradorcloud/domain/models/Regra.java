@@ -46,13 +46,13 @@ public class Regra implements Serializable {
 
     public static class Condicao {
 
-        public static final Short CONTEM = 1;
+        public static final int CONTEM = 1;
 
-        public static final Short NAO_CONTEM = 2;
+        public static final int NAO_CONTEM = 2;
 
-        public static final Short COMECAO_COM = 3;
+        public static final int COMECAO_COM = 3;
 
-        public static final Short IGUAL = 4;
+        public static final int IGUAL = 4;
 
     }
 

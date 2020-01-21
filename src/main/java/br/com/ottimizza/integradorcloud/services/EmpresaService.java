@@ -53,9 +53,10 @@ public class EmpresaService {
     public Page<EmpresaDTO> buscarEmpresas(EmpresaDTO filter, PageCriteria pageCriteria, OAuth2Authentication authentication) throws Exception {
         UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
         filter.setAccountingId(userInfo.getOrganization().getId());
-        
+
         ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
         Example<Empresa> example = Example.of(EmpresaMapper.fromDto(filter), matcher);
+
         return empresaRepository.findAll(example, PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize()))
                                 .map(EmpresaMapper::fromEntity);
     }

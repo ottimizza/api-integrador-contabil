@@ -2,7 +2,6 @@ package br.com.ottimizza.integradorcloud.domain.dtos.arquivo;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

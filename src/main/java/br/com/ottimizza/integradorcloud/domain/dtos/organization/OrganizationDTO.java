@@ -2,12 +2,6 @@ package br.com.ottimizza.integradorcloud.domain.dtos.organization;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

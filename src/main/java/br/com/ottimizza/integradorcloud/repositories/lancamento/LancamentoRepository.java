@@ -14,7 +14,7 @@ import br.com.ottimizza.integradorcloud.domain.models.KPILancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 
 @Repository
-public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteger> {
+public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteger>, LancamentoRepositoryCustom {
 
     @Query(value = " with _lancamentos as (                                                                     "
             + "   select _l.id, _l.tipo_conta                                                                   "

@@ -5,12 +5,14 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
+import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.LancamentoService;
 
 import java.math.BigInteger;
 import java.security.Principal;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -48,7 +50,7 @@ public class LancamentoController {
                                        @Valid PageCriteria pageCriteria, 
                                        @RequestParam(defaultValue = "false", required = false) boolean limparRegras,
                                        Principal principal) throws Exception {
-        GenericResponse response = new GenericResponse(
+        GenericResponse<LancamentoDTO> response = new GenericResponse<LancamentoDTO>(
             lancamentoService.apagarTodos(filter, pageCriteria, limparRegras, principal)
         );
         return ResponseEntity.ok(response);
@@ -107,6 +109,19 @@ public class LancamentoController {
                                                         OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(lancamentoService.salvarTransacaoComoIgnorar(id, authentication));
     }
+
+    //
+    //
+    @PostMapping("/regras")
+    public ResponseEntity<?> buscarLancamentosPorRegra(@RequestBody List<Regra> regras, @RequestParam String cnpjEmpresa,
+                                                       @Valid PageCriteria pageCriteria, 
+                                                        Principal principal) throws Exception {
+        return ResponseEntity.ok(new GenericPageableResponse<>(lancamentoService.buscarLancamentosPorRegra(
+            regras, cnpjEmpresa, pageCriteria, principal
+        )));
+    }
+
+
 
     //
     //
