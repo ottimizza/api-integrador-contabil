@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.domain.models;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,8 +36,13 @@ public class GrupoRegra implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "grupo_regras_sequence")
     private BigInteger id;
     
-    @ManyToOne
-    @JoinColumn(name = "fk_arquivos_id", nullable = true)
-    private Arquivo arquivo;
+    private String contaMovimento;
+    
+    private String cnpjEmpresa;
+
+    private String cnpjContabilidade;
+
+    @Transient
+    private List<Regra> regras;
 
 }

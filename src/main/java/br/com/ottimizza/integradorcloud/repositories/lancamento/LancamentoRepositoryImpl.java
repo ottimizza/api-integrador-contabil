@@ -10,11 +10,14 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.Criteria;
+import org.hibernate.internal.CriteriaImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -99,6 +102,43 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
             break;
         }
         return query;
+    }
+
+    private <T> CriteriaUpdate<T> filter(Regra regra, CriteriaUpdate<T> query, CriteriaBuilder cb,
+            Root<Lancamento> root, Class<T> clazz) {
+        Path<String> path = root.get(regra.getCampo());
+        switch (regra.getCondicao()) {
+        case Regra.Condicao.CONTEM:
+            query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
+            break;
+        case Regra.Condicao.NAO_CONTEM:
+            query.where(cb.notLike(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
+            break;
+        case Regra.Condicao.COMECAO_COM:
+            query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}", regra.getValor()).toUpperCase()));
+            break;
+        case Regra.Condicao.IGUAL:
+            query.where(cb.equal(unaccent(cb, path), MessageFormat.format("{0}", regra.getValor()).toUpperCase()));
+            break;
+        }
+        return query;
+    }
+
+    public int atualizaLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, String contaMovimento) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        CriteriaUpdate<Lancamento> update = cb.createCriteriaUpdate(Lancamento.class);
+        Root<Lancamento> root = update.from(Lancamento.class);
+
+        update.set(root.get("contaMovimento"), contaMovimento);
+        update.where(cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
+
+        for (Regra regra : regras) {
+            filter(regra, update, cb, root, Lancamento.class);
+        }
+
+        // perform update and return affected rows.
+        return this.em.createQuery(update).executeUpdate();
     }
 
     private Field getField(String fieldName) throws NoSuchFieldException {

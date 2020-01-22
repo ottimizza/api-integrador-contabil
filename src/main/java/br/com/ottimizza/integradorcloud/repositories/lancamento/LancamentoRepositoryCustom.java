@@ -9,8 +9,9 @@ import org.springframework.data.domain.Pageable;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 
-public interface LancamentoRepositoryCustom { // @formatter:off
+public interface LancamentoRepositoryCustom { // @formatter:off LancamentoRepositoryImpl
 
     Page<Lancamento> buscarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, Pageable pageable, Principal principal);
 
+    int atualizaLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, String contaMovimento);
 }
