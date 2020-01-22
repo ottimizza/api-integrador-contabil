@@ -17,7 +17,7 @@ public interface RegraRepository extends PagingAndSortingRepository<Regra, BigIn
 
     @Modifying
     @Transactional
-    @Query("delete from Regra gr where gr.grupoRegra.arquivo.cnpjEmpresa = :cnpjEmpresa")
+    @Query("delete from Regra gr where gr.grupoRegra.cnpjEmpresa = :cnpjEmpresa")
     Integer apagarTodosPorCnpjEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa);
 
 }

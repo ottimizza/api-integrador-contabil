@@ -18,7 +18,7 @@ public interface GrupoRegraRepository
 
     @Modifying
     @Transactional
-    @Query("delete from GrupoRegra gr where gr.arquivo.cnpjEmpresa = :cnpjEmpresa")
+    @Query("delete from GrupoRegra gr where gr.cnpjEmpresa = :cnpjEmpresa")
     Integer apagarTodosPorCnpjEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa);
     
 }
