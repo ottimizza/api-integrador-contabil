@@ -70,6 +70,8 @@ public class Lancamento implements Serializable {
 
     private String historico;
 
+    private String nomeArquivo;
+
     @ManyToOne
     @JoinColumn(name = "fk_arquivos_id", nullable = true)
     private Arquivo arquivo;

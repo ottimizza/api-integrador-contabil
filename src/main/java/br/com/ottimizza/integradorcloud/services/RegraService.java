@@ -52,7 +52,7 @@ public class RegraService {
             message = MessageFormat.format("Nenhum lançamento afetado!", linhasAlteradas);
         } else if (linhasAlteradas == 1) {
             message = MessageFormat.format("Um lançamento afetado!", linhasAlteradas);
-        } else if (linhasAlteradas == 1) {
+        } else if (linhasAlteradas > 1) {
             message = MessageFormat.format("{0} lançamentos afetados", linhasAlteradas);
         }
 

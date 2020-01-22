@@ -139,8 +139,8 @@ public class LancamentoService {
                 .cnpjEmpresa(lancamentoDTO.getCnpjEmpresa())
             .build()
         ));
-    
 
+        lancamento.setNomeArquivo(lancamento.getArquivo().getNome());
         lancamento.setCnpjContabilidade(lancamento.getCnpjContabilidade().replaceAll("\\D*", ""));
         lancamento.setCnpjEmpresa(lancamento.getCnpjEmpresa().replaceAll("\\D*", ""));
 
