@@ -46,6 +46,8 @@ public class LancamentoDTO implements Serializable {
 
     private String contaMovimento;
 
+    private String contaSugerida;
+
     private String contaContraPartida;
 
     private Short tipoConta;
