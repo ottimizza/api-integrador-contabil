@@ -197,7 +197,7 @@ public class LancamentoService {
             .build();
 
         deParaContaClient.salvar(deParaContaDTO, "Bearer " + accessToken);
-        lancamentoRepository.atualizarContaMovimentoPorDescricaoETipoLancamento(
+        lancamentoRepository.atualizarContaSugeridaPorDescricaoETipoLancamento(
             lancamento.getDescricao(), lancamento.getTipoLancamento(), lancamento.getContaMovimento(), cnpjEmpresa
         );
 
@@ -237,7 +237,7 @@ public class LancamentoService {
             .build();
 
         deParaContaClient.salvar(deParaContaDTO, "Bearer " + accessToken);
-        lancamentoRepository.atualizarContaMovimentoPorDescricaoETipoLancamento(
+        lancamentoRepository.atualizarContaSugeridaPorDescricaoETipoLancamento(
             lancamento.getDescricao(), lancamento.getTipoLancamento(), lancamento.getContaMovimento(), cnpjEmpresa
         );
 
