@@ -221,6 +221,8 @@ public class LancamentoService {
             .build()
         );
 
+        String cnpjEmpresa = lancamento.getCnpjEmpresa();
+
         DeParaContaDTO deParaContaDTO = DeParaContaDTO.builder()
                 .cnpjContabilidade(lancamento.getCnpjContabilidade())
                 .cnpjEmpresa(lancamento.getCnpjEmpresa())
@@ -230,6 +232,9 @@ public class LancamentoService {
             .build();
 
         deParaContaClient.salvar(deParaContaDTO, "Bearer " + accessToken);
+        lancamentoRepository.atualizarContaMovimentoPorDescricao(
+            lancamento.getDescricao(), lancamento.getContaMovimento(), cnpjEmpresa
+        );
 
         return LancamentoMapper.fromEntity(lancamento);
     }

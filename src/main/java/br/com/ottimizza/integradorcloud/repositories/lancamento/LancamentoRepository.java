@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 import br.com.ottimizza.integradorcloud.domain.models.KPILancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 
-@Repository
+@Repository // @formatter:off
 public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteger>, LancamentoRepositoryCustom {
 
     @Query(value = " with _lancamentos as (                                                                     "
@@ -34,5 +34,26 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
     @Transactional
     @Query("delete from Lancamento l where l.cnpjEmpresa = :cnpjEmpresa")
     Integer apagarTodosPorCnpjEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa);
+    
+    @Modifying
+    @Transactional
+    @Query("update Lancamento l set l.contaMovimento = :contaMovimento where l.cnpjEmpresa = :cnpjEmpresa and l.descricao = :descricao")
+    Integer atualizarContaMovimentoPorDescricao(@Param("descricao") String descricao, 
+                                                @Param("contaMovimento") String contaMovimento, 
+                                                @Param("cnpjEmpresa") String cnpjEmpresa);
+
+
+    @Modifying
+    @Transactional
+    @Query(" update Lancamento l                    " + 
+           " set l.contaMovimento = :contaMovimento " + 
+           " where l.cnpjEmpresa = :cnpjEmpresa     " + 
+           " and l.tipoLancamento = :tipoLancamento " + 
+           " and l.descricao = :descricao           ")
+    Integer atualizarContaMovimentoPorDescricaoETipoLancamento(@Param("descricao") String descricao, 
+                                                               @Param("tipoLancamento") Short tipoLancamento,
+                                                               @Param("contaMovimento") String contaMovimento, 
+                                                               @Param("cnpjEmpresa") String cnpjEmpresa);
+
 
 }
