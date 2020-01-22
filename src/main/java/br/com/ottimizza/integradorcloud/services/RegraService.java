@@ -30,11 +30,15 @@ public class RegraService {
     public String salvar(GrupoRegra grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
         String message = "";
 
+        List<Regra> regras = grupoRegraDTO.getRegras();
+
         GrupoRegra grupoRegra = grupoRegraRepository.save(grupoRegraDTO);
+
+        System.out.println("Count >> " + regras.size());
 
         // itera regras e adiciona lista de regras salvas
         List<Regra> regrasSalvas = new ArrayList<>();
-        grupoRegraDTO.getRegras().stream().forEach((r) -> {
+        regras.stream().forEach((r) -> {
             r.setGrupoRegra(grupoRegra);
             regrasSalvas.add(regraRepository.save(r));
         });
