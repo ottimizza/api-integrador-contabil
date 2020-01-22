@@ -186,6 +186,8 @@ public class LancamentoService {
             .build()
         );
 
+        String cnpjEmpresa = lancamento.getCnpjEmpresa();
+
         DeParaContaDTO deParaContaDTO = DeParaContaDTO.builder()
                 .cnpjContabilidade(lancamento.getCnpjContabilidade())
                 .cnpjEmpresa(lancamento.getCnpjEmpresa())
