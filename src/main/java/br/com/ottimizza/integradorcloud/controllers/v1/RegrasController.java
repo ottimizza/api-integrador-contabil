@@ -21,7 +21,7 @@ public class RegrasController {
     RegraService regraService;
 
     @PostMapping
-    public ResponseEntity<?> criarRegra(@RequestBody grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
+    public ResponseEntity<?> criarRegra(@RequestBody GrupoRegra grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(new GenericResponse<>(
             regraService.salvar(grupoRegraDTO, authentication)
         ));
