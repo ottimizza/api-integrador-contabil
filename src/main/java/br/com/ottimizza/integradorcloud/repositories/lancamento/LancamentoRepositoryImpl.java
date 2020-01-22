@@ -15,6 +15,7 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.hibernate.Criteria;
 import org.hibernate.internal.CriteriaImpl;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
@@ -124,6 +126,8 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         return query;
     }
 
+    @Modifying
+    @Transactional
     public int atualizaLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, String contaMovimento) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
