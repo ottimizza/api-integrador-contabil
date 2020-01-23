@@ -42,6 +42,21 @@ public class Arquivo implements Serializable {
     private String cnpjEmpresa;
 
     private String cnpjContabilidade;
+    
+    @Column(name = "label_complemento_01", columnDefinition = "varchar(255) default 'Complemento 01'")
+    private String labelComplemento01;
+
+    @Column(name = "label_complemento_02", columnDefinition = "varchar(255) default 'Complemento 02'")
+    private String labelComplemento02;
+    
+    @Column(name = "label_complemento_03", columnDefinition = "varchar(255) default 'Complemento 03'")
+    private String labelComplemento03;
+    
+    @Column(name = "label_complemento_04", columnDefinition = "varchar(255) default 'Complemento 04'")
+    private String labelComplemento04;
+
+    @Column(name = "label_complemento_05", columnDefinition = "varchar(255) default 'Complemento 05'")    
+    private String labelComplemento05;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataCriacao;
