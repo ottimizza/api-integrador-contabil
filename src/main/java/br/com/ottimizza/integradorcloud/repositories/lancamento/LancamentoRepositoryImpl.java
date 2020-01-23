@@ -71,16 +71,16 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         Path<String> path = root.get(regra.getCampo());
         switch (regra.getCondicao()) {
         case Regra.Condicao.CONTEM:
-            query.where(cb.like(cb.upper(path), MessageFormat.format("%{0}%", regra.getValor().toUpperCase())));
+            query = query.where(cb.like(cb.upper(path), MessageFormat.format("%{0}%", regra.getValor().toUpperCase())));
             break;
         case Regra.Condicao.NAO_CONTEM:
-            query.where(cb.notLike(path, MessageFormat.format("%{0}%", regra.getValor())));
+            query = query.where(cb.notLike(path, MessageFormat.format("%{0}%", regra.getValor())));
             break;
         case Regra.Condicao.COMECAO_COM:
-            query.where(cb.like(path, MessageFormat.format("%{0}", regra.getValor())));
+            query = query.where(cb.like(path, MessageFormat.format("%{0}", regra.getValor())));
             break;
         case Regra.Condicao.IGUAL:
-            query.where(cb.equal(path, MessageFormat.format("{0}", regra.getValor())));
+            query = query.where(cb.equal(path, MessageFormat.format("{0}", regra.getValor())));
             break;
         }
         return query;
@@ -91,16 +91,16 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         Path<String> path = root.get(regra.getCampo());
         switch (regra.getCondicao()) {
         case Regra.Condicao.CONTEM:
-            query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
+            query = query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
             break;
         case Regra.Condicao.NAO_CONTEM:
-            query.where(cb.notLike(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
+            query = query.where(cb.notLike(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
             break;
         case Regra.Condicao.COMECAO_COM:
-            query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}", regra.getValor()).toUpperCase()));
+            query = query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}", regra.getValor()).toUpperCase()));
             break;
         case Regra.Condicao.IGUAL:
-            query.where(cb.equal(unaccent(cb, path), MessageFormat.format("{0}", regra.getValor()).toUpperCase()));
+            query = query.where(cb.equal(unaccent(cb, path), MessageFormat.format("{0}", regra.getValor()).toUpperCase()));
             break;
         }
         return query;
@@ -111,16 +111,16 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         Path<String> path = root.get(regra.getCampo());
         switch (regra.getCondicao()) {
         case Regra.Condicao.CONTEM:
-            query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
+            query = query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
             break;
         case Regra.Condicao.NAO_CONTEM:
-            query.where(cb.notLike(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
+            query = query.where(cb.notLike(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
             break;
         case Regra.Condicao.COMECAO_COM:
-            query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}", regra.getValor()).toUpperCase()));
+            query = query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}", regra.getValor()).toUpperCase()));
             break;
         case Regra.Condicao.IGUAL:
-            query.where(cb.equal(unaccent(cb, path), MessageFormat.format("{0}", regra.getValor()).toUpperCase()));
+            query = query.where(cb.equal(unaccent(cb, path), MessageFormat.format("{0}", regra.getValor()).toUpperCase()));
             break;
         }
         return query;
