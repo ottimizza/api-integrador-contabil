@@ -42,7 +42,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 
         query.select(cb.count(root)).where(cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
         for (Regra regra : regras) {
-            filter(regra, query, cb, root, Long.class);
+            query = filter(regra, query, cb, root, Long.class);
         }
         return em.createQuery(query).getSingleResult();
     }
@@ -57,7 +57,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         query.select(root).where(cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
 
         for (Regra regra : regras) {
-            filter(query, cb, root, regra);
+            query = filter(query, cb, root, regra);
         }
 
         TypedQuery<Lancamento> typedQuery = em.createQuery(query);
@@ -138,7 +138,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         update.where(cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
 
         for (Regra regra : regras) {
-            filter(regra, update, cb, root, Lancamento.class);
+            update = filter(regra, update, cb, root, Lancamento.class);
         }
 
         // perform update and return affected rows.
