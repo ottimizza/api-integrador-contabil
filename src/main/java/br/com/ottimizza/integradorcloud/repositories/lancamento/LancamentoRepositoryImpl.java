@@ -56,7 +56,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         CriteriaQuery<Lancamento> query = cb.createQuery(Lancamento.class);
         Root<Lancamento> root = query.from(Lancamento.class);
         
-        List<Predicate> predicates = predicates(regras, cb, root);
+        List<Predicate> predicates = new ArrayList<>(); // predicates(regras, cb, root);
         predicates.add(0, cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
 
         query.select(root);
