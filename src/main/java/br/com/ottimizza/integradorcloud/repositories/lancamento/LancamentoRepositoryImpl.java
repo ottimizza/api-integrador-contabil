@@ -144,12 +144,16 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
             switch (clause.getCondicao()) {
                 case Regra.Condicao.CONTEM:
                     predicates.add(cb.like(unaccent(cb, path), MessageFormat.format("%{0}%", clause.getValor()).toUpperCase()));
+                    break;
                 case Regra.Condicao.NAO_CONTEM:
                     predicates.add(cb.notLike(unaccent(cb, path), MessageFormat.format("%{0}%", clause.getValor()).toUpperCase()));
+                    break;
                 case Regra.Condicao.COMECAO_COM:
                     predicates.add(cb.like(unaccent(cb, path), MessageFormat.format("%{0}", clause.getValor()).toUpperCase()));
+                    break;
                 case Regra.Condicao.IGUAL:
                     predicates.add(cb.equal(unaccent(cb, path), MessageFormat.format("{0}", clause.getValor()).toUpperCase()));
+                    break;
             }
         });
         return predicates;
