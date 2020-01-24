@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 
+import javax.jdo.annotations.Index;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,6 +28,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @Entity
 @Table(name = "historicos")
+@Index(members = { "contaMovimento", "cnpjEmpresa" })
 public class Historico implements Serializable {
 
     private static final long serialVersionUID = 1L;
