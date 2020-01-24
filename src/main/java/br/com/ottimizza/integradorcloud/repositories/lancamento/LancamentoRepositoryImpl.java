@@ -3,6 +3,7 @@ package br.com.ottimizza.integradorcloud.repositories.lancamento;
 import java.lang.reflect.Field;
 import java.security.Principal;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -40,29 +41,31 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Lancamento> root = query.from(Lancamento.class);
 
-        query.select(cb.count(root)).where(cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
-        for (Regra regra : regras) {
-            query = filter(regra, query, cb, root, Long.class);
-        }
+        List<Predicate> predicates = predicates(regras, cb, root);
+        predicates.add(0, cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
+
+        query.select(cb.count(root));
+        query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+
         return em.createQuery(query).getSingleResult();
     }
 
     public Page<Lancamento> buscarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, Pageable pageable,
             Principal principal) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-
         CriteriaQuery<Lancamento> query = cb.createQuery(Lancamento.class);
         Root<Lancamento> root = query.from(Lancamento.class);
+        
+        List<Predicate> predicates = predicates(regras, cb, root);
+        predicates.add(0, cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
 
-        query.select(root).where(cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
-
-        for (Regra regra : regras) {
-            query = filter(query, cb, root, regra);
-        }
+        query.select(root);
+        query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 
         TypedQuery<Lancamento> typedQuery = em.createQuery(query);
         typedQuery.setFirstResult((int) pageable.getOffset());
         typedQuery.setMaxResults(pageable.getPageSize());
+
         return new PageImpl<>(typedQuery.getResultList(), pageable, contarLancamentosPorRegra(regras, cnpjEmpresa));
     }
 
@@ -91,16 +94,20 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         Path<String> path = root.get(regra.getCampo());
         switch (regra.getCondicao()) {
         case Regra.Condicao.CONTEM:
-            query = query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
+            query = query
+                    .where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
             break;
         case Regra.Condicao.NAO_CONTEM:
-            query = query.where(cb.notLike(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
+            query = query.where(
+                    cb.notLike(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
             break;
         case Regra.Condicao.COMECAO_COM:
-            query = query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}", regra.getValor()).toUpperCase()));
+            query = query
+                    .where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}", regra.getValor()).toUpperCase()));
             break;
         case Regra.Condicao.IGUAL:
-            query = query.where(cb.equal(unaccent(cb, path), MessageFormat.format("{0}", regra.getValor()).toUpperCase()));
+            query = query
+                    .where(cb.equal(unaccent(cb, path), MessageFormat.format("{0}", regra.getValor()).toUpperCase()));
             break;
         }
         return query;
@@ -111,19 +118,41 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         Path<String> path = root.get(regra.getCampo());
         switch (regra.getCondicao()) {
         case Regra.Condicao.CONTEM:
-            query = query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
+            query = query
+                    .where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
             break;
         case Regra.Condicao.NAO_CONTEM:
-            query = query.where(cb.notLike(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
+            query = query.where(
+                    cb.notLike(unaccent(cb, path), MessageFormat.format("%{0}%", regra.getValor()).toUpperCase()));
             break;
         case Regra.Condicao.COMECAO_COM:
-            query = query.where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}", regra.getValor()).toUpperCase()));
+            query = query
+                    .where(cb.like(unaccent(cb, path), MessageFormat.format("%{0}", regra.getValor()).toUpperCase()));
             break;
         case Regra.Condicao.IGUAL:
-            query = query.where(cb.equal(unaccent(cb, path), MessageFormat.format("{0}", regra.getValor()).toUpperCase()));
+            query = query
+                    .where(cb.equal(unaccent(cb, path), MessageFormat.format("{0}", regra.getValor()).toUpperCase()));
             break;
         }
         return query;
+    }
+
+    private List<Predicate> predicates(List<Regra> clauses, CriteriaBuilder cb, Root<Lancamento> root) { // @formatter:off
+        final List<Predicate> predicates = new ArrayList<Predicate>();
+        clauses.forEach((clause) -> {
+            Path<String> path = root.get(clause.getCampo());
+            switch (clause.getCondicao()) {
+                case Regra.Condicao.CONTEM:
+                    predicates.add(cb.like(unaccent(cb, path), MessageFormat.format("%{0}%", clause.getValor()).toUpperCase()));
+                case Regra.Condicao.NAO_CONTEM:
+                    predicates.add(cb.notLike(unaccent(cb, path), MessageFormat.format("%{0}%", clause.getValor()).toUpperCase()));
+                case Regra.Condicao.COMECAO_COM:
+                    predicates.add(cb.like(unaccent(cb, path), MessageFormat.format("%{0}", clause.getValor()).toUpperCase()));
+                case Regra.Condicao.IGUAL:
+                    predicates.add(cb.equal(unaccent(cb, path), MessageFormat.format("{0}", clause.getValor()).toUpperCase()));
+            }
+        });
+        return predicates;
     }
 
     @Modifying

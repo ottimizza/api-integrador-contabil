@@ -8,23 +8,37 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+/**
+ * CORS (Cross-Origin Resource Sharing).
+ * 
+ * Classe responsável pela configuração de disponibilidade dos recursos a
+ * clientes HTTP. Assim todos os recursos se tornam disponíveis a qualquer
+ * origem.
+ */
 @Configuration
 public class CORSFilterConfig {
 
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilter() {
-        // CORS
+        // Classe responsável pela Configuração do CORS no sistema.
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
+
+        // Permitimos requisições de qualquer origem ou cliente.
         config.addAllowedOrigin("*");
+
+        // Permitimos requisições com qualquer Header no request.
         config.addAllowedHeader("*");
+
+        // Permitimos todos os tipos de requisições (GET, POST, PUT, OPTIONS...)
         config.addAllowedMethod("*");
 
-        // Registers the above configuratiion for all sources.
+        // Aplicamos as configurações acima para todos os recursos HTTP a partir da URL
+        // base (/**).
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
 
-        // Registers the filter.
+        // Criamos um Bean expondo essas propriedades de configuração de CORS.
         FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
 
