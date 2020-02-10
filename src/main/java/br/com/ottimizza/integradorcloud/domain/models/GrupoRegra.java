@@ -40,6 +40,9 @@ public class GrupoRegra implements Serializable {
     @SequenceGenerator(name = "grupo_regras_sequence", sequenceName = "grupo_regras_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "grupo_regras_sequence")
     private BigInteger id;
+
+    @Column(name = "posicao")
+    private Integer posicao;
     
     @Column(name = "conta_movimento")
     private String contaMovimento;
