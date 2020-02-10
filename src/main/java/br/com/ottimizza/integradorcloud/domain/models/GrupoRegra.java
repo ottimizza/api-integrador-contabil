@@ -36,10 +36,16 @@ public class GrupoRegra implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "grupo_regras_sequence")
     private BigInteger id;
     
+    @Column(name = "conta_movimento")
     private String contaMovimento;
-    
+
+    @Column(name = "tipo_lancamento")
+    private Short tipoLancamento;
+
+    @Column(name = "cnpj_empresa")
     private String cnpjEmpresa;
 
+    @Column(name = "cnpj_contabilidade")
     private String cnpjContabilidade;
 
     @Transient
