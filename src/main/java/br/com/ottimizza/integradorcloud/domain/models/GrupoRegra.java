@@ -47,6 +47,9 @@ public class GrupoRegra implements Serializable {
     @Column(name = "tipo_lancamento")
     private Short tipoLancamento;
 
+    @Column(name = "id_roteiro")
+    private String idRoteiro;
+
     @Column(name = "cnpj_empresa")
     private String cnpjEmpresa;
 
