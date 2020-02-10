@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.domain.models;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -11,8 +12,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
@@ -48,7 +53,29 @@ public class GrupoRegra implements Serializable {
     @Column(name = "cnpj_contabilidade")
     private String cnpjContabilidade;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataCriacao;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataAtualizacao;
+
     @Transient
     private List<Regra> regras;
+
+    @PrePersist
+    @PreUpdate
+    public void preUpdate() {
+        if (this.dataCriacao == null) {
+            this.dataCriacao = new Date();
+        }      
+        this.dataAtualizacao = new Date();
+        this.cnpjContabilidade = this.cnpjContabilidade.replaceAll("\\D*", "");
+        this.cnpjEmpresa = this.cnpjEmpresa.replaceAll("\\D*", "");
+    }
+
+    public static class Tipo { 
+        public static final Short PAGAMENTO = 1;
+        public static final Short RECEBIMENTO = 2;
+    }
 
 }
