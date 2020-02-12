@@ -293,12 +293,20 @@ public class LancamentoService {
         }
 
         // Cria o Arquivo 
-        Arquivo arquivo = arquivoRepository.save(
-            Arquivo.builder()
-                .nome(importaLancamentos.getArquivo().getNome())
-                .cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
-                .cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).build()
-        );
+        Arquivo arquivo = arquivoRepository.findByNomeCnpjs(importaLancamentos.getCnpjContabilidade()
+        										   		   ,importaLancamentos.getCnpjContabilidade()
+        										   		   ,importaLancamentos.getArquivo().getNome()).orElseGet(() -> {
+        										   			return arquivoRepository.save(Arquivo.builder()
+        										            		.nome(importaLancamentos.getArquivo().getNome())
+        										            		.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
+        										            		.cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).build());
+        										   		   });
+        /*if(arquivo == null) {
+        	arquivo = arquivoRepository.save(Arquivo.builder()
+            		.nome(importaLancamentos.getArquivo().getNome())
+            		.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
+            		.cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).build());
+        }*/
 
         // Iteração e construção de lista de lançamentos 
         List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
