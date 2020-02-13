@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.services;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -77,6 +78,34 @@ public class RegraService {
         }
 
         return message;
+    }
+
+    public GrupoRegraDTO atualizar(BigInteger id, GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
+        validaGrupoRegra(grupoRegraDTO);
+
+        if (Objects.isNull(grupoRegraDTO.getPosicao()) || grupoRegraDTO.getPosicao() < 0) {
+            throw new IllegalArgumentException("Informe a posição da regra!");
+        }
+
+        grupoRegraDTO.setId(id);
+        GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
+
+        regraRepository.apagarPorGrupoRegra(id);
+        List<Regra> regrasSalvas = salvarRegras(grupoRegra, grupoRegraDTO.getRegras());
+
+        grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
+        grupoRegraDTO.setRegras(regrasSalvas);
+
+        return grupoRegraDTO;
+    }
+
+    public String apagar(BigInteger id, OAuth2Authentication authentication) throws Exception {
+
+        regraRepository.apagarPorGrupoRegra(id);
+
+        grupoRegraRepository.deleteById(id);
+
+        return "Grupo de Regra removido com sucesso!";
     }
 
     private List<Regra> salvarRegras(GrupoRegra grupo, List<Regra> regras) {

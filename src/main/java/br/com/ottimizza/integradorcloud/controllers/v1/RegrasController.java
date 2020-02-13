@@ -1,12 +1,17 @@
 package br.com.ottimizza.integradorcloud.controllers.v1;
 
+import java.math.BigInteger;
+
 import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,9 +39,27 @@ public class RegrasController {
     }
 
     @PostMapping
-    public ResponseEntity<?> criarRegra(@RequestBody GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
-        return ResponseEntity.ok(new GenericResponse<>(
+    public ResponseEntity<?> criarRegra(@RequestBody GrupoRegraDTO grupoRegraDTO, 
+                                        OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
             regraService.salvar(grupoRegraDTO, authentication)
+        ));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizarRegra(@PathVariable BigInteger id, 
+                                           @RequestBody GrupoRegraDTO grupoRegraDTO, 
+                                           OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
+            regraService.atualizar(id, grupoRegraDTO, authentication)
+        ));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> apagarRegra(@PathVariable BigInteger id,  
+                                         OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
+            regraService.apagar(id, authentication)
         ));
     }
 
