@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
+import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.RegraService;
 
@@ -21,7 +21,7 @@ public class RegrasController {
     RegraService regraService;
 
     @PostMapping
-    public ResponseEntity<?> criarRegra(@RequestBody GrupoRegra grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
+    public ResponseEntity<?> criarRegra(@RequestBody GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(new GenericResponse<>(
             regraService.salvar(grupoRegraDTO, authentication)
         ));

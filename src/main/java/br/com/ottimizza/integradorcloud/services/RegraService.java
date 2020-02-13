@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -41,8 +42,12 @@ public class RegraService {
             throws Exception {
         ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
         Example<GrupoRegra> example = Example.of(GrupoRegraMapper.fromDto(filtro), matcher);
+        
+        grupoRegraRepository.findAll(example, PageCriteria.getPageRequest(pageCriteria))
+                            .map((grupoRegra) -> {
 
-        Page<GrupoRegra> grupoRegras = grupoRegraRepository.findAll(example, PageCriteria.getPageRequest(pageCriteria));
+                                return grupoRegra;
+                            });
 
         return new ArrayList<>();
     }
@@ -52,22 +57,12 @@ public class RegraService {
 
         validaGrupoRegra(grupoRegraDTO);
 
-        Integer posicao = grupoRegraRepository.buscarUltimaPosicaoPorEmpresaETipoLancamento(
+        grupoRegraDTO.setPosicao(grupoRegraRepository.buscarUltimaPosicaoPorEmpresaETipoLancamento(
             grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getTipoLancamento()
-        );
-
-        List<Regra> regras = grupoRegraDTO.getRegras();
+        ));
 
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
-
-        System.out.println("Count >> " + regras.size());
-
-        // itera regras e adiciona lista de regras salvas
-        List<Regra> regrasSalvas = new ArrayList<>();
-        regras.stream().forEach((r) -> {
-            r.setGrupoRegra(grupoRegra);
-            regrasSalvas.add(regraRepository.save(r));
-        });
+        List<Regra> regrasSalvas = salvarRegras(grupoRegra, grupoRegraDTO.getRegras());
 
         // atualiza lançamentos baseados na regra.
         int linhasAlteradas = lancamentoRepository.atualizaLancamentosPorRegra(
@@ -85,7 +80,14 @@ public class RegraService {
         return message;
     }
 
-    boolean validaGrupoRegra(GrupoRegraDTO grupoRegraDTO) throws IllegalArgumentException {
+    private List<Regra> salvarRegras(GrupoRegra grupo, List<Regra> regras) {
+        return regras.stream().map((Regra regra) -> {
+            // adiciona referencia ao grupo, cria regra no banco de dados e retorna o objeto atualizado.
+            return regraRepository.save(regra.toBuilder().grupoRegra(grupo).build());
+        }).collect(Collectors.toList());
+    }
+
+    private boolean validaGrupoRegra(GrupoRegraDTO grupoRegraDTO) throws IllegalArgumentException {
         String idRoteiro = grupoRegraDTO.getIdRoteiro();
         String contaMovimento = grupoRegraDTO.getContaMovimento();
         Short tipoLancamento = grupoRegraDTO.getTipoLancamento();
@@ -111,3 +113,4 @@ public class RegraService {
     }
 
 }
+
