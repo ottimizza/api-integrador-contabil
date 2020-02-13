@@ -13,8 +13,8 @@ public class GrupoRegraMapper {
                 .tipoLancamento(grupoRegraDTO.getTipoLancamento())
                 .idRoteiro(grupoRegraDTO.getIdRoteiro())
                 .cnpjEmpresa(grupoRegraDTO.getCnpjEmpresa())
-                // .dataCriacao(new Date(grupoRegraDTO.getDataCriacao())
-                // .dataAtualizacao(grupoRegraDTO.getDataAtualizacao())
+                .dataCriacao(grupoRegraDTO.getDataCriacao())
+                .dataAtualizacao(grupoRegraDTO.getDataAtualizacao())
                 .cnpjContabilidade(grupoRegraDTO.getCnpjContabilidade())
             .build();    
     }
@@ -28,8 +28,8 @@ public class GrupoRegraMapper {
                 .idRoteiro(grupoRegra.getIdRoteiro())
                 .cnpjEmpresa(grupoRegra.getCnpjEmpresa())
                 .cnpjContabilidade(grupoRegra.getCnpjContabilidade())
-                // .dataCriacao(grupoRegra.getDataCriacao())
-                // .dataAtualizacao(grupoRegra.getDataAtualizacao())
+                .dataCriacao(grupoRegra.getDataCriacao())
+                .dataAtualizacao(grupoRegra.getDataAtualizacao())
             .build();   
     }
 

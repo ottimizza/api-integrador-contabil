@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -81,7 +82,17 @@ public class RegraService {
     }
 
     public GrupoRegraDTO atualizar(BigInteger id, GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
+        GrupoRegra existente = grupoRegraRepository.findById(id).orElseThrow(() -> new NoResultException("Regra não encontrada!"));
+        
+        grupoRegraDTO.setPosicao(existente.getPosicao());
+        grupoRegraDTO.setTipoLancamento(existente.getTipoLancamento());
+        grupoRegraDTO.setIdRoteiro(existente.getIdRoteiro());
+        grupoRegraDTO.setCnpjEmpresa(grupoRegraDTO.getCnpjEmpresa());
+        grupoRegraDTO.setCnpjContabilidade(grupoRegraDTO.getCnpjContabilidade());
+        
         validaGrupoRegra(grupoRegraDTO);
+
+        grupoRegraDTO.setDataCriacao(existente.getDataCriacao());
 
         if (Objects.isNull(grupoRegraDTO.getPosicao()) || grupoRegraDTO.getPosicao() < 0) {
             throw new IllegalArgumentException("Informe a posição da regra!");

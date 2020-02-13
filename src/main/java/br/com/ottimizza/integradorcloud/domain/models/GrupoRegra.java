@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.domain.models;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -60,10 +61,10 @@ public class GrupoRegra implements Serializable {
     private String cnpjContabilidade;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dataCriacao;
+    private LocalDateTime dataCriacao;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dataAtualizacao;
+    private LocalDateTime dataAtualizacao;
 
     @Transient
     private List<Regra> regras;
@@ -72,9 +73,9 @@ public class GrupoRegra implements Serializable {
     @PreUpdate
     public void preUpdate() {
         if (this.dataCriacao == null) {
-            this.dataCriacao = new Date();
+            this.dataCriacao =  LocalDateTime.now();
         }      
-        this.dataAtualizacao = new Date();
+        this.dataAtualizacao = LocalDateTime.now();
         this.cnpjContabilidade = this.cnpjContabilidade.replaceAll("\\D*", "");
         this.cnpjEmpresa = this.cnpjEmpresa.replaceAll("\\D*", "");
     }
