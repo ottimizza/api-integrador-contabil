@@ -1,6 +1,6 @@
 package br.com.ottimizza.integradorcloud.domain.mappers.grupo_regra;
 
-import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 
 public class GrupoRegraMapper {

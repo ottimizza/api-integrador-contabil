@@ -1,4 +1,4 @@
-package br.com.ottimizza.integradorcloud.domain.dtos;
+package br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra;
 
 import java.io.Serializable;
 import java.math.BigInteger;

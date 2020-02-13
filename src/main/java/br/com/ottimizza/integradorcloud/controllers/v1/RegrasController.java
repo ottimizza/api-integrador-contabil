@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.RegraService;
