@@ -88,8 +88,8 @@ public class RegraService {
         grupoRegraDTO.setPosicao(existente.getPosicao());
         grupoRegraDTO.setTipoLancamento(existente.getTipoLancamento());
         grupoRegraDTO.setIdRoteiro(existente.getIdRoteiro());
-        grupoRegraDTO.setCnpjEmpresa(grupoRegraDTO.getCnpjEmpresa());
-        grupoRegraDTO.setCnpjContabilidade(grupoRegraDTO.getCnpjContabilidade());
+        grupoRegraDTO.setCnpjEmpresa(existente.getCnpjEmpresa());
+        grupoRegraDTO.setCnpjContabilidade(existente.getCnpjContabilidade());
         
         validaGrupoRegra(grupoRegraDTO);
 
