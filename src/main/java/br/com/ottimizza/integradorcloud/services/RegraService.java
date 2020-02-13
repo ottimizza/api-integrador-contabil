@@ -26,6 +26,7 @@ import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
 import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
+import br.com.ottimizza.integradorcloud.utils.DateUtils;
 
 @Service // @formatter:off
 public class RegraService {
@@ -92,7 +93,7 @@ public class RegraService {
         
         validaGrupoRegra(grupoRegraDTO);
 
-        grupoRegraDTO.setDataCriacao(existente.getDataCriacao());
+        grupoRegraDTO.setDataCriacao(DateUtils.toLocalDateTime(existente.getDataCriacao()));
 
         if (Objects.isNull(grupoRegraDTO.getPosicao()) || grupoRegraDTO.getPosicao() < 0) {
             throw new IllegalArgumentException("Informe a posição da regra!");

@@ -7,13 +7,11 @@ import java.util.TimeZone;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
+import br.com.ottimizza.integradorcloud.utils.DateUtils;
 
 public class GrupoRegraMapper {
 
     public static GrupoRegra fromDto(GrupoRegraDTO grupoRegraDTO) {
-        Date dataCriacao = Date.from(grupoRegraDTO.getDataCriacao().atZone(ZoneId.systemDefault()).toInstant());
-        Date dataAtualizacao = Date.from(grupoRegraDTO.getDataAtualizacao().atZone(ZoneId.systemDefault()).toInstant());
-
         return GrupoRegra.builder()
                 .id(grupoRegraDTO.getId())
                 .posicao(grupoRegraDTO.getPosicao())
@@ -21,17 +19,13 @@ public class GrupoRegraMapper {
                 .tipoLancamento(grupoRegraDTO.getTipoLancamento())
                 .idRoteiro(grupoRegraDTO.getIdRoteiro())
                 .cnpjEmpresa(grupoRegraDTO.getCnpjEmpresa())
-                .dataCriacao(dataCriacao)
-                .dataAtualizacao(dataAtualizacao)
+                .dataCriacao(DateUtils.toDate(grupoRegraDTO.getDataCriacao()))
+                .dataAtualizacao(DateUtils.toDate(grupoRegraDTO.getDataAtualizacao()))
                 .cnpjContabilidade(grupoRegraDTO.getCnpjContabilidade())
             .build();    
     }
 
     public static GrupoRegraDTO fromEntity(GrupoRegra grupoRegra) {
-
-        LocalDateTime dataCriacao = grupoRegra.getDataCriacao().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        LocalDateTime dataAtualizacao = grupoRegra.getDataAtualizacao().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-
         return GrupoRegraDTO.builder()
                 .id(grupoRegra.getId())
                 .posicao(grupoRegra.getPosicao())
@@ -40,8 +34,8 @@ public class GrupoRegraMapper {
                 .idRoteiro(grupoRegra.getIdRoteiro())
                 .cnpjEmpresa(grupoRegra.getCnpjEmpresa())
                 .cnpjContabilidade(grupoRegra.getCnpjContabilidade())
-                .dataCriacao(dataCriacao)
-                .dataAtualizacao(dataAtualizacao)
+                .dataCriacao(DateUtils.toLocalDateTime(grupoRegra.getDataCriacao()))
+                .dataAtualizacao(DateUtils.toLocalDateTime(grupoRegra.getDataAtualizacao()))
             .build();   
     }
 
