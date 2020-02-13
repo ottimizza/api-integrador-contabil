@@ -20,9 +20,9 @@ public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteg
     @Query("delete from GrupoRegra gr where gr.cnpjEmpresa = :cnpjEmpresa")
     Integer apagarTodosPorCnpjEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa);
     
-    @Query(value = "select max(gr.id) from grupo_regras      "
-                +  "where gr.cnpj_empresa = :cnpjEmpresa     "
-                +  "and gr.tipo_lancamento = :tipoLancamento ", nativeQuery = true)
+    @Query(value = " select max(gr.posicao) from grupo_regras gr "
+                +  " where gr.cnpj_empresa = :cnpjEmpresa        "
+                +  " and gr.tipo_lancamento = :tipoLancamento    ", nativeQuery = true)
     Integer buscarUltimaPosicaoPorEmpresaETipoLancamento(@Param("cnpjEmpresa") String cnpjEmpresa, 
                                                          @Param("tipoLancamento") Short tipoLancamento);
 
