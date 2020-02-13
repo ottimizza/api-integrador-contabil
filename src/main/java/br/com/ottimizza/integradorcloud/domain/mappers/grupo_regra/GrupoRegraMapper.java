@@ -28,6 +28,10 @@ public class GrupoRegraMapper {
     }
 
     public static GrupoRegraDTO fromEntity(GrupoRegra grupoRegra) {
+
+        LocalDateTime dataCriacao = grupoRegra.getDataCriacao().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime dataAtualizacao = grupoRegra.getDataAtualizacao().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
         return GrupoRegraDTO.builder()
                 .id(grupoRegra.getId())
                 .posicao(grupoRegra.getPosicao())
@@ -36,8 +40,8 @@ public class GrupoRegraMapper {
                 .idRoteiro(grupoRegra.getIdRoteiro())
                 .cnpjEmpresa(grupoRegra.getCnpjEmpresa())
                 .cnpjContabilidade(grupoRegra.getCnpjContabilidade())
-                .dataCriacao(grupoRegra.getDataCriacao())
-                .dataAtualizacao(grupoRegra.getDataAtualizacao())
+                .dataCriacao(dataCriacao)
+                .dataAtualizacao(dataAtualizacao)
             .build();   
     }
 
