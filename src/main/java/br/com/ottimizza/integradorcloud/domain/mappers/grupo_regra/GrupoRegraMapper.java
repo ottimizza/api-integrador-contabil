@@ -1,11 +1,19 @@
 package br.com.ottimizza.integradorcloud.domain.mappers.grupo_regra;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.TimeZone;
+
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 
 public class GrupoRegraMapper {
 
     public static GrupoRegra fromDto(GrupoRegraDTO grupoRegraDTO) {
+        Date dataCriacao = Date.from(grupoRegraDTO.getDataCriacao().atZone(ZoneId.systemDefault()).toInstant());
+        Date dataAtualizacao = Date.from(grupoRegraDTO.getDataAtualizacao().atZone(ZoneId.systemDefault()).toInstant());
+
         return GrupoRegra.builder()
                 .id(grupoRegraDTO.getId())
                 .posicao(grupoRegraDTO.getPosicao())
@@ -13,8 +21,8 @@ public class GrupoRegraMapper {
                 .tipoLancamento(grupoRegraDTO.getTipoLancamento())
                 .idRoteiro(grupoRegraDTO.getIdRoteiro())
                 .cnpjEmpresa(grupoRegraDTO.getCnpjEmpresa())
-                .dataCriacao(grupoRegraDTO.getDataCriacao())
-                .dataAtualizacao(grupoRegraDTO.getDataAtualizacao())
+                .dataCriacao(dataCriacao)
+                .dataAtualizacao(dataAtualizacao)
                 .cnpjContabilidade(grupoRegraDTO.getCnpjContabilidade())
             .build();    
     }

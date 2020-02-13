@@ -61,10 +61,10 @@ public class GrupoRegra implements Serializable {
     private String cnpjContabilidade;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime dataCriacao;
+    private Date dataCriacao;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime dataAtualizacao;
+    private Date dataAtualizacao;
 
     @Transient
     private List<Regra> regras;
@@ -73,9 +73,9 @@ public class GrupoRegra implements Serializable {
     @PreUpdate
     public void preUpdate() {
         if (this.dataCriacao == null) {
-            this.dataCriacao =  LocalDateTime.now();
+            this.dataCriacao = new Date();
         }      
-        this.dataAtualizacao = LocalDateTime.now();
+        this.dataAtualizacao = new Date();
         this.cnpjContabilidade = this.cnpjContabilidade.replaceAll("\\D*", "");
         this.cnpjEmpresa = this.cnpjEmpresa.replaceAll("\\D*", "");
     }
