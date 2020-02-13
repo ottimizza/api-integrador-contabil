@@ -295,7 +295,7 @@ public class LancamentoService {
         // Cria o Arquivo 
         Arquivo arquivo = arquivoRepository.findByNomeCnpjs(importaLancamentos.getCnpjEmpresa(),
         													importaLancamentos.getCnpjContabilidade(),
-        										   		   	importaLancamentos.getArquivo().getNome()).orElseGet(() -> {
+        													"%"+importaLancamentos.getArquivo().getNome()+"%").orElseGet(() -> {
         										   			return arquivoRepository.save(Arquivo.builder()
         										            		.nome(importaLancamentos.getArquivo().getNome())
         										            		.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())

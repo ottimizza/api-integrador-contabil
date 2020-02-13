@@ -13,8 +13,13 @@ import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
 @Repository
 public interface ArquivoRepository extends PagingAndSortingRepository<Arquivo, BigInteger> {
 
-	@Query(value = " select * from arquivos a2 where a2.cnpj_contabilidade = :cnpjContabilidade	and"
-				 + " a2.cnpj_empresa = :cnpjEmpresa	and a.nome like :nome and a2.data_criacao  >= now()::date" ,nativeQuery = true)
+	@Query(value = 
+		   " SELECT * FROM arquivos a2 									" 
+		  +"		WHERE a2.cnpj_contabilidade = :cnpjContabilidade	" 
+		  +"		AND a2.cnpj_empresa = :cnpjEmpresa					" 
+		  +"		AND a2.nome LIKE :nome 								" 
+		  +"		AND a2.data_criacao  >= NOW()::DATE					" 
+			,nativeQuery = true)
 	Optional<Arquivo> findByNomeCnpjs(@Param("cnpjEmpresa") String cnpjEmpresa, @Param("cnpjContabilidade") String cnpjContabildade, @Param("nome") String nome);
 	
 	
