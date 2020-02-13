@@ -24,4 +24,9 @@ public interface RegraRepository extends PagingAndSortingRepository<Regra, BigIn
     @Query("select r from Regra r where r.grupoRegra.id = :grupoRegraId")
     List<Regra> buscarPorGrupoRegra(@Param("grupoRegraId") BigInteger grupoRegraId);
 
+    @Modifying
+    @Transactional
+    @Query("delete from Regra gr where gr.grupoRegra.id = :grupoRegraId")
+    Integer apagarPorGrupoRegra(@Param("grupoRegraId") BigInteger grupoRegraId);
+
 }

@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.domain.models;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 

@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.services;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -24,6 +26,7 @@ import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
 import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
+import br.com.ottimizza.integradorcloud.utils.DateUtils;
 
 @Service // @formatter:off
 public class RegraService {
@@ -77,6 +80,44 @@ public class RegraService {
         }
 
         return message;
+    }
+
+    public GrupoRegraDTO atualizar(BigInteger id, GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
+        GrupoRegra existente = grupoRegraRepository.findById(id).orElseThrow(() -> new NoResultException("Regra não encontrada!"));
+        
+        grupoRegraDTO.setPosicao(existente.getPosicao());
+        grupoRegraDTO.setTipoLancamento(existente.getTipoLancamento());
+        grupoRegraDTO.setIdRoteiro(existente.getIdRoteiro());
+        grupoRegraDTO.setCnpjEmpresa(existente.getCnpjEmpresa());
+        grupoRegraDTO.setCnpjContabilidade(existente.getCnpjContabilidade());
+        
+        validaGrupoRegra(grupoRegraDTO);
+
+        grupoRegraDTO.setDataCriacao(DateUtils.toLocalDateTime(existente.getDataCriacao()));
+
+        if (Objects.isNull(grupoRegraDTO.getPosicao()) || grupoRegraDTO.getPosicao() < 0) {
+            throw new IllegalArgumentException("Informe a posição da regra!");
+        }
+
+        grupoRegraDTO.setId(id);
+        GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
+
+        regraRepository.apagarPorGrupoRegra(id);
+        List<Regra> regrasSalvas = salvarRegras(grupoRegra, grupoRegraDTO.getRegras());
+
+        grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
+        grupoRegraDTO.setRegras(regrasSalvas);
+
+        return grupoRegraDTO;
+    }
+
+    public String apagar(BigInteger id, OAuth2Authentication authentication) throws Exception {
+
+        regraRepository.apagarPorGrupoRegra(id);
+
+        grupoRegraRepository.deleteById(id);
+
+        return "Grupo de Regra removido com sucesso!";
     }
 
     private List<Regra> salvarRegras(GrupoRegra grupo, List<Regra> regras) {
