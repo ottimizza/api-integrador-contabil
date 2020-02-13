@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.repositories.regra;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -19,5 +20,8 @@ public interface RegraRepository extends PagingAndSortingRepository<Regra, BigIn
     @Transactional
     @Query("delete from Regra gr where gr.grupoRegra.cnpjEmpresa = :cnpjEmpresa")
     Integer apagarTodosPorCnpjEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa);
+
+    @Query("select r from Regra r where r.grupoRegra.id = :grupoRegraId")
+    List<Regra> buscarPorGrupoRegra(@Param("grupoRegraId") BigInteger grupoRegraId);
 
 }

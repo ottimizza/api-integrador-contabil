@@ -38,18 +38,17 @@ public class RegraService {
     @Inject
     RegraRepository regraRepository;
 
-    public List<GrupoRegraDTO> buscarRegras(GrupoRegraDTO filtro, PageCriteria pageCriteria, OAuth2Authentication authentication) 
+    public Page<GrupoRegraDTO> buscarRegras(GrupoRegraDTO filtro, PageCriteria pageCriteria, OAuth2Authentication authentication) 
             throws Exception {
         ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
         Example<GrupoRegra> example = Example.of(GrupoRegraMapper.fromDto(filtro), matcher);
         
-        grupoRegraRepository.findAll(example, PageCriteria.getPageRequest(pageCriteria))
+        return grupoRegraRepository.findAll(example, PageCriteria.getPageRequest(pageCriteria))
                             .map((grupoRegra) -> {
-
-                                return grupoRegra;
+                                GrupoRegraDTO grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
+                                grupoRegraDTO.setRegras(regraRepository.buscarPorGrupoRegra(grupoRegra.getId()));
+                                return grupoRegraDTO;
                             });
-
-        return new ArrayList<>();
     }
 
     public String salvar(GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
