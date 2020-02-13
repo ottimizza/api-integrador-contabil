@@ -59,7 +59,8 @@ public class RegraService {
 
         grupoRegraDTO.setPosicao(grupoRegraRepository.buscarUltimaPosicaoPorEmpresaETipoLancamento(
             grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getTipoLancamento()
-        ));
+        ) + 1);
+        grupoRegraDTO.setPosicao(grupoRegraDTO.getPosicao() == null ? 1 : grupoRegraDTO.getPosicao());
 
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
         List<Regra> regrasSalvas = salvarRegras(grupoRegra, grupoRegraDTO.getRegras());
