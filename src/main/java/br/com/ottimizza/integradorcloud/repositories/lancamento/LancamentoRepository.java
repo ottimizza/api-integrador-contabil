@@ -29,7 +29,7 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
             + "   (select count(_l0.id) from _lancamentos _l0 where _l0.tipo_conta = 3) as pular                "
             + " from _lancamentos l limit 1                                                                     ", nativeQuery = true)
     KPILancamento buscaStatusLancementosPorCNPJEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa);
-
+    
     @Modifying
     @Transactional
     @Query("delete from Lancamento l where l.cnpjEmpresa = :cnpjEmpresa")
@@ -54,6 +54,19 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
                                                                @Param("tipoLancamento") Short tipoLancamento,
                                                                @Param("contaSugerida") String contaSugerida, 
                                                                @Param("cnpjEmpresa") String cnpjEmpresa);
+    @Modifying
+    @Transactional
+    @Query(value = " UPDATE lancamentos 				"
+    			 + " SET ativo = false     				"
+			 	 + " WHERE fk_arquivos_id = :id_arquivo ", nativeQuery = true)
+    Integer atualizaStatus(@Param("id_arquivo") BigInteger id_arquivo);
+    
+    @Modifying
+    @Transactional
+    @Query(value = " DELETE 							"
+    			 + " FROM lancamentos 					"
+    			 + " WHERE ativo = false				", nativeQuery = true)
+    Integer deleteLancamentosInativos();
 
 
 }

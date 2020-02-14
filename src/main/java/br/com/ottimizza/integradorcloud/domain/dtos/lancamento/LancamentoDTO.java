@@ -79,6 +79,8 @@ public class LancamentoDTO implements Serializable {
     private String idRoteiro;
 
     private String nomeArquivo;
+    
+    private Boolean ativo;
 
     public Lancamento patch(Lancamento lancamento) {
         if (contaMovimento != null && !contaMovimento.equals("")) {
