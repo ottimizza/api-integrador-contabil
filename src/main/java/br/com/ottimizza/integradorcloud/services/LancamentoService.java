@@ -294,7 +294,7 @@ public class LancamentoService {
             throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
         }
 
-        // Cria o Arquivo 
+        // Cria o Arquivo
         Arquivo arquivo = importaLancamentos.getArquivo();
         lancamentoRepository.atualizaStatus(arquivo.getId());
         
