@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
@@ -102,6 +103,11 @@ public class LancamentoController {
     @PostMapping("/importar")
     public ResponseEntity<?> importar(@RequestBody ImportacaoLancamentosRequest importacaoLancamentos, OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(lancamentoService.importar(importacaoLancamentos, authentication));
+    }
+    
+    @PostMapping("/arquivo")
+    public ResponseEntity<?> salvaArquivo(@RequestBody ArquivoDTO arquivo) {
+    	return ResponseEntity.ok(lancamentoService.salvaArquivo(arquivo));
     }
 
 }

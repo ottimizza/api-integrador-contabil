@@ -106,11 +106,16 @@ public class Lancamento implements Serializable {
     @Column(columnDefinition = "varchar(255) default ''")
     private String complemento05;
 
+    @Column(columnDefinition = "boolean default true")
+    private Boolean ativo; 
+    
     private String cnpjEmpresa;
 
     private String cnpjContabilidade;
 
     private String idRoteiro;
+    
+    
 
     //
     //
@@ -150,6 +155,7 @@ public class Lancamento implements Serializable {
         if (complemento03 == null) complemento03 = "";
         if (complemento04 == null) complemento04 = "";
         if (complemento05 == null) complemento05 = "";
+        if (ativo == null) ativo = true;
 
     }
 

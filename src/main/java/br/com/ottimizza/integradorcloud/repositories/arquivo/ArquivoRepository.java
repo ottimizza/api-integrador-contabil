@@ -17,10 +17,9 @@ public interface ArquivoRepository extends PagingAndSortingRepository<Arquivo, B
 		   " SELECT * FROM arquivos a2 									" 
 		  +"		WHERE a2.cnpj_contabilidade = :cnpjContabilidade	" 
 		  +"		AND a2.cnpj_empresa = :cnpjEmpresa					" 
-		  +"		AND a2.nome LIKE :nome 								" 
-		  //+"		AND a2.data_criacao  >= NOW()::DATE					" 
+		  +"		AND a2.nome = :nome 								"
 			,nativeQuery = true)
-	Optional<Arquivo> findByNomeCnpjs(@Param("cnpjEmpresa") String cnpjEmpresa, @Param("cnpjContabilidade") String cnpjContabildade, @Param("nome") String nome);
+	Arquivo findArquivo(@Param("cnpjEmpresa") String cnpjEmpresa, @Param("cnpjContabilidade") String cnpjContabildade, @Param("nome") String nome);
 	
 	
 }

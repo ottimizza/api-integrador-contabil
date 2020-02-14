@@ -25,10 +25,12 @@ import br.com.ottimizza.integradorcloud.client.DeParaClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.depara.DeParaContaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.organization.OrganizationDTO;
 import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
+import br.com.ottimizza.integradorcloud.domain.mappers.ArquivoMapper;
 import br.com.ottimizza.integradorcloud.domain.mappers.lancamento.LancamentoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
@@ -293,21 +295,17 @@ public class LancamentoService {
         }
 
         // Cria o Arquivo 
-        Arquivo arquivo = arquivoRepository.findByNomeCnpjs(importaLancamentos.getCnpjEmpresa(),
-        													importaLancamentos.getCnpjContabilidade(),
-        													"%"+importaLancamentos.getArquivo().getNome()+"%").orElseGet(() -> {
-        										   			return arquivoRepository.save(Arquivo.builder()
-        										            		.nome(importaLancamentos.getArquivo().getNome())
-        										            		.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
-        										            		.cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).build());
-        										   		   });
-        /*if(arquivo == null) {
-        	arquivo = arquivoRepository.save(Arquivo.builder()
-            		.nome(importaLancamentos.getArquivo().getNome())
-            		.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
-            		.cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).build());
-        }*/
-
+        Arquivo arquivo = importaLancamentos.getArquivo();
+        lancamentoRepository.atualizaStatus(arquivo.getId());
+        
+        //NEW THREAD
+        new Thread() {
+        	@Override
+        	public void run() {
+        		 lancamentoRepository.deleteLancamentosInativos();
+        	}
+        }.start();
+        
         // Iteração e construção de lista de lançamentos 
         List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
             return LancamentoMapper.fromDto(o).toBuilder()
@@ -323,6 +321,19 @@ public class LancamentoService {
         }
         lancamentoRepository.saveAll(lancamentos).forEach(results::add);
         return LancamentoMapper.fromEntities(results);
+    }
+    
+    public ArquivoDTO salvaArquivo(ArquivoDTO filter) {
+    	Arquivo arquivo = arquivoRepository.findArquivo(filter.getCnpjEmpresa(),
+    													filter.getCnpjContabilidade(),
+    													filter.getNome());
+    	
+    	if(arquivo == null) arquivo = arquivoRepository.save(Arquivo.builder()
+        					.nome(filter.getNome())
+        					.cnpjContabilidade(filter.getCnpjContabilidade())
+        					.cnpjEmpresa(filter.getCnpjEmpresa()).build());
+    						
+    	return ArquivoMapper.fromEntity(arquivo);
     }
 
     private boolean validaLancamento(Lancamento lancamento) throws Exception {
