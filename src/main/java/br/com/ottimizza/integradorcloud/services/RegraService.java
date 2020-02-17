@@ -67,6 +67,9 @@ public class RegraService {
         grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
         grupoRegraDTO.setRegras(regrasSalvas);
 
+        lancamentoRepository.atualizaLancamentosPorRegra(
+            regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getContaMovimento());
+
         return grupoRegraDTO;
     }
 
