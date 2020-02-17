@@ -120,6 +120,34 @@ public class RegraService {
         return "Grupo de Regra removido com sucesso!";
     }
 
+    public GrupoRegraDTO alterarPosicao(BigInteger id, String cnpjEmpresa, 
+                                        Short tipoLancamento, Integer posicaoAtual, 
+                                        OAuth2Authentication authentication) throws Exception {
+        GrupoRegra grupoRegra = grupoRegraRepository.findById(id)
+                                                   .orElseThrow(() -> new NoResultException("Regra não encontrada!"));
+        Integer posicaoAnterior = grupoRegra.getPosicao();
+
+        // Quando regra é movida para baixo (final).
+        // decrementa os indices no intervalo.
+        if (posicaoAtual > posicaoAnterior) {
+            grupoRegra.setPosicao(posicaoAtual);
+            grupoRegraRepository.decrementaPosicaoPorIntervalo(
+                cnpjEmpresa, tipoLancamento, posicaoAnterior, posicaoAtual);
+            grupoRegraRepository.atualizaPosicaoPorId(id, posicaoAtual);
+
+        // Quando regra é movida para cima (inicio).
+        // incrementa os indices no intervalo.
+        } else if (posicaoAtual < posicaoAnterior) {
+            grupoRegra.setPosicao(posicaoAtual);
+            grupoRegraRepository.incrementaPosicaoPorIntervalo(
+                cnpjEmpresa, tipoLancamento, posicaoAnterior, posicaoAtual);
+            grupoRegraRepository.atualizaPosicaoPorId(id, posicaoAtual);
+        }
+
+        return GrupoRegraMapper.fromEntity(grupoRegra);
+    }
+
+
     private List<Regra> salvarRegras(GrupoRegra grupo, List<Regra> regras) {
         return regras.stream().map((Regra regra) -> {
             // adiciona referencia ao grupo, cria regra no banco de dados e retorna o objeto atualizado.

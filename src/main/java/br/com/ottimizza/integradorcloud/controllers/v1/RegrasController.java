@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
@@ -48,8 +49,8 @@ public class RegrasController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarRegra(@PathVariable BigInteger id, 
-                                           @RequestBody GrupoRegraDTO grupoRegraDTO, 
-                                           OAuth2Authentication authentication) throws Exception {
+                                            @RequestBody GrupoRegraDTO grupoRegraDTO, 
+                                            OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
             regraService.atualizar(id, grupoRegraDTO, authentication)
         ));
@@ -61,6 +62,17 @@ public class RegrasController {
         return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
             regraService.apagar(id, authentication)
         ));
+    }
+
+    @PutMapping("/{id}/alterar_posicao")
+    public ResponseEntity<?> alterarPosicao(@PathVariable BigInteger id, 
+                                            @RequestBody GrupoRegraDTO grupoRegraDTO, 
+                                            @RequestParam("cnpjEmpresa") String cnpjEmpresa, 
+                                            @RequestParam("tipoLancamento") Short tipoLancamento, 
+                                            OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
+            regraService.alterarPosicao(id, cnpjEmpresa, tipoLancamento, grupoRegraDTO.getPosicao(), authentication)
+        ));                                  
     }
 
 }
