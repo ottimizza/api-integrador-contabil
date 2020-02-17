@@ -30,8 +30,8 @@ public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteg
     @Transactional
     @Query(" update GrupoRegra r                     " + 
            " set r.posicao = r.posicao - 1           " + 
-           " where r.cnpj_empresa = :cnpjEmpresa     " + 
-           " and r.tipo_lancamento = :tipoLancamento " + 
+           " where r.cnpjEmpresa = :cnpjEmpresa     " + 
+           " and r.tipoLancamento = :tipoLancamento " + 
            " and r.posicao > :posicaoAnterior        " +
            " and r.posicao <= :posicaoAtual          ")
     void decrementaPosicaoPorIntervalo(@Param("cnpjEmpresa") String cnpjEmpresa, 
@@ -43,8 +43,8 @@ public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteg
     @Transactional
     @Query(" update GrupoRegra r                     " + 
            " set r.posicao = r.posicao + 1           " + 
-           " where r.cnpj_empresa = :cnpjEmpresa     " + 
-           " and r.tipo_lancamento = :tipoLancamento " + 
+           " where r.cnpjEmpresa = :cnpjEmpresa     " + 
+           " and r.tipoLancamento = :tipoLancamento " + 
            " and r.posicao >= :posicaoAtual          " +
            " and r.posicao < :posicaoAnterior        ")
     void incrementaPosicaoPorIntervalo(@Param("cnpjEmpresa") String cnpjEmpresa, 
