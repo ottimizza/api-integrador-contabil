@@ -130,18 +130,17 @@ public class RegraService {
         // Quando regra é movida para baixo (final).
         // decrementa os indices no intervalo.
         if (posicaoAtual > posicaoAnterior) {
-            grupoRegra.setPosicao(posicaoAtual);
             grupoRegraRepository.decrementaPosicaoPorIntervalo(
                 cnpjEmpresa, tipoLancamento, posicaoAnterior, posicaoAtual);
             grupoRegraRepository.atualizaPosicaoPorId(id, posicaoAtual);
-
+            grupoRegra.setPosicao(posicaoAtual);
         // Quando regra é movida para cima (inicio).
         // incrementa os indices no intervalo.
         } else if (posicaoAtual < posicaoAnterior) {
-            grupoRegra.setPosicao(posicaoAtual);
             grupoRegraRepository.incrementaPosicaoPorIntervalo(
                 cnpjEmpresa, tipoLancamento, posicaoAnterior, posicaoAtual);
             grupoRegraRepository.atualizaPosicaoPorId(id, posicaoAtual);
+            grupoRegra.setPosicao(posicaoAtual);
         }
 
         return GrupoRegraMapper.fromEntity(grupoRegra);

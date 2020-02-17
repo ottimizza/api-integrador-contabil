@@ -28,12 +28,12 @@ public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteg
 
     @Modifying
     @Transactional
-    @Query(" update GrupoRegra r                     " + 
-           " set r.posicao = r.posicao - 1           " + 
-           " where r.cnpjEmpresa = :cnpjEmpresa     " + 
-           " and r.tipoLancamento = :tipoLancamento " + 
-           " and r.posicao > :posicaoAnterior        " +
-           " and r.posicao <= :posicaoAtual          ")
+    @Query(value = " update grupo_regras           " + 
+           " set posicao = posicao - 1             " + 
+           " where cnpj_empresa = :cnpjEmpresa     " + 
+           " and tipo_lancamento = :tipoLancamento " + 
+           " and posicao > :posicaoAnterior        " +
+           " and posicao <= :posicaoAtual          ", nativeQuery = true)
     void decrementaPosicaoPorIntervalo(@Param("cnpjEmpresa") String cnpjEmpresa, 
                                        @Param("tipoLancamento") Short tipoLancamento,
                                        @Param("posicaoAnterior") Integer posicaoAnterior, 
@@ -41,12 +41,12 @@ public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteg
     
     @Modifying
     @Transactional
-    @Query(" update GrupoRegra r                     " + 
-           " set r.posicao = r.posicao + 1           " + 
-           " where r.cnpjEmpresa = :cnpjEmpresa     " + 
-           " and r.tipoLancamento = :tipoLancamento " + 
-           " and r.posicao >= :posicaoAtual          " +
-           " and r.posicao < :posicaoAnterior        ")
+    @Query(value = " update grupo_regras            " + 
+           " set posicao = posicao + 1              " + 
+           " where cnpj_empresa = :cnpjEmpresa      " + 
+           " and tipo_lancamento = :tipoLancamento  " + 
+           " and posicao >= :posicaoAtual           " +
+           " and posicao < :posicaoAnterior         ", nativeQuery = true)
     void incrementaPosicaoPorIntervalo(@Param("cnpjEmpresa") String cnpjEmpresa, 
                                        @Param("tipoLancamento") Short tipoLancamento,
                                        @Param("posicaoAnterior") Integer posicaoAnterior, 
@@ -55,7 +55,7 @@ public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteg
 
     @Modifying
     @Transactional
-    @Query(" update GrupoRegra r set r.posicao = :posicao where r.id >= :grupoRegraId ")
+    @Query(value = " update grupo_regras set posicao = :posicao where id = :grupoRegraId ", nativeQuery = true)
     void atualizaPosicaoPorId(@Param("grupoRegraId") BigInteger grupoRegraId, 
                               @Param("posicao") Integer posicao);
 
