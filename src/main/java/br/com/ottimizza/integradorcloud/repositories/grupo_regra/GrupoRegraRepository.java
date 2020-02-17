@@ -26,4 +26,37 @@ public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteg
     Integer buscarUltimaPosicaoPorEmpresaETipoLancamento(@Param("cnpjEmpresa") String cnpjEmpresa, 
                                                          @Param("tipoLancamento") Short tipoLancamento);
 
+    @Modifying
+    @Transactional
+    @Query(" update GrupoRegra r                     " + 
+           " set r.posicao = r.posicao - 1           " + 
+           " where r.cnpj_empresa = :cnpjEmpresa     " + 
+           " and r.tipo_lancamento = :tipoLancamento " + 
+           " and r.posicao > :posicaoAnterior        " +
+           " and r.posicao <= :posicaoAtual          ")
+    void decrementaPosicaoPorIntervalo(@Param("cnpjEmpresa") String cnpjEmpresa, 
+                                       @Param("tipoLancamento") Short tipoLancamento,
+                                       @Param("posicaoAnterior") Integer posicaoAnterior, 
+                                       @Param("posicaoAtual") Integer posicaoAtual);
+    
+    @Modifying
+    @Transactional
+    @Query(" update GrupoRegra r                     " + 
+           " set r.posicao = r.posicao + 1           " + 
+           " where r.cnpj_empresa = :cnpjEmpresa     " + 
+           " and r.tipo_lancamento = :tipoLancamento " + 
+           " and r.posicao >= :posicaoAtual          " +
+           " and r.posicao < :posicaoAnterior        ")
+    void incrementaPosicaoPorIntervalo(@Param("cnpjEmpresa") String cnpjEmpresa, 
+                                       @Param("tipoLancamento") Short tipoLancamento,
+                                       @Param("posicaoAnterior") Integer posicaoAnterior, 
+                                       @Param("posicaoAtual") Integer posicaoAtual);
+
+
+    @Modifying
+    @Transactional
+    @Query(" update GrupoRegra r set r.posicao = :posicao where r.id >= :grupoRegraId ")
+    void atualizaPosicaoPorId(@Param("grupoRegraId") BigInteger grupoRegraId, 
+                              @Param("posicao") Integer posicao);
+
 }
