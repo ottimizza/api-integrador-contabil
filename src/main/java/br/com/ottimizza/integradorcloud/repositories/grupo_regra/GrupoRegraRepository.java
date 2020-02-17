@@ -55,7 +55,7 @@ public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteg
 
     @Modifying
     @Transactional
-    @Query(value = " update grupo_regras set posicao = :posicao where id >= :grupoRegraId ", nativeQuery = true)
+    @Query(value = " update grupo_regras set posicao = :posicao where id = :grupoRegraId ", nativeQuery = true)
     void atualizaPosicaoPorId(@Param("grupoRegraId") BigInteger grupoRegraId, 
                               @Param("posicao") Integer posicao);
 
