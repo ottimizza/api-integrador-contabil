@@ -53,9 +53,7 @@ public class RegraService {
                             });
     }
 
-    public String salvar(GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
-        String message = "";
-
+    public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
         validaGrupoRegra(grupoRegraDTO);
 
         grupoRegraDTO.setPosicao(grupoRegraRepository.buscarUltimaPosicaoPorEmpresaETipoLancamento(
@@ -66,20 +64,10 @@ public class RegraService {
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
         List<Regra> regrasSalvas = salvarRegras(grupoRegra, grupoRegraDTO.getRegras());
 
-        // atualiza lançamentos baseados na regra.
-        int linhasAlteradas = lancamentoRepository.atualizaLancamentosPorRegra(
-            regrasSalvas, grupoRegra.getCnpjEmpresa(), grupoRegra.getContaMovimento()
-        );
+        grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
+        grupoRegraDTO.setRegras(regrasSalvas);
 
-        if (linhasAlteradas == 0) {
-            message = MessageFormat.format("Nenhum lançamento afetado!", linhasAlteradas);
-        } else if (linhasAlteradas == 1) {
-            message = MessageFormat.format("Um lançamento afetado!", linhasAlteradas);
-        } else if (linhasAlteradas > 1) {
-            message = MessageFormat.format("{0} lançamentos afetados", linhasAlteradas);
-        }
-
-        return message;
+        return grupoRegraDTO;
     }
 
     public GrupoRegraDTO atualizar(BigInteger id, GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
