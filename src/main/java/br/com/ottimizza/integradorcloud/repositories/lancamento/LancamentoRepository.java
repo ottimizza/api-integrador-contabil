@@ -46,14 +46,26 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
     @Modifying
     @Transactional
     @Query(" update Lancamento l                    " + 
-           " set l.contaSugerida = :contaSugerida " + 
+           " set l.contaMovimento = :contaMovimento " + 
            " where l.cnpjEmpresa = :cnpjEmpresa     " + 
            " and l.tipoLancamento = :tipoLancamento " + 
            " and l.descricao = :descricao           ")
-    Integer atualizarContaSugeridaPorDescricaoETipoLancamento(@Param("descricao") String descricao, 
+    Integer atualizarContaMovimentoPorDescricaoETipoLancamento(@Param("descricao") String descricao, 
                                                                @Param("tipoLancamento") Short tipoLancamento,
-                                                               @Param("contaSugerida") String contaSugerida, 
+                                                               @Param("contaMovimento") String contaMovimento, 
                                                                @Param("cnpjEmpresa") String cnpjEmpresa);
+    
+    @Modifying
+    @Transactional
+    @Query(" update Lancamento l                    " + 
+            " set l.contaSugerida = :contaSugerida " + 
+            " where l.cnpjEmpresa = :cnpjEmpresa     " + 
+            " and l.tipoLancamento = :tipoLancamento " + 
+            " and l.descricao = :descricao           ")
+    Integer atualizarContaSugeridaPorDescricaoETipoLancamento(@Param("descricao") String descricao, 
+                                                                @Param("tipoLancamento") Short tipoLancamento,
+                                                                @Param("contaSugerida") String contaSugerida, 
+                                                                @Param("cnpjEmpresa") String cnpjEmpresa);
     @Modifying
     @Transactional
     @Query(value = " UPDATE lancamentos 				"

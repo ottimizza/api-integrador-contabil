@@ -71,8 +71,10 @@ public class LancamentoController {
 
     @PostMapping("/{id}/depara")
     public ResponseEntity<?> salvarTransacaoComoDePara(@PathVariable BigInteger id, @RequestParam String contaMovimento,
+        @RequestParam(name = "salvarParaTodos", defaultValue = "true") boolean salvarParaTodos,
             OAuth2Authentication authentication) throws Exception {
-        return ResponseEntity.ok(lancamentoService.salvarTransacaoComoDePara(id, contaMovimento, authentication));
+        return ResponseEntity.ok(lancamentoService.salvarTransacaoComoDePara(
+            id, contaMovimento, salvarParaTodos, authentication));
     }
 
     @PostMapping("/{id}/outras_contas")
