@@ -67,11 +67,34 @@ public class RegrasController {
     @PutMapping("/{id}/alterar_posicao")
     public ResponseEntity<?> alterarPosicao(@PathVariable BigInteger id, 
                                             @RequestBody GrupoRegraDTO grupoRegraDTO, 
-                                            @RequestParam("cnpjEmpresa") String cnpjEmpresa, 
-                                            @RequestParam("tipoLancamento") Short tipoLancamento, 
                                             OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
-            regraService.alterarPosicao(id, cnpjEmpresa, tipoLancamento, grupoRegraDTO.getPosicao(), authentication)
+            regraService.alterarPosicao(id, grupoRegraDTO.getPosicao(), authentication)
+        ));                                  
+    }
+
+    @PutMapping("/{id}/posicao")
+    public ResponseEntity<?> moverRegra(@PathVariable BigInteger id, 
+                                            @RequestBody GrupoRegraDTO grupoRegraDTO, 
+                                            OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
+            regraService.alterarPosicao(id, grupoRegraDTO.getPosicao(), authentication)
+        ));                                  
+    }
+
+    @PutMapping("/{id}/posicao/inicio")
+    public ResponseEntity<?> moverRegraParaInicio(@PathVariable BigInteger id, 
+                                                  OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
+            regraService.moverRegraParaInicio(id, authentication)
+        ));                                  
+    }
+
+    @PutMapping("/{id}/posicao/final")
+    public ResponseEntity<?> moverRegraParaFinal(@PathVariable BigInteger id, 
+                                                 OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
+            regraService.moverRegraParaFinal(id, authentication)
         ));                                  
     }
 
