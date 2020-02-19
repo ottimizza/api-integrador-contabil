@@ -111,30 +111,44 @@ public class RegraService {
         return "Grupo de Regra removido com sucesso!";
     }
 
-    public GrupoRegraDTO alterarPosicao(BigInteger id, String cnpjEmpresa, 
-                                        Short tipoLancamento, Integer posicaoAtual, 
-                                        OAuth2Authentication authentication) throws Exception {
+    public GrupoRegraDTO alterarPosicao(BigInteger id, Integer posicaoAtual, OAuth2Authentication authentication) throws Exception {
         GrupoRegra grupoRegra = grupoRegraRepository.findById(id)
-                                                   .orElseThrow(() -> new NoResultException("Regra não encontrada!"));
+            .orElseThrow(() -> new NoResultException("Regra não encontrada!"));
         Integer posicaoAnterior = grupoRegra.getPosicao();
 
         // Quando regra é movida para baixo (final).
         // decrementa os indices no intervalo.
         if (posicaoAtual > posicaoAnterior) {
             grupoRegraRepository.decrementaPosicaoPorIntervalo(
-                cnpjEmpresa, tipoLancamento, posicaoAnterior, posicaoAtual);
+                grupoRegra.getCnpjEmpresa(), grupoRegra.getTipoLancamento(), posicaoAnterior, posicaoAtual);
             grupoRegraRepository.atualizaPosicaoPorId(id, posicaoAtual);
             grupoRegra.setPosicao(posicaoAtual);
         // Quando regra é movida para cima (inicio).
         // incrementa os indices no intervalo.
         } else if (posicaoAtual < posicaoAnterior) {
             grupoRegraRepository.incrementaPosicaoPorIntervalo(
-                cnpjEmpresa, tipoLancamento, posicaoAnterior, posicaoAtual);
+                grupoRegra.getCnpjEmpresa(), grupoRegra.getTipoLancamento(), posicaoAnterior, posicaoAtual);
             grupoRegraRepository.atualizaPosicaoPorId(id, posicaoAtual);
             grupoRegra.setPosicao(posicaoAtual);
         }
 
         return GrupoRegraMapper.fromEntity(grupoRegra);
+    }
+
+    public GrupoRegraDTO moverRegraParaInicio(BigInteger id, OAuth2Authentication authentication) throws Exception {
+        return this.alterarPosicao(id, 0, authentication);
+    }
+
+    public GrupoRegraDTO moverRegraParaFinal(BigInteger id, OAuth2Authentication authentication) throws Exception {
+        GrupoRegra grupoRegra = grupoRegraRepository.findById(id)
+            .orElseThrow(() -> new NoResultException("Regra não encontrada!"));
+        Integer ultima = grupoRegraRepository.buscarUltimaPosicaoPorEmpresaETipoLancamento(
+            grupoRegra.getCnpjEmpresa(), grupoRegra.getTipoLancamento()
+        );
+        if (ultima > 1) {
+            return this.alterarPosicao(id, ultima + 1, authentication);
+        }
+        return GrupoRegraMapper.fromEntity(grupoRegra); 
     }
 
 
