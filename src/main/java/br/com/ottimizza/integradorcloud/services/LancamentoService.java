@@ -295,20 +295,14 @@ public class LancamentoService {
         }
 
         // Cria o Arquivo
-        Arquivo arquivo = importaLancamentos.getArquivo();
-        lancamentoRepository.atualizaStatus(arquivo.getId());
+        Arquivo arquivo = importaLancamentos.getArquivo();       
         
-        //NEW THREAD
-        new Thread() {
-        	@Override
-        	public void run() {
-        		 lancamentoRepository.deleteLancamentosInativos();
-        	}
-        }.start();
+       
         
         // Iteração e construção de lista de lançamentos 
         List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
             return LancamentoMapper.fromDto(o).toBuilder()
+            	.nomeArquivo(arquivo.getNome())
                 .arquivo(arquivo)
                 .cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
                 .cnpjEmpresa(importaLancamentos.getCnpjEmpresa())
@@ -328,11 +322,23 @@ public class LancamentoService {
     													filter.getCnpjContabilidade(),
     													filter.getNome());
     	
-    	if(arquivo == null) arquivo = arquivoRepository.save(Arquivo.builder()
-        					.nome(filter.getNome())
-        					.cnpjContabilidade(filter.getCnpjContabilidade())
-        					.cnpjEmpresa(filter.getCnpjEmpresa()).build());
-    						
+    	if(arquivo == null) {
+    		arquivo = arquivoRepository.save(Arquivo.builder()
+        	.nome(filter.getNome())
+        	.cnpjContabilidade(filter.getCnpjContabilidade())
+        	.cnpjEmpresa(filter.getCnpjEmpresa()).build());
+    	}
+    	
+    	lancamentoRepository.atualizaStatus(arquivo.getId());
+    	
+    	//NEW THREAD
+        new Thread() {
+        	@Override
+        	public void run() {
+        		 lancamentoRepository.deleteLancamentosInativos();
+        	}
+        }.start();
+        
     	return ArquivoMapper.fromEntity(arquivo);
     }
 
