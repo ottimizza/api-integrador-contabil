@@ -326,7 +326,15 @@ public class LancamentoService {
     		arquivo = arquivoRepository.save(Arquivo.builder()
         	.nome(filter.getNome())
         	.cnpjContabilidade(filter.getCnpjContabilidade())
-        	.cnpjEmpresa(filter.getCnpjEmpresa()).build());
+        	.cnpjEmpresa(filter.getCnpjEmpresa())
+        	.labelComplemento01(filter.getLabelComplemento01())
+        	.labelComplemento02(filter.getLabelComplemento02())
+        	.labelComplemento03(filter.getLabelComplemento03())
+        	.labelComplemento04(filter.getLabelComplemento04())
+        	.labelComplemento05(filter.getLabelComplemento05())
+        	
+        	.build());
+    	
     	}
     	
     	lancamentoRepository.atualizaStatus(arquivo.getId());
