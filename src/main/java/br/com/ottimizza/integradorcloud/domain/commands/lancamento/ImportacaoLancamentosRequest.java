@@ -12,6 +12,8 @@ public class ImportacaoLancamentosRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private String nomeArquivo;
+    
     private String cnpjContabilidade;
 
     private String cnpjEmpresa;
