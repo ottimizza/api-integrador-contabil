@@ -47,6 +47,7 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
     @Transactional
     @Query(" update Lancamento l                    " + 
            " set l.contaMovimento = :contaMovimento " + 
+           " set l.tipoConta      = 1 " + 
            " where l.cnpjEmpresa = :cnpjEmpresa     " + 
            " and l.tipoLancamento = :tipoLancamento " + 
            " and l.descricao = :descricao           ")
