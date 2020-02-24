@@ -176,7 +176,7 @@ public class LancamentoService {
 
     //
     //
-    public LancamentoDTO salvarTransacaoComoDePara(BigInteger id, String contaMovimento, OAuth2Authentication authentication) throws Exception {
+    public LancamentoDTO salvarTransacaoComoDePara(BigInteger id, String contaMovimento, boolean salvarParaTodos, OAuth2Authentication authentication) throws Exception {
         final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
         String accessToken = details.getTokenValue();
 
@@ -199,9 +199,17 @@ public class LancamentoService {
             .build();
 
         deParaContaClient.salvar(deParaContaDTO, "Bearer " + accessToken);
-        lancamentoRepository.atualizarContaSugeridaPorDescricaoETipoLancamento(
-            lancamento.getDescricao(), lancamento.getTipoLancamento(), lancamento.getContaMovimento(), cnpjEmpresa
-        );
+
+        if (salvarParaTodos) {
+            lancamentoRepository.atualizarContaMovimentoPorDescricaoETipoLancamento(
+                lancamento.getDescricao(), lancamento.getTipoLancamento(), lancamento.getContaMovimento(), cnpjEmpresa
+            );
+        }  else {
+            lancamentoRepository.atualizarContaSugeridaPorDescricaoETipoLancamento(
+                lancamento.getDescricao(), lancamento.getTipoLancamento(), lancamento.getContaMovimento(), cnpjEmpresa
+            );
+        }
+        
 
         return LancamentoMapper.fromEntity(lancamento);
     }
