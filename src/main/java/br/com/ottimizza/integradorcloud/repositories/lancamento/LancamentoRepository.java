@@ -45,12 +45,12 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
 
     @Modifying
     @Transactional
-    @Query(" update Lancamento l                    " + 
-           " set l.contaMovimento = :contaMovimento " + 
-           " set l.tipoConta      = 1 " + 
-           " where l.cnpjEmpresa = :cnpjEmpresa     " + 
-           " and l.tipoLancamento = :tipoLancamento " + 
-           " and l.descricao = :descricao           ")
+    @Query(" update Lancamento l                     " + 
+           " set l.contaMovimento = :contaMovimento, " + 
+           " l.tipoConta      = 1                    " + 
+           " where l.cnpjEmpresa = :cnpjEmpresa      " + 
+           " and l.tipoLancamento = :tipoLancamento  " + 
+           " and l.descricao = :descricao            ")
     Integer atualizarContaMovimentoPorDescricaoETipoLancamento(@Param("descricao") String descricao, 
                                                                @Param("tipoLancamento") Short tipoLancamento,
                                                                @Param("contaMovimento") String contaMovimento, 
