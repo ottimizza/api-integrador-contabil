@@ -41,6 +41,7 @@ public class LancamentoMapper { // @formatter:off
             .cnpjContabilidade(lancamento.getCnpjContabilidade())
             .idRoteiro(lancamento.getIdRoteiro())
             .nomeArquivo(lancamento.getNomeArquivo())
+            .ativo(lancamento.getAtivo())
         .build();
     }
 
@@ -76,6 +77,7 @@ public class LancamentoMapper { // @formatter:off
                 .cnpjContabilidade(lancamento.getCnpjContabilidade())
                 .idRoteiro(lancamento.getIdRoteiro())
                 .nomeArquivo(lancamento.getNomeArquivo())
+                .ativo(lancamento.getAtivo())
             .build();
     }
 

@@ -76,6 +76,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         predicates.add(0, cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
 
         update.set(root.get("contaMovimento"), contaMovimento);
+        update.set(root.get("tipoConta"), Lancamento.TipoConta.OUTRAS_CONTAS);
         update.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 
         // perform update and return affected rows.

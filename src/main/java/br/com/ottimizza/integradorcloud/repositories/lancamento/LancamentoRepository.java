@@ -29,7 +29,7 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
             + "   (select count(_l0.id) from _lancamentos _l0 where _l0.tipo_conta = 3) as pular                "
             + " from _lancamentos l limit 1                                                                     ", nativeQuery = true)
     KPILancamento buscaStatusLancementosPorCNPJEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa);
-
+    
     @Modifying
     @Transactional
     @Query("delete from Lancamento l where l.cnpjEmpresa = :cnpjEmpresa")
@@ -45,15 +45,41 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
 
     @Modifying
     @Transactional
-    @Query(" update Lancamento l                    " + 
-           " set l.contaSugerida = :contaSugerida " + 
-           " where l.cnpjEmpresa = :cnpjEmpresa     " + 
-           " and l.tipoLancamento = :tipoLancamento " + 
-           " and l.descricao = :descricao           ")
-    Integer atualizarContaSugeridaPorDescricaoETipoLancamento(@Param("descricao") String descricao, 
+    @Query(" update Lancamento l                     " + 
+           " set l.contaMovimento = :contaMovimento, " + 
+           " l.tipoConta      = 1                    " + 
+           " where l.cnpjEmpresa = :cnpjEmpresa      " + 
+           " and l.tipoLancamento = :tipoLancamento  " + 
+           " and l.descricao = :descricao            ")
+    Integer atualizarContaMovimentoPorDescricaoETipoLancamento(@Param("descricao") String descricao, 
                                                                @Param("tipoLancamento") Short tipoLancamento,
-                                                               @Param("contaSugerida") String contaSugerida, 
+                                                               @Param("contaMovimento") String contaMovimento, 
                                                                @Param("cnpjEmpresa") String cnpjEmpresa);
+    
+    @Modifying
+    @Transactional
+    @Query(" update Lancamento l                    " + 
+            " set l.contaSugerida = :contaSugerida " + 
+            " where l.cnpjEmpresa = :cnpjEmpresa     " + 
+            " and l.tipoLancamento = :tipoLancamento " + 
+            " and l.descricao = :descricao           ")
+    Integer atualizarContaSugeridaPorDescricaoETipoLancamento(@Param("descricao") String descricao, 
+                                                                @Param("tipoLancamento") Short tipoLancamento,
+                                                                @Param("contaSugerida") String contaSugerida, 
+                                                                @Param("cnpjEmpresa") String cnpjEmpresa);
+    @Modifying
+    @Transactional
+    @Query(value = " UPDATE lancamentos 				"
+    			 + " SET ativo = false     				"
+			 	 + " WHERE fk_arquivos_id = :id_arquivo ", nativeQuery = true)
+    Integer atualizaStatus(@Param("id_arquivo") BigInteger id_arquivo);
+    
+    @Modifying
+    @Transactional
+    @Query(value = " DELETE 							"
+    			 + " FROM lancamentos 					"
+    			 + " WHERE ativo = false				", nativeQuery = true)
+    Integer deleteLancamentosInativos();
 
 
 }
