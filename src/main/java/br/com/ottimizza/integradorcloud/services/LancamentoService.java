@@ -304,9 +304,7 @@ public class LancamentoService {
 
         // Cria o Arquivo
         Arquivo arquivo = importaLancamentos.getArquivo();       
-        
-       
-        
+               
         // Iteração e construção de lista de lançamentos 
         List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
             return LancamentoMapper.fromDto(o).toBuilder()
@@ -348,12 +346,12 @@ public class LancamentoService {
     	lancamentoRepository.atualizaStatus(arquivo.getId());
     	
     	//NEW THREAD
-        new Thread() {
+       /* new Thread() {
         	@Override
         	public void run() {
         		 lancamentoRepository.deleteLancamentosInativos();
         	}
-        }.start();
+        }.start();*/
         
     	return ArquivoMapper.fromEntity(arquivo);
     }
