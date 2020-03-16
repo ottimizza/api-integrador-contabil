@@ -183,6 +183,15 @@ public class RegraService {
         }
         return true;
     }
+    
+    public List<GrupoRegra> findToSalesForce(GrupoRegraDTO filtro, OAuth2Authentication authentication) 
+            throws Exception {
+        ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
+        Example<GrupoRegra> example = Example.of(GrupoRegraMapper.fromDto(filtro), matcher);
+        
+        return grupoRegraRepository.findAll(example);
+    }
+
 
 }
 

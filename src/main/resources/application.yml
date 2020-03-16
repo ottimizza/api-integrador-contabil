@@ -36,6 +36,11 @@ oauth:
   service:
     name: oauth-service
     url: ${OAUTH2_URL:https://development-oauth-server.herokuapp.com}
+    
+salesforce:
+  service:
+    name: salesforce-service
+    url: ${SALES_FORCE_URL:https://api-salesforce-client.herokuapp.com}
 
 security:
   oauth2:
