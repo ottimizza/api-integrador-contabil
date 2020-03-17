@@ -1,4 +1,4 @@
-package br.com.ottimizza.integradorcloud.controllers;
+package br.com.ottimizza.integradorcloud.controllers.v1;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -33,8 +33,8 @@ import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
 import br.com.ottimizza.integradorcloud.services.RegraService;
 
 @RestController
-@RequestMapping("/api/test")
-public class COntrollerTest {
+@RequestMapping("/api/sf")
+public class SalesForceApiController {
 
 	@Inject 
 	SalesForceClient salesForceClient;
@@ -54,32 +54,23 @@ public class COntrollerTest {
 		grupoRegra.setRegras(regraRepository.buscarPorGrupoRegra(id));
 		
 		SFParticularidade sfParticularidade = GrupoRegraMapper.toSalesForce(grupoRegra);
-		System.out.println("id: " + id);
-		System.out.println("sfpart: " + sfParticularidade.toString());
-		System.out.println("auth: " + authorization);
+		
 		return salesForceClient.upsert(id, sfParticularidade, authorization);
 	}
 	
-	@GetMapping("/test")
-	public List<GrupoRegra> get(@Valid GrupoRegraDTO filter, OAuth2Authentication authentication) throws Exception{
-		return regraService.findToSalesForce(filter, authentication);
-	}
-	
-	@PostMapping("/postList")
+	@PostMapping("/importar")
 	public ResponseEntity<String> post(@Valid GrupoRegraDTO filter, @RequestHeader("Authorization") String authorization, OAuth2Authentication authentication) throws Exception {
 		List<GrupoRegra> listaGrupoRegras = regraService.findToSalesForce(filter, authentication);
-		int i = 1;
+		
 		for(GrupoRegra grupoRegra : listaGrupoRegras) {
+			
 			BigInteger grupoRegraId = grupoRegra.getId();
 			grupoRegra.setRegras(regraRepository.buscarPorGrupoRegra(grupoRegraId));
 			SFParticularidade particularidade =  GrupoRegraMapper.toSalesForce(grupoRegra);
 			
-			System.out.println("Montando Particularidade "+ i + " " + particularidade.toString());
-			i ++;
-			
 			salesForceClient.upsert(grupoRegraId, particularidade, authorization);
 		}
-		return ResponseEntity.ok("Deu certo");
+		return ResponseEntity.ok("Enviado regras com sucesso!");
 	}
 	
 	
