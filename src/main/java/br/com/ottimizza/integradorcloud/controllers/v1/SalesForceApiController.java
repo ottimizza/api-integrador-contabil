@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.h2.util.json.JSONObject;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
@@ -29,6 +30,7 @@ import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.sfparticularidade.SFParticularidade;
 import br.com.ottimizza.integradorcloud.domain.mappers.grupo_regra.GrupoRegraMapper;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
+import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
 import br.com.ottimizza.integradorcloud.services.RegraService;
@@ -60,12 +62,12 @@ public class SalesForceApiController {
 	}
 	
 	@PostMapping("/importar")
-	public ResponseEntity<String> post(@Valid GrupoRegraDTO filter, @RequestHeader("Authorization") String authorization, OAuth2Authentication authentication) throws Exception {
+	public ResponseEntity<?> post(@Valid GrupoRegraDTO filter, @RequestHeader("Authorization") String authorization, OAuth2Authentication authentication) throws Exception {
 		if(filter.getCnpjEmpresa() == null || filter.getCnpjEmpresa() == "") {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cnpj da empresa obrigatório para o envio!");
 		}
 		List<GrupoRegra> listaGrupoRegras = regraService.findToSalesForce(filter, authentication);
-		
+
 		for(GrupoRegra grupoRegra : listaGrupoRegras) {
 			
 			BigInteger grupoRegraId = grupoRegra.getId();
@@ -74,7 +76,12 @@ public class SalesForceApiController {
 			
 			salesForceClient.upsert(grupoRegraId, particularidade, authorization);
 		}
-		return ResponseEntity.ok("Enviado regras com sucesso!");
+		
+		GenericResponse<GrupoRegra> resposta = new GenericResponse<GrupoRegra>();
+		resposta.setMessage("Enviado regras com sucesso!");
+		resposta.setStatus("success");
+		
+		return ResponseEntity.ok(resposta);
 	}
 	
 	

@@ -23,6 +23,11 @@ public class GenericResponse<T> implements Serializable {
     @Setter
     @JsonProperty("message")
     private String message;
+    
+    @Getter
+    @Setter
+    @JsonProperty("status")
+    private String status;
 
     @Getter
     @Setter
