@@ -12,6 +12,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,6 +61,9 @@ public class SalesForceApiController {
 	
 	@PostMapping("/importar")
 	public ResponseEntity<String> post(@Valid GrupoRegraDTO filter, @RequestHeader("Authorization") String authorization, OAuth2Authentication authentication) throws Exception {
+		if(filter.getCnpjEmpresa() == null || filter.getCnpjEmpresa() == "") {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cnpj da empresa obrigatório para o envio!");
+		}
 		List<GrupoRegra> listaGrupoRegras = regraService.findToSalesForce(filter, authentication);
 		
 		for(GrupoRegra grupoRegra : listaGrupoRegras) {
