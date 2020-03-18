@@ -86,7 +86,6 @@ public class SalesForceApiController {
 		}
 
 		GenericResponse<GrupoRegra> resposta = new GenericResponse<GrupoRegra>();
-		resposta.setRecords(listaGrupoRegras);
 		resposta.setMessage("Enviado regras com sucesso!");
 		resposta.setStatus("success");
 
