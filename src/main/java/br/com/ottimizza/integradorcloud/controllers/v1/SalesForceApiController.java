@@ -77,15 +77,15 @@ public class SalesForceApiController {
 		List<GrupoRegra> listaGrupoRegras = regraService.findToSalesForce(filter, authentication);
 		double halfList = (listaGrupoRegras.size() / 2);
 
-		List<GrupoRegra> lista1 = listaGrupoRegras.subList(0, (int)(halfList));
-		double halfList1 = (lista1.size()/2);
-		List<GrupoRegra> lista11 = listaGrupoRegras.subList(0, (int)(halfList1));
-		List<GrupoRegra> lista12 = listaGrupoRegras.subList((int)(halfList1), lista1.size());
+		List<GrupoRegra> listaGrupoRegras1 = listaGrupoRegras.subList(0, (int)(halfList));
+		double halfList1 = (listaGrupoRegras1.size()/2);
+		List<GrupoRegra> listaGrupoRegras1_1 = listaGrupoRegras.subList(0, (int)(halfList1));
+		List<GrupoRegra> listaGrupoRegras1_2 = listaGrupoRegras.subList((int)(halfList1), listaGrupoRegras1.size());
 		
 		new Thread() {
 			@Override
 			public void run() {
-				for (GrupoRegra grupoRegra : lista11) {
+				for (GrupoRegra grupoRegra : listaGrupoRegras1_1) {
 
 					List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
 					SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
@@ -97,7 +97,7 @@ public class SalesForceApiController {
 		new Thread() {
 			@Override
 			public void run() {
-				for (GrupoRegra grupoRegra : lista12) {
+				for (GrupoRegra grupoRegra : listaGrupoRegras1_2) {
 
 					List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
 					SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
@@ -106,15 +106,15 @@ public class SalesForceApiController {
 			}
 		}.start();
 		
-		List<GrupoRegra> lista2 = listaGrupoRegras.subList((int)(halfList), listaGrupoRegras.size());
-		double halfList2 = (lista2.size()/2);
-		List<GrupoRegra> lista21 = listaGrupoRegras.subList(0, (int)(halfList2));
-		List<GrupoRegra> lista22 = listaGrupoRegras.subList((int)(halfList2), lista2.size());
+		List<GrupoRegra> listaGrupoRegras2 = listaGrupoRegras.subList((int)(halfList), listaGrupoRegras.size());
+		double halfList2 = (listaGrupoRegras2.size()/2);
+		List<GrupoRegra> listaGrupoRegras2_1 = listaGrupoRegras.subList(0, (int)(halfList2));
+		List<GrupoRegra> listaGrupoRegras2_2 = listaGrupoRegras.subList((int)(halfList2), listaGrupoRegras2.size());
 		
 		new Thread() {
 			@Override
 			public void run() {
-				for (GrupoRegra grupoRegra : lista21) {
+				for (GrupoRegra grupoRegra : listaGrupoRegras2_1) {
 
 					List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
 					SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
@@ -123,7 +123,7 @@ public class SalesForceApiController {
 			}
 		}.start();
 
-		for (GrupoRegra grupoRegra : lista22) {
+		for (GrupoRegra grupoRegra : listaGrupoRegras2_2) {
 
 			List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
 			SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);

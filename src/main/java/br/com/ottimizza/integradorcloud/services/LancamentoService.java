@@ -291,13 +291,15 @@ public class LancamentoService {
                 .organizationId(organizationDTO.getId())
                 .accountingId(organizationDTO.getOrganizationId())
                 .build();
-            Empresa existente = empresaRepository.buscarPorCNPJ(empresa.getCnpj()).orElse(null);
+            // Usado para encontrar uma empresa quando existe varias com o mesmo cnpj 
+            OrganizationDTO contabilidade = oauthClient.buscarEmpresasPorCNPJ(importaLancamentos.getCnpjContabilidade(), authorization).getBody().getRecords().get(0);
+            Empresa existente = empresaRepository.buscaEmpresa(empresa.getCnpj(), contabilidade.getId()).orElse(null);
             if (existente != null && existente.getId() != null) {
                 empresa.setId(existente.getId());
             }
             empresaRepository.save(empresa);
         } else if (response.getPageInfo().getTotalElements() == 0) {
-            throw new IllegalArgumentException("O cnpj informado não stá cadastrado!");
+            throw new IllegalArgumentException("O cnpj informado não está cadastrado!");
         } else if (response.getPageInfo().getTotalElements() > 1) {
             throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
         }
