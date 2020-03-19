@@ -77,13 +77,44 @@ public class SalesForceApiController {
 		List<GrupoRegra> listaGrupoRegras = regraService.findToSalesForce(filter, authentication);
 		double halfList = (listaGrupoRegras.size() / 2);
 
-		List<GrupoRegra> lista1 = listaGrupoRegras.subList(0, (int) (halfList));
-		List<GrupoRegra> lista2 = listaGrupoRegras.subList((int) (halfList), listaGrupoRegras.size());
+		List<GrupoRegra> lista1 = listaGrupoRegras.subList(0, (int)(halfList));
+		double halfList1 = (lista1.size()/2);
+		List<GrupoRegra> lista11 = listaGrupoRegras.subList(0, (int)(halfList1));
+		List<GrupoRegra> lista12 = listaGrupoRegras.subList((int)(halfList1), lista1.size());
 		
 		new Thread() {
 			@Override
 			public void run() {
-				for (GrupoRegra grupoRegra : lista1) {
+				for (GrupoRegra grupoRegra : lista11) {
+
+					List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
+					SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
+					salesForceClient.upsert(grupoRegra.getId(), particularidade, authorization);
+				}
+			}
+		}.start();
+		
+		new Thread() {
+			@Override
+			public void run() {
+				for (GrupoRegra grupoRegra : lista12) {
+
+					List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
+					SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
+					salesForceClient.upsert(grupoRegra.getId(), particularidade, authorization);
+				}
+			}
+		}.start();
+		
+		List<GrupoRegra> lista2 = listaGrupoRegras.subList((int)(halfList), listaGrupoRegras.size());
+		double halfList2 = (lista2.size()/2);
+		List<GrupoRegra> lista21 = listaGrupoRegras.subList(0, (int)(halfList2));
+		List<GrupoRegra> lista22 = listaGrupoRegras.subList((int)(halfList2), lista2.size());
+		
+		new Thread() {
+			@Override
+			public void run() {
+				for (GrupoRegra grupoRegra : lista21) {
 
 					List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
 					SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
@@ -92,7 +123,7 @@ public class SalesForceApiController {
 			}
 		}.start();
 
-		for (GrupoRegra grupoRegra : lista2) {
+		for (GrupoRegra grupoRegra : lista22) {
 
 			List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
 			SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
