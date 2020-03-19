@@ -75,13 +75,27 @@ public class SalesForceApiController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cnpj da empresa obrigatório para o envio!");
 		}
 		List<GrupoRegra> listaGrupoRegras = regraService.findToSalesForce(filter, authentication);
+		double halfList = (listaGrupoRegras.size() / 2);
 
-		for (GrupoRegra grupoRegra : listaGrupoRegras) {
-			
+		List<GrupoRegra> lista1 = listaGrupoRegras.subList(0, (int) (halfList));
+		List<GrupoRegra> lista2 = listaGrupoRegras.subList((int) (halfList), listaGrupoRegras.size());
+		
+		new Thread() {
+			@Override
+			public void run() {
+				for (GrupoRegra grupoRegra : lista1) {
+
+					List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
+					SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
+					salesForceClient.upsert(grupoRegra.getId(), particularidade, authorization);
+				}
+			}
+		}.start();
+
+		for (GrupoRegra grupoRegra : lista2) {
+
 			List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
-			
 			SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
-
 			salesForceClient.upsert(grupoRegra.getId(), particularidade, authorization);
 		}
 
