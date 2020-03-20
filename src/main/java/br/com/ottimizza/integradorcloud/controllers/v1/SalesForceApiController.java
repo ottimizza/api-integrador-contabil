@@ -67,6 +67,11 @@ public class SalesForceApiController {
 
 		return salesForceClient.upsert(id, sfParticularidade, authorization);
 	}
+	
+	@GetMapping("/id")
+	public List<BigInteger> getId(@Valid GrupoRegraDTO filter){
+		return grupoRegraRepository.findId(filter.getCnpjEmpresa(), filter.getTipoLancamento());
+	}
 
 	@PostMapping("/importar")
 	public ResponseEntity<?> post(@Valid GrupoRegraDTO filter, @RequestHeader("Authorization") String authorization,
@@ -75,61 +80,13 @@ public class SalesForceApiController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cnpj da empresa obrigatório para o envio!");
 		}
 		List<GrupoRegra> listaGrupoRegras = regraService.findToSalesForce(filter, authentication);
-		double halfList = (listaGrupoRegras.size() / 2);
-
-		List<GrupoRegra> listaGrupoRegras1 = listaGrupoRegras.subList(0, (int)(halfList));
-		double halfList1 = (listaGrupoRegras1.size()/2);
-		List<GrupoRegra> listaGrupoRegras1_1 = listaGrupoRegras.subList(0, (int)(halfList1));
-		List<GrupoRegra> listaGrupoRegras1_2 = listaGrupoRegras.subList((int)(halfList1), listaGrupoRegras1.size());
 		
-		new Thread() {
-			@Override
-			public void run() {
-				for (GrupoRegra grupoRegra : listaGrupoRegras1_1) {
-
-					List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
-					SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
-					salesForceClient.upsert(grupoRegra.getId(), particularidade, authorization);
-				}
-			}
-		}.start();
-		
-		new Thread() {
-			@Override
-			public void run() {
-				for (GrupoRegra grupoRegra : listaGrupoRegras1_2) {
-
-					List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
-					SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
-					salesForceClient.upsert(grupoRegra.getId(), particularidade, authorization);
-				}
-			}
-		}.start();
-		
-		List<GrupoRegra> listaGrupoRegras2 = listaGrupoRegras.subList((int)(halfList), listaGrupoRegras.size());
-		double halfList2 = (listaGrupoRegras2.size()/2);
-		List<GrupoRegra> listaGrupoRegras2_1 = listaGrupoRegras.subList(0, (int)(halfList2));
-		List<GrupoRegra> listaGrupoRegras2_2 = listaGrupoRegras.subList((int)(halfList2), listaGrupoRegras2.size());
-		
-		new Thread() {
-			@Override
-			public void run() {
-				for (GrupoRegra grupoRegra : listaGrupoRegras2_1) {
-
-					List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
-					SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
-					salesForceClient.upsert(grupoRegra.getId(), particularidade, authorization);
-				}
-			}
-		}.start();
-
-		for (GrupoRegra grupoRegra : listaGrupoRegras2_2) {
+		for (GrupoRegra grupoRegra : listaGrupoRegras) {
 
 			List<Regra> regras = regraRepository.buscarPorGrupoRegra(grupoRegra.getId());
 			SFParticularidade particularidade = GrupoRegraMapper.toSalesForce(grupoRegra, regras, false);
 			salesForceClient.upsert(grupoRegra.getId(), particularidade, authorization);
 		}
-
 		GenericResponse<GrupoRegra> resposta = new GenericResponse<GrupoRegra>();
 		resposta.setMessage("Enviado regras com sucesso!");
 		resposta.setStatus("success");

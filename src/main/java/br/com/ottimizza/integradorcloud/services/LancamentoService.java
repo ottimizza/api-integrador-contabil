@@ -282,6 +282,7 @@ public class LancamentoService {
         GenericPageableResponse<OrganizationDTO> response = oauthClient.buscarEmpresasPorCNPJ(
                 importaLancamentos.getCnpjEmpresa(), authorization
         ).getBody();
+        
         if (response.getPageInfo().getTotalElements() == 1) {
             OrganizationDTO organizationDTO = response.getRecords().get(0);
             Empresa empresa = Empresa.builder() 
@@ -291,6 +292,7 @@ public class LancamentoService {
                 .organizationId(organizationDTO.getId())
                 .accountingId(organizationDTO.getOrganizationId())
                 .build();
+            
             // Usado para encontrar uma empresa quando existe varias com o mesmo cnpj 
             OrganizationDTO contabilidade = oauthClient.buscarEmpresasPorCNPJ(importaLancamentos.getCnpjContabilidade(), authorization).getBody().getRecords().get(0);
             Empresa existente = empresaRepository.buscaEmpresa(empresa.getCnpj(), contabilidade.getId()).orElse(null);
@@ -301,7 +303,7 @@ public class LancamentoService {
         } else if (response.getPageInfo().getTotalElements() == 0) {
             throw new IllegalArgumentException("O cnpj informado não está cadastrado!");
         } else if (response.getPageInfo().getTotalElements() > 1) {
-            throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
+        	throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
         }
 
         // Cria o Arquivo
