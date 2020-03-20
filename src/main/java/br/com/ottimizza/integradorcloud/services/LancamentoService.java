@@ -279,9 +279,12 @@ public class LancamentoService {
         List<Lancamento> results = new ArrayList<>();
 
         // Busca detalhes da empresa relacionada aos lançamento importados.
-        GenericPageableResponse<OrganizationDTO> response = oauthClient.buscarEmpresasPorCNPJ(
-                importaLancamentos.getCnpjEmpresa(), authorization
-        ).getBody();
+        OrganizationDTO contabilidade = oauthClient.buscaContabilidade(
+        			importaLancamentos.getCnpjContabilidade(), 1, true,authorization).getBody().getRecords().get(0);
+        
+        GenericPageableResponse<OrganizationDTO> response = oauthClient.buscaEmpresa(
+        			importaLancamentos.getCnpjEmpresa(), contabilidade.getId(), 2, authorization)
+        .getBody();
         
         if (response.getPageInfo().getTotalElements() == 1) {
             OrganizationDTO organizationDTO = response.getRecords().get(0);
@@ -294,7 +297,6 @@ public class LancamentoService {
                 .build();
             
             // Usado para encontrar uma empresa quando existe varias com o mesmo cnpj 
-            OrganizationDTO contabilidade = oauthClient.buscarEmpresasPorCNPJ(importaLancamentos.getCnpjContabilidade(), authorization).getBody().getRecords().get(0);
             Empresa existente = empresaRepository.buscaEmpresa(empresa.getCnpj(), contabilidade.getId()).orElse(null);
             if (existente != null && existente.getId() != null) {
                 empresa.setId(existente.getId());
