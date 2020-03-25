@@ -63,16 +63,23 @@ public class SalesForceApiController {
 			@RequestHeader("Authorization") String authorization) throws Exception {
 		GrupoRegra grupoRegra = grupoRegraRepository.findById(id).get();
 		List<Regra> regras = regraRepository.buscarPorGrupoRegra(id);
+		int regrasSize = regras.size();
+		System.out.println(regras.size());
+		
 		int contador = 0;
+		int idexRemove = 99;
 		while(contador < regras.size()) {
 			String campo = regras.get(contador).getCampo();
-			if(campo.contains("tipoMovimento")) regras.remove(contador);
+			System.out.println(campo);
+			if(campo.contains("tipoMovimento")) idexRemove = contador;
 			regras.get(contador).setCampo(StringUtils.trataProSalesForce(campo));
 			if(contador > regras.size()) break;
 			contador ++;
 		}
+		regras.remove(idexRemove);
 		grupoRegra.setRegras(regras);
 		SFParticularidade sfParticularidade = GrupoRegraMapper.toSalesForce(grupoRegra);
+		System.out.println("OBJETO SFF "+sfParticularidade.toString());
 		return salesForceClient.upsert(id, sfParticularidade, authorization);
 	}
 	
