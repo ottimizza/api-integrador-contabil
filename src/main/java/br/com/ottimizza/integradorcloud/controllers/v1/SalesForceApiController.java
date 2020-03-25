@@ -65,7 +65,6 @@ public class SalesForceApiController {
 		List<Regra> regras = regraRepository.buscarPorGrupoRegra(id);
 		for(Regra regra : regras) {
 			String campo = regra.getCampo();
-			if(campo.contains("tipoMovimento")) regras.remove(regra);
 			regra.setCampo(StringUtils.trataProSalesForce(campo));
 		}
 		grupoRegra.setRegras(regras);
