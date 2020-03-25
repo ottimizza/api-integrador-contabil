@@ -63,9 +63,12 @@ public class SalesForceApiController {
 			@RequestHeader("Authorization") String authorization) throws Exception {
 		GrupoRegra grupoRegra = grupoRegraRepository.findById(id).get();
 		List<Regra> regras = regraRepository.buscarPorGrupoRegra(id);
+		int contador = 0;
 		for(Regra regra : regras) {
 			String campo = regra.getCampo();
+			if(campo.contains("tipoMovimento")) regras.remove(contador);
 			regra.setCampo(StringUtils.trataProSalesForce(campo));
+			contador ++;
 		}
 		grupoRegra.setRegras(regras);
 		SFParticularidade sfParticularidade = GrupoRegraMapper.toSalesForce(grupoRegra);
