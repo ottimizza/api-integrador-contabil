@@ -279,9 +279,13 @@ public class LancamentoService {
         List<Lancamento> results = new ArrayList<>();
 
         // Busca detalhes da empresa relacionada aos lançamento importados.
-        GenericPageableResponse<OrganizationDTO> response = oauthClient.buscarEmpresasPorCNPJ(
-                importaLancamentos.getCnpjEmpresa(), authorization
-        ).getBody();
+        OrganizationDTO contabilidade = oauthClient.buscaContabilidade(
+        			importaLancamentos.getCnpjContabilidade(), 1, true,authorization).getBody().getRecords().get(0);
+        
+        GenericPageableResponse<OrganizationDTO> response = oauthClient.buscaEmpresa(
+        			importaLancamentos.getCnpjEmpresa(), contabilidade.getId(), 2, authorization)
+        .getBody();
+        
         if (response.getPageInfo().getTotalElements() == 1) {
             OrganizationDTO organizationDTO = response.getRecords().get(0);
             Empresa empresa = Empresa.builder() 
@@ -291,20 +295,24 @@ public class LancamentoService {
                 .organizationId(organizationDTO.getId())
                 .accountingId(organizationDTO.getOrganizationId())
                 .build();
-            Empresa existente = empresaRepository.buscarPorCNPJ(empresa.getCnpj()).orElse(null);
+            
+            // Usado para encontrar uma empresa quando existe varias com o mesmo cnpj 
+            Empresa existente = empresaRepository.buscaEmpresa(empresa.getCnpj(), contabilidade.getId()).orElse(null);
             if (existente != null && existente.getId() != null) {
                 empresa.setId(existente.getId());
             }
             empresaRepository.save(empresa);
         } else if (response.getPageInfo().getTotalElements() == 0) {
-            throw new IllegalArgumentException("O cnpj informado não stá cadastrado!");
+            throw new IllegalArgumentException("O cnpj informado não está cadastrado!");
         } else if (response.getPageInfo().getTotalElements() > 1) {
-            throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
+        	throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
         }
 
         // Cria o Arquivo
         Arquivo arquivo = importaLancamentos.getArquivo();       
-               
+        
+       
+        
         // Iteração e construção de lista de lançamentos 
         List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
             return LancamentoMapper.fromDto(o).toBuilder()
@@ -346,12 +354,12 @@ public class LancamentoService {
     	lancamentoRepository.atualizaStatus(arquivo.getId());
     	
     	//NEW THREAD
-       /* new Thread() {
+        new Thread() {
         	@Override
         	public void run() {
         		 lancamentoRepository.deleteLancamentosInativos();
         	}
-        }.start();*/
+        }.start();
         
     	return ArquivoMapper.fromEntity(arquivo);
     }

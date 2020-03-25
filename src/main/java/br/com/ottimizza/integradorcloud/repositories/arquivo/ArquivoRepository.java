@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.repositories.arquivo;
 
 import java.math.BigInteger;
-import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,8 +15,8 @@ public interface ArquivoRepository extends PagingAndSortingRepository<Arquivo, B
 	@Query(value = 
 		   " SELECT * FROM arquivos a2 									" 
 		  +"		WHERE a2.cnpj_contabilidade = :cnpjContabilidade	" 
-		  +"		AND a2.cnpj_empresa = :cnpjEmpresa					" 
-		  +"		AND a2.nome = :nome 								"
+		  +"		AND   a2.cnpj_empresa = :cnpjEmpresa				" 
+		  +"		AND   a2.nome = :nome 								"
 			,nativeQuery = true)
 	Arquivo findArquivo(@Param("cnpjEmpresa") String cnpjEmpresa, @Param("cnpjContabilidade") String cnpjContabildade, @Param("nome") String nome);
 	

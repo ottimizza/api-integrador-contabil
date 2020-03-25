@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.domain.mappers.regra;
 
+
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.regra.RegraDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.grupo_regra.GrupoRegraMapper;
@@ -38,5 +39,4 @@ public class RegraMapper {
                 )
             .build();      
     }
-
 }
