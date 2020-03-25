@@ -64,10 +64,11 @@ public class SalesForceApiController {
 		GrupoRegra grupoRegra = grupoRegraRepository.findById(id).get();
 		List<Regra> regras = regraRepository.buscarPorGrupoRegra(id);
 		int contador = 0;
-		for(Regra regra : regras) {
-			String campo = regra.getCampo();
+		while(contador <= regras.size()) {
+			String campo = regras.get(contador).getCampo();
 			if(campo.contains("tipoMovimento")) regras.remove(contador);
-			regra.setCampo(StringUtils.trataProSalesForce(campo));
+			regras.get(contador).setCampo(StringUtils.trataProSalesForce(campo));
+			if(contador > regras.size()) break;
 			contador ++;
 		}
 		grupoRegra.setRegras(regras);
