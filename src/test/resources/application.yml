@@ -33,3 +33,8 @@ depara:
   service:
     name: depara-service
     url: ${DEPARA_BASE_URL:https://development-api-depara.herokuapp.com}
+    
+salesforce:
+  service:
+    name: salesforce-service
+    url: ${SALES_FORCE_URL:https://api-salesforce-client.herokuapp.com}

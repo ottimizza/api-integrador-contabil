@@ -64,7 +64,6 @@ public class SalesForceApiController {
 		grupoRegra.setRegras(regraRepository.buscarPorGrupoRegra(id));
 
 		SFParticularidade sfParticularidade = GrupoRegraMapper.toSalesForce(grupoRegra);
-
 		return salesForceClient.upsert(id, sfParticularidade, authorization);
 	}
 	
