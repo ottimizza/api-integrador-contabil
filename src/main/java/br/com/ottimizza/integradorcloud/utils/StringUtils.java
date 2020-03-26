@@ -20,6 +20,9 @@ public class StringUtils {
 		if (campo.contains("documento")) {
 			campo = "Documento/NF contém";
 		}
+		if(campo.contains("nomeArquivo")) {
+			campo = "Nome do Arquivo contém";
+		}
 		return campo;
 	}
 
