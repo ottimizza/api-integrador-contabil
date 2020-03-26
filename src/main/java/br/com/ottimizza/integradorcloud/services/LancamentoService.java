@@ -261,9 +261,13 @@ public class LancamentoService {
 
 		if (response.getPageInfo().getTotalElements() == 1) {
 			OrganizationDTO organizationDTO = response.getRecords().get(0);
-			Empresa empresa = Empresa.builder().razaoSocial(organizationDTO.getName())
-					.cnpj(organizationDTO.getCnpj().replaceAll("\\D*", "")).codigoERP(organizationDTO.getCodigoERP())
-					.organizationId(organizationDTO.getId()).accountingId(organizationDTO.getOrganizationId()).build();
+			Empresa empresa = Empresa.builder()
+					.razaoSocial(organizationDTO.getName())
+					.cnpj(organizationDTO.getCnpj().replaceAll("\\D*", ""))
+					.codigoERP(organizationDTO.getCodigoERP())
+					.organizationId(organizationDTO.getId())
+					.accountingId(organizationDTO.getOrganizationId())
+				.build();
 
 			// Usado para encontrar uma empresa quando existe varias com o mesmo cnpj
 			Empresa existente = empresaRepository.buscaEmpresa(empresa.getCnpj(), contabilidade.getId()).orElse(null);
@@ -272,27 +276,32 @@ public class LancamentoService {
 			}
 			empresaRepository.save(empresa);
 		} else if (response.getPageInfo().getTotalElements() == 0) {
+			
 			try {
 				OrganizationDTO empresaOauth = OrganizationDTO.builder()
+								.name(importaLancamentos.getNomeEmpresa())
 								.cnpj(importaLancamentos.getCnpjEmpresa().replaceAll("\\D*", ""))
-								.codigoERP(importaLancamentos.getCodEmpresa()).
-								organizationId(contabilidade.getId()).type(2)
+								.codigoERP(importaLancamentos.getCodEmpresa())
+								.organizationId(contabilidade.getId())
+								.type(2)
 						.build();
-				oauthClient.salvaEmpresa(empresaOauth, authorization);
-
+				
 				Empresa empresaIntegrador = Empresa.builder()
+								.razaoSocial(importaLancamentos.getNomeEmpresa())
 								.cnpj(empresaOauth.getCnpj().replaceAll("\\D*", ""))
 								.codigoERP(empresaOauth.getCodigoERP())
 								.organizationId(empresaOauth.getId())
 								.accountingId(empresaOauth.getOrganizationId())
 						.build();
-
+				
 				Empresa existente = empresaRepository.buscaEmpresa(empresaIntegrador.getCnpj(), contabilidade.getId())
 						.orElse(null);
 				if (existente != null && existente.getId() != null) {
 					empresaIntegrador.setId(existente.getId());
 				}
 				empresaRepository.save(empresaIntegrador);
+				oauthClient.salvaEmpresa(empresaOauth, authorization);
+
 			} catch (Exception ex) {
 				ex.getMessage();
 			}
@@ -300,6 +309,7 @@ public class LancamentoService {
 			throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
 		}
 
+		
 		// Cria o Arquivo
 		Arquivo arquivo = importaLancamentos.getArquivo();
 

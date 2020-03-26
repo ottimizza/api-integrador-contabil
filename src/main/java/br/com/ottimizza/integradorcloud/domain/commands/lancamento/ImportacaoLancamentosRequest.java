@@ -23,6 +23,8 @@ public class ImportacaoLancamentosRequest implements Serializable {
     private Arquivo arquivo;
     
     private String codEmpresa;
+    
+    private String nomeEmpresa;
 
     private List<LancamentoDTO> lancamentos;
 
