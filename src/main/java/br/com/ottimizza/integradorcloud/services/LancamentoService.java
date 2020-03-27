@@ -299,6 +299,7 @@ public class LancamentoService {
 				if (existente != null && existente.getId() != null) {
 					empresaIntegrador.setId(existente.getId());
 				}
+				
 				empresaRepository.save(empresaIntegrador);
 				oauthClient.salvaEmpresa(empresaOauth, authorization);
 
@@ -347,14 +348,6 @@ public class LancamentoService {
 		}
 
 		lancamentoRepository.atualizaStatus(arquivo.getId());
-
-		// NEW THREAD
-		new Thread() {
-			@Override
-			public void run() {
-				lancamentoRepository.deleteLancamentosInativos();
-			}
-		}.start();
 
 		return ArquivoMapper.fromEntity(arquivo);
 	}
