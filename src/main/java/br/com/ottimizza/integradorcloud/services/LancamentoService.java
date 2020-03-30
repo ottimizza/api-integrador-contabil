@@ -36,7 +36,6 @@ import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 import br.com.ottimizza.integradorcloud.domain.models.KPILancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
-import br.com.ottimizza.integradorcloud.domain.models.Organization;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.repositories.arquivo.ArquivoRepository;
@@ -284,7 +283,7 @@ public class LancamentoService {
 								.name(importaLancamentos.getNomeEmpresa())
 								.cnpj(importaLancamentos.getCnpjEmpresa().replaceAll("\\D*", ""))
 								.codigoERP(importaLancamentos.getCodEmpresa())
-								.organization(Organization.builder().id(contabilidade.getId()).build())
+								.organization(OrganizationDTO.builder().id(contabilidade.getId()).build())
 								.type(2)
 						.build();
 				Empresa empresaIntegrador = Empresa.builder()
