@@ -13,7 +13,8 @@ import br.com.ottimizza.integradorcloud.domain.dtos.sfparticularidade.SFParticul
 
 @FeignClient(name = "${salesforce.service.name}", url = "${salesforce.service.url}" )
 public interface SalesForceClient {
-
+	
+	
 	@PostMapping("/api/v1/salesforce/sobjects/Roteiros_vs_Contas__c/ID_Externo__c/{id}")
 	public ResponseEntity<String> upsert(@PathVariable("id") BigInteger id ,
 							   @RequestBody SFParticularidade particularidade,

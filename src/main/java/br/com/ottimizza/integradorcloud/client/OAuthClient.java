@@ -42,7 +42,7 @@ public interface OAuthClient {
     																			 @RequestHeader("Authorization") String authorization);
     
     @PostMapping("/api/v1/organizations")
-    public ResponseEntity<GenericPageableResponse<OrganizationDTO>> salvaEmpresa(@RequestBody OrganizationDTO organization, 
+    public ResponseEntity<GenericPageableResponse<OrganizationDTO>> salvaEmpresa(@RequestBody OrganizationDTO organization,
     																			 @RequestHeader("Authorization") String authorization);
     
 }

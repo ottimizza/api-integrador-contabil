@@ -43,7 +43,7 @@ import br.com.ottimizza.integradorcloud.services.RegraService;
 import br.com.ottimizza.integradorcloud.utils.StringUtils;
 
 @RestController
-@RequestMapping("/api/sf")
+@RequestMapping("/api/v1/salesforce")
 public class SalesForceApiController {
 
 	@Inject
@@ -75,6 +75,7 @@ public class SalesForceApiController {
 		}
 		if(idexRemove != -1) regras.remove(idexRemove);
 		grupoRegra.setRegras(regras);
+		System.out.println("autorization "+authorization);
 		SFParticularidade sfParticularidade = GrupoRegraMapper.toSalesForce(grupoRegra);
 		return salesForceClient.upsert(id, sfParticularidade, authorization);
 	}

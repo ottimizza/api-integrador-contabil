@@ -275,7 +275,7 @@ public class LancamentoService {
 				empresa.setId(existente.getId());
 			}
 			empresaRepository.save(empresa);
-		} else if (response.getPageInfo().getTotalElements() == 0) {
+			} else if (response.getPageInfo().getTotalElements() == 0) {
 			
 			try {
 				OrganizationDTO empresaOauth = OrganizationDTO.builder()
@@ -285,6 +285,10 @@ public class LancamentoService {
 								.organizationId(contabilidade.getId())
 								.type(2)
 						.build();
+				
+				System.out.println("Empresa p Oauth "+empresaOauth.toString()+" antes do metodo");
+				oauthClient.salvaEmpresa(empresaOauth, authorization);
+				System.out.println("Empresa p Oauth "+empresaOauth.toString()+" dps do metodo");
 				
 				Empresa empresaIntegrador = Empresa.builder()
 								.razaoSocial(importaLancamentos.getNomeEmpresa())
@@ -299,11 +303,11 @@ public class LancamentoService {
 				if (existente != null && existente.getId() != null) {
 					empresaIntegrador.setId(existente.getId());
 				}
-				
 				empresaRepository.save(empresaIntegrador);
-				oauthClient.salvaEmpresa(empresaOauth, authorization);
+				
 
 			} catch (Exception ex) {
+				System.out.println("Entrou no catch de salvar empresas");
 				ex.getMessage();
 			}
 		} else if (response.getPageInfo().getTotalElements() > 1) {
