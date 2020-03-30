@@ -3,6 +3,7 @@ package br.com.ottimizza.integradorcloud.domain.dtos.organization;
 import java.io.Serializable;
 import java.math.BigInteger;
 
+import br.com.ottimizza.integradorcloud.domain.models.Organization;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,6 +44,7 @@ public class OrganizationDTO implements Serializable {
     
     private String avatar;
 
+    private Organization organization;
     
     private BigInteger organizationId;
 
