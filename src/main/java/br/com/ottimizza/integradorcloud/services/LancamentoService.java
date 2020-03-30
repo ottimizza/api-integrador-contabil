@@ -298,10 +298,12 @@ public class LancamentoService {
 				if (existente != null && existente.getId() != null) {
 					empresaIntegrador.setId(existente.getId());
 				}
-				
+				System.out.println("Empresa integrador "+empresaIntegrador.toString());
 				empresaRepository.save(empresaIntegrador);
 
+				System.out.println("Empresa oauth antess "+ empresaOauth.toString());
 				oauthClient.salvaEmpresa(empresaOauth, authorization);
+				System.out.println("Empresa oauth dps " + empresaOauth.toString());
 				
 				
 
