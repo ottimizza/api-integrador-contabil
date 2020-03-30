@@ -285,9 +285,6 @@ public class LancamentoService {
 								.organizationId(contabilidade.getId())
 								.type(2)
 						.build();
-				
-				
-				
 				Empresa empresaIntegrador = Empresa.builder()
 								.razaoSocial(importaLancamentos.getNomeEmpresa())
 								.cnpj(empresaOauth.getCnpj().replaceAll("\\D*", ""))
@@ -301,15 +298,16 @@ public class LancamentoService {
 				if (existente != null && existente.getId() != null) {
 					empresaIntegrador.setId(existente.getId());
 				}
-				System.out.println("Salvando empresa integrador");
+				
 				empresaRepository.save(empresaIntegrador);
-				System.out.println("Empresa p Oauth "+empresaOauth.toString()+" antes do metodo");
+
 				oauthClient.salvaEmpresa(empresaOauth, authorization);
-				System.out.println("Empresa p Oauth "+empresaOauth.toString()+" dps do metodo");
+				
+				
 
 			} catch (Exception ex) {
 				System.out.println("Entrou no catch de salvar empresas");
-				ex.getMessage();
+				System.out.println("Mensagem "+ex.getMessage());
 			}
 		} else if (response.getPageInfo().getTotalElements() > 1) {
 			throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
