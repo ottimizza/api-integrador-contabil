@@ -284,6 +284,7 @@ public class LancamentoService {
 								.cnpj(importaLancamentos.getCnpjEmpresa().replaceAll("\\D*", ""))
 								.codigoERP(importaLancamentos.getCodEmpresa())
 								.organization(OrganizationDTO.builder().id(contabilidade.getId()).build())
+								.organizationId(contabilidade.getId())
 								.type(2)
 						.build();
 				Empresa empresaIntegrador = Empresa.builder()
