@@ -258,8 +258,6 @@ public class LancamentoService {
 
 		GenericPageableResponse<OrganizationDTO> response = oauthClient
 				.buscaEmpresa(importaLancamentos.getCnpjEmpresa(), contabilidade.getId(), 2, authorization).getBody();
-
-		Lancamento test = lancamentoRepository.buscarLancamentosPorRegra(null, null, null, null).toList().get(0);
 		
 		if (response.getPageInfo().getTotalElements() == 1) {
 			OrganizationDTO organizationDTO = response.getRecords().get(0);
