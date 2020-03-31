@@ -259,6 +259,8 @@ public class LancamentoService {
 		GenericPageableResponse<OrganizationDTO> response = oauthClient
 				.buscaEmpresa(importaLancamentos.getCnpjEmpresa(), contabilidade.getId(), 2, authorization).getBody();
 
+		Lancamento test = lancamentoRepository.buscarLancamentosPorRegra(null, null, null, null).toList().get(0);
+		
 		if (response.getPageInfo().getTotalElements() == 1) {
 			OrganizationDTO organizationDTO = response.getRecords().get(0);
 			Empresa empresa = Empresa.builder()
@@ -283,10 +285,14 @@ public class LancamentoService {
 								.name(importaLancamentos.getNomeEmpresa())
 								.cnpj(importaLancamentos.getCnpjEmpresa().replaceAll("\\D*", ""))
 								.codigoERP(importaLancamentos.getCodEmpresa())
-								.organization(OrganizationDTO.builder().id(contabilidade.getId()).build())
+								.organization(OrganizationDTO.builder()
+											.id(contabilidade.getId())
+											.cnpj(importaLancamentos.getCnpjContabilidade())											
+											.build())
 								.organizationId(contabilidade.getId())
 								.type(2)
 						.build();
+				
 				Empresa empresaIntegrador = Empresa.builder()
 								.razaoSocial(importaLancamentos.getNomeEmpresa())
 								.cnpj(empresaOauth.getCnpj().replaceAll("\\D*", ""))
@@ -300,12 +306,9 @@ public class LancamentoService {
 				if (existente != null && existente.getId() != null) {
 					empresaIntegrador.setId(existente.getId());
 				}
-				System.out.println("Empresa integrador "+empresaIntegrador.toString());
+				
 				empresaRepository.save(empresaIntegrador);
-
-				System.out.println("Empresa oauth antess "+ empresaOauth.toString());
 				oauthClient.salvaEmpresa(empresaOauth, authorization);
-				System.out.println("Empresa oauth dps " + empresaOauth.toString());
 				
 				
 
