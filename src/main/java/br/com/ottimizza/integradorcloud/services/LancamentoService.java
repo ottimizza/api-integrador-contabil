@@ -311,8 +311,7 @@ public class LancamentoService {
 				
 
 			} catch (Exception ex) {
-				System.out.println("Entrou no catch de salvar empresas");
-				System.out.println("Mensagem "+ex.getMessage());
+				ex.getMessage();
 			}
 		} else if (response.getPageInfo().getTotalElements() > 1) {
 			throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
