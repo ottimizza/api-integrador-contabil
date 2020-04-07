@@ -40,9 +40,10 @@ import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
 import br.com.ottimizza.integradorcloud.services.RegraService;
+import br.com.ottimizza.integradorcloud.utils.StringUtils;
 
 @RestController
-@RequestMapping("/api/sf")
+@RequestMapping("/api/v1/salesforce")
 public class SalesForceApiController {
 
 	@Inject
@@ -61,8 +62,20 @@ public class SalesForceApiController {
 	public ResponseEntity<String> patch(@PathVariable BigInteger id,
 			@RequestHeader("Authorization") String authorization) throws Exception {
 		GrupoRegra grupoRegra = grupoRegraRepository.findById(id).get();
-		grupoRegra.setRegras(regraRepository.buscarPorGrupoRegra(id));
-
+		List<Regra> regras = regraRepository.buscarPorGrupoRegra(id);
+		
+		int contador = 0;
+		int idexRemove = -1;
+		
+		for(Regra regra : regras) {
+			String campo = regra.getCampo();
+			if(campo.contains("tipoMovimento")) idexRemove = contador;
+			regra.setCampo(StringUtils.trataProSalesForce(campo));
+			contador ++;
+		}
+		if(idexRemove != -1) regras.remove(idexRemove);
+		grupoRegra.setRegras(regras);
+		System.out.println("autorization "+authorization);
 		SFParticularidade sfParticularidade = GrupoRegraMapper.toSalesForce(grupoRegra);
 		return salesForceClient.upsert(id, sfParticularidade, authorization);
 	}

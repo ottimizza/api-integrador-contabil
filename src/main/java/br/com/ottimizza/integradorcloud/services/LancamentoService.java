@@ -47,358 +47,354 @@ import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
 @Service // @formatter:off
 public class LancamentoService {
 
-    @Inject
-    LancamentoRepository lancamentoRepository;
-    
-    @Inject
-    GrupoRegraRepository grupoRegraRepository;
+	@Inject
+	LancamentoRepository lancamentoRepository;
 
-    @Inject
-    RegraRepository regraRepository;
+	@Inject
+	GrupoRegraRepository grupoRegraRepository;
 
-    @Inject
-    ArquivoRepository arquivoRepository;
-    
-    @Inject
-    EmpresaRepository empresaRepository;
+	@Inject
+	RegraRepository regraRepository;
 
-    @Inject
-    DeParaClient deParaContaClient;
+	@Inject
+	ArquivoRepository arquivoRepository;
 
-    @Inject 
-    OAuthClient oauthClient;
+	@Inject
+	EmpresaRepository empresaRepository;
 
-    public Lancamento buscarPorId(BigInteger id) throws LancamentoNaoEncontradoException {
-        return lancamentoRepository.findById(id)
-            .orElseThrow(() -> new LancamentoNaoEncontradoException("Não foi encontrado nenhum lançamento com o Id especificado!"));
-    }
+	@Inject
+	DeParaClient deParaContaClient;
 
-    public Page<LancamentoDTO> buscarTodos(LancamentoDTO filter, PageCriteria criteria, Principal principal) throws Exception {
-        ExampleMatcher matcher = ExampleMatcher.matching()
-            .withStringMatcher(StringMatcher.CONTAINING);
-        Example<Lancamento> example = Example.of(LancamentoMapper.fromDto(filter), matcher); 
-        return lancamentoRepository.findAll(example, LancamentoDTO.getPageRequest(criteria)).map(LancamentoMapper::fromEntity);
-    }
+	@Inject
+	OAuthClient oauthClient;
 
-    public KPILancamento buscaStatusLancementosPorCNPJEmpresa(String cnpjEmpresa, OAuth2Authentication authentication) throws Exception {
-        return lancamentoRepository.buscaStatusLancementosPorCNPJEmpresa(cnpjEmpresa);
-    }
-    
-    public String apagarTodos(LancamentoDTO filter, PageCriteria criteria, boolean limparRegras, Principal principal) throws Exception {
-        Integer affectedRows = lancamentoRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
-        if (limparRegras) {
-            regraRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
-            grupoRegraRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
-        }
-        if (affectedRows > 0) {
-            return MessageFormat.format("{0} lançamentos excluídos. ", affectedRows);
-        }
-        return "Nenhum registro excluído!";
-    }
+	public Lancamento buscarPorId(BigInteger id) throws LancamentoNaoEncontradoException {
+		return lancamentoRepository.findById(id).orElseThrow(() -> new LancamentoNaoEncontradoException(
+				"Não foi encontrado nenhum lançamento com o Id especificado!"));
+	}
 
-    public LancamentoDTO buscarPorId(BigInteger id, Principal principal) throws LancamentoNaoEncontradoException {
-        return LancamentoMapper.fromEntity(buscarPorId(id));
-    }
+	public Page<LancamentoDTO> buscarTodos(LancamentoDTO filter, PageCriteria criteria, Principal principal)
+			throws Exception {
+		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
+		Example<Lancamento> example = Example.of(LancamentoMapper.fromDto(filter), matcher);
+		return lancamentoRepository.findAll(example, LancamentoDTO.getPageRequest(criteria))
+				.map(LancamentoMapper::fromEntity);
+	}
 
-    //
-    //
-    public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, OAuth2Authentication authentication) throws Exception {
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
-        String authorization = MessageFormat.format("Bearer {0}", accessToken);
+	public KPILancamento buscaStatusLancementosPorCNPJEmpresa(String cnpjEmpresa, OAuth2Authentication authentication)
+			throws Exception {
+		return lancamentoRepository.buscaStatusLancementosPorCNPJEmpresa(cnpjEmpresa);
+	}
 
-        Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
+	public String apagarTodos(LancamentoDTO filter, PageCriteria criteria, boolean limparRegras, Principal principal)
+			throws Exception {
+		Integer affectedRows = lancamentoRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
+		if (limparRegras) {
+			regraRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
+			grupoRegraRepository.apagarTodosPorCnpjEmpresa(filter.getCnpjEmpresa());
+		}
+		if (affectedRows > 0) {
+			return MessageFormat.format("{0} lançamentos excluídos. ", affectedRows);
+		}
+		return "Nenhum registro excluído!";
+	}
 
-        // Busca detalhes da empresa relacionada aos lançamento importados.
-        GenericPageableResponse<OrganizationDTO> response = oauthClient.buscarEmpresasPorCNPJ(
-                lancamentoDTO.getCnpjEmpresa(), authorization
-        ).getBody();
-        if (response.getPageInfo().getTotalElements() == 1) {
-            OrganizationDTO organizationDTO = response.getRecords().get(0);
-            Empresa empresa = Empresa.builder() 
-                .razaoSocial(organizationDTO.getName())
-                .cnpj(organizationDTO.getCnpj().replaceAll("\\D*", ""))
-                .codigoERP(organizationDTO.getCodigoERP())
-                .organizationId(organizationDTO.getId())
-                .accountingId(organizationDTO.getOrganizationId())
-                .build();
-            Empresa existente = empresaRepository.buscarPorCNPJ(empresa.getCnpj()).orElse(null);
-            if (existente != null && existente.getId() != null) {
-                empresa.setId(existente.getId());
-            }
-            empresaRepository.save(empresa);
-        } else if (response.getPageInfo().getTotalElements() == 0) {
-            throw new IllegalArgumentException("O cnpj informado não stá cadastrado!");
-        } else if (response.getPageInfo().getTotalElements() > 1) {
-            throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
-        }
+	public LancamentoDTO buscarPorId(BigInteger id, Principal principal) throws LancamentoNaoEncontradoException {
+		return LancamentoMapper.fromEntity(buscarPorId(id));
+	}
 
-        validaLancamento(lancamento);
-        
-        lancamento.setArquivo(arquivoRepository.save(
-            lancamento.getArquivo().toBuilder()
-                .cnpjContabilidade(lancamentoDTO.getCnpjContabilidade())
-                .cnpjEmpresa(lancamentoDTO.getCnpjEmpresa())
-            .build()
-        ));
+	//
+	//
+	public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, OAuth2Authentication authentication) throws Exception {
+		final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+		String accessToken = details.getTokenValue();
+		String authorization = MessageFormat.format("Bearer {0}", accessToken);
 
-        lancamento.setNomeArquivo(lancamento.getArquivo().getNome());
-        lancamento.setCnpjContabilidade(lancamento.getCnpjContabilidade().replaceAll("\\D*", ""));
-        lancamento.setCnpjEmpresa(lancamento.getCnpjEmpresa().replaceAll("\\D*", ""));
+		Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
 
-        return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
-    }
+		// Busca detalhes da empresa relacionada aos lançamento importados.
+		GenericPageableResponse<OrganizationDTO> response = oauthClient
+				.buscarEmpresasPorCNPJ(lancamentoDTO.getCnpjEmpresa(), authorization).getBody();
+		if (response.getPageInfo().getTotalElements() == 1) {
+			OrganizationDTO organizationDTO = response.getRecords().get(0);
+			Empresa empresa = Empresa.builder().razaoSocial(organizationDTO.getName())
+					.cnpj(organizationDTO.getCnpj().replaceAll("\\D*", "")).codigoERP(organizationDTO.getCodigoERP())
+					.organizationId(organizationDTO.getId()).accountingId(organizationDTO.getOrganizationId()).build();
+			Empresa existente = empresaRepository.buscarPorCNPJ(empresa.getCnpj()).orElse(null);
+			if (existente != null && existente.getId() != null) {
+				empresa.setId(existente.getId());
+			}
+			empresaRepository.save(empresa);
+		} else if (response.getPageInfo().getTotalElements() == 0) {
+			throw new IllegalArgumentException("O cnpj informado não stá cadastrado!");
+		} else if (response.getPageInfo().getTotalElements() > 1) {
+			throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
+		}
 
-    public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
-        Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
+		validaLancamento(lancamento);
 
-        validaLancamento(lancamento);
-        
-        lancamento.setArquivo(arquivoRepository.save(
-            lancamento.getArquivo().toBuilder()
-                .cnpjContabilidade(lancamentoDTO.getCnpjContabilidade())
-                .cnpjEmpresa(lancamentoDTO.getCnpjEmpresa())
-            .build()
-        ));
-    
+		lancamento.setArquivo(arquivoRepository
+				.save(lancamento.getArquivo().toBuilder().cnpjContabilidade(lancamentoDTO.getCnpjContabilidade())
+						.cnpjEmpresa(lancamentoDTO.getCnpjEmpresa()).build()));
 
-        lancamento.setCnpjContabilidade(lancamento.getCnpjContabilidade().replaceAll("\\D*", ""));
-        lancamento.setCnpjEmpresa(lancamento.getCnpjEmpresa().replaceAll("\\D*", ""));
+		lancamento.setNomeArquivo(lancamento.getArquivo().getNome());
+		lancamento.setCnpjContabilidade(lancamento.getCnpjContabilidade().replaceAll("\\D*", ""));
+		lancamento.setCnpjEmpresa(lancamento.getCnpjEmpresa().replaceAll("\\D*", ""));
 
-        return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
-    }
+		return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
+	}
 
-    public LancamentoDTO salvar(BigInteger id, LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
-        Lancamento lancamento = lancamentoDTO.patch(buscarPorId(id));
-        validaLancamento(lancamento);
-        return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
-    }
+	public LancamentoDTO salvar(LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
+		Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
 
-    //
-    //
-    public LancamentoDTO salvarTransacaoComoDePara(BigInteger id, String contaMovimento, boolean salvarParaTodos, OAuth2Authentication authentication) throws Exception {
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
+		validaLancamento(lancamento);
 
-        Lancamento lancamento = lancamentoRepository.save(
-            this.buscarPorId(id)
-            .toBuilder()
-                .contaMovimento(contaMovimento)
-                .tipoConta(Lancamento.TipoConta.DEPARA)
-            .build()
-        );
+		lancamento.setArquivo(arquivoRepository
+				.save(lancamento.getArquivo().toBuilder().cnpjContabilidade(lancamentoDTO.getCnpjContabilidade())
+						.cnpjEmpresa(lancamentoDTO.getCnpjEmpresa()).build()));
 
-        String cnpjEmpresa = lancamento.getCnpjEmpresa();
+		lancamento.setCnpjContabilidade(lancamento.getCnpjContabilidade().replaceAll("\\D*", ""));
+		lancamento.setCnpjEmpresa(lancamento.getCnpjEmpresa().replaceAll("\\D*", ""));
 
-        DeParaContaDTO deParaContaDTO = DeParaContaDTO.builder()
-                .cnpjContabilidade(lancamento.getCnpjContabilidade())
-                .cnpjEmpresa(lancamento.getCnpjEmpresa())
-                .descricao(lancamento.getDescricao())
-                .contaDebito(lancamento.getTipoLancamento().equals(Lancamento.Tipo.PAGAMENTO) ? contaMovimento : null)
-                .contaCredito(lancamento.getTipoLancamento().equals(Lancamento.Tipo.RECEBIMENTO) ? contaMovimento : null)
-            .build();
+		return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
+	}
 
-        deParaContaClient.salvar(deParaContaDTO, "Bearer " + accessToken);
+	public LancamentoDTO salvar(BigInteger id, LancamentoDTO lancamentoDTO, Principal principal) throws Exception {
+		Lancamento lancamento = lancamentoDTO.patch(buscarPorId(id));
+		validaLancamento(lancamento);
+		return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
+	}
 
-        if (salvarParaTodos) {
-            lancamentoRepository.atualizarContaMovimentoPorDescricaoETipoLancamento(
-                lancamento.getDescricao(), lancamento.getTipoLancamento(), lancamento.getContaMovimento(), cnpjEmpresa
-            );
-        }  else {
-            lancamentoRepository.atualizarContaSugeridaPorDescricaoETipoLancamento(
-                lancamento.getDescricao(), lancamento.getTipoLancamento(), lancamento.getContaMovimento(), cnpjEmpresa
-            );
-        }
-        
+	//
+	//
+	public LancamentoDTO salvarTransacaoComoDePara(BigInteger id, String contaMovimento, boolean salvarParaTodos,
+			OAuth2Authentication authentication) throws Exception {
+		final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+		String accessToken = details.getTokenValue();
 
-        return LancamentoMapper.fromEntity(lancamento);
-    }
+		Lancamento lancamento = lancamentoRepository.save(this.buscarPorId(id).toBuilder()
+				.contaMovimento(contaMovimento).tipoConta(Lancamento.TipoConta.DEPARA).build());
 
-    public LancamentoDTO salvarTransacaoComoOutrasContas(BigInteger id, String contaMovimento, Principal principal) throws Exception {
-        return LancamentoMapper.fromEntity(lancamentoRepository.save(
-            buscarPorId(id)
-            .toBuilder()
-                .contaMovimento(contaMovimento)
-                .tipoConta(Short.parseShort("2"))
-            .build()
-        ));
-    }
+		String cnpjEmpresa = lancamento.getCnpjEmpresa();
 
-    public LancamentoDTO salvarTransacaoComoIgnorar(BigInteger id, OAuth2Authentication authentication) throws Exception {
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
+		DeParaContaDTO deParaContaDTO = DeParaContaDTO.builder().cnpjContabilidade(lancamento.getCnpjContabilidade())
+				.cnpjEmpresa(lancamento.getCnpjEmpresa()).descricao(lancamento.getDescricao())
+				.contaDebito(lancamento.getTipoLancamento().equals(Lancamento.Tipo.PAGAMENTO) ? contaMovimento : null)
+				.contaCredito(
+						lancamento.getTipoLancamento().equals(Lancamento.Tipo.RECEBIMENTO) ? contaMovimento : null)
+				.build();
 
-        Lancamento lancamento = lancamentoRepository.save(
-            this.buscarPorId(id)
-            .toBuilder()
-                .contaMovimento("IGNORAR")
-                .tipoConta(Lancamento.TipoConta.IGNORAR)
-            .build()
-        );
+		deParaContaClient.salvar(deParaContaDTO, "Bearer " + accessToken);
 
-        String cnpjEmpresa = lancamento.getCnpjEmpresa();
+		if (salvarParaTodos) {
+			lancamentoRepository.atualizarContaMovimentoPorDescricaoETipoLancamento(lancamento.getDescricao(),
+					lancamento.getTipoLancamento(), lancamento.getContaMovimento(), cnpjEmpresa);
+		} else {
+			lancamentoRepository.atualizarContaSugeridaPorDescricaoETipoLancamento(lancamento.getDescricao(),
+					lancamento.getTipoLancamento(), lancamento.getContaMovimento(), cnpjEmpresa);
+		}
 
-        DeParaContaDTO deParaContaDTO = DeParaContaDTO.builder()
-                .cnpjContabilidade(lancamento.getCnpjContabilidade())
-                .cnpjEmpresa(lancamento.getCnpjEmpresa())
-                .descricao(lancamento.getDescricao())
-                .contaDebito(lancamento.getTipoLancamento().equals(Lancamento.Tipo.PAGAMENTO) ? "IGNORAR" : null)
-                .contaCredito(lancamento.getTipoLancamento().equals(Lancamento.Tipo.RECEBIMENTO) ? "IGNORAR" : null)
-            .build();
+		return LancamentoMapper.fromEntity(lancamento);
+	}
 
-        deParaContaClient.salvar(deParaContaDTO, "Bearer " + accessToken);
-        lancamentoRepository.atualizarContaSugeridaPorDescricaoETipoLancamento(
-            lancamento.getDescricao(), lancamento.getTipoLancamento(), lancamento.getContaMovimento(), cnpjEmpresa
-        );
+	public LancamentoDTO salvarTransacaoComoOutrasContas(BigInteger id, String contaMovimento, Principal principal)
+			throws Exception {
+		return LancamentoMapper.fromEntity(lancamentoRepository.save(
+				buscarPorId(id).toBuilder().contaMovimento(contaMovimento).tipoConta(Short.parseShort("2")).build()));
+	}
 
-        return LancamentoMapper.fromEntity(lancamento);
-    }
+	public LancamentoDTO salvarTransacaoComoIgnorar(BigInteger id, OAuth2Authentication authentication)
+			throws Exception {
+		final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+		String accessToken = details.getTokenValue();
 
-    //
-    //
-    //
-    //
-    //
-    //
-    public Page<LancamentoDTO> buscarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, PageCriteria pageCriteria, 
-                                                         Principal principal) throws Exception {
-        return lancamentoRepository.buscarLancamentosPorRegra(
-            regras, cnpjEmpresa, PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize()), principal
-        ).map(LancamentoMapper::fromEntity);
-    }
+		Lancamento lancamento = lancamentoRepository.save(this.buscarPorId(id).toBuilder().contaMovimento("IGNORAR")
+				.tipoConta(Lancamento.TipoConta.IGNORAR).build());
 
-    //
-    //
-    @Transactional(rollbackFor = Exception.class) 
-    public List<LancamentoDTO> importar(ImportacaoLancamentosRequest importaLancamentos, OAuth2Authentication authentication) throws Exception { 
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
-        String authorization = MessageFormat.format("Bearer {0}", accessToken);
+		String cnpjEmpresa = lancamento.getCnpjEmpresa();
 
+		DeParaContaDTO deParaContaDTO = DeParaContaDTO.builder().cnpjContabilidade(lancamento.getCnpjContabilidade())
+				.cnpjEmpresa(lancamento.getCnpjEmpresa()).descricao(lancamento.getDescricao())
+				.contaDebito(lancamento.getTipoLancamento().equals(Lancamento.Tipo.PAGAMENTO) ? "IGNORAR" : null)
+				.contaCredito(lancamento.getTipoLancamento().equals(Lancamento.Tipo.RECEBIMENTO) ? "IGNORAR" : null)
+				.build();
 
-        List<Lancamento> results = new ArrayList<>();
+		deParaContaClient.salvar(deParaContaDTO, "Bearer " + accessToken);
+		lancamentoRepository.atualizarContaSugeridaPorDescricaoETipoLancamento(lancamento.getDescricao(),
+				lancamento.getTipoLancamento(), lancamento.getContaMovimento(), cnpjEmpresa);
 
-        // Busca detalhes da empresa relacionada aos lançamento importados.
-        OrganizationDTO contabilidade = oauthClient.buscaContabilidade(
-        			importaLancamentos.getCnpjContabilidade(), 1, true,authorization).getBody().getRecords().get(0);
-        
-        GenericPageableResponse<OrganizationDTO> response = oauthClient.buscaEmpresa(
-        			importaLancamentos.getCnpjEmpresa(), contabilidade.getId(), 2, authorization)
-        .getBody();
-        
-        if (response.getPageInfo().getTotalElements() == 1) {
-            OrganizationDTO organizationDTO = response.getRecords().get(0);
-            Empresa empresa = Empresa.builder() 
-                .razaoSocial(organizationDTO.getName())
-                .cnpj(organizationDTO.getCnpj().replaceAll("\\D*", ""))
-                .codigoERP(organizationDTO.getCodigoERP())
-                .organizationId(organizationDTO.getId())
-                .accountingId(organizationDTO.getOrganizationId())
-                .build();
-            
-            // Usado para encontrar uma empresa quando existe varias com o mesmo cnpj 
-            Empresa existente = empresaRepository.buscaEmpresa(empresa.getCnpj(), contabilidade.getId()).orElse(null);
-            if (existente != null && existente.getId() != null) {
-                empresa.setId(existente.getId());
-            }
-            empresaRepository.save(empresa);
-        } else if (response.getPageInfo().getTotalElements() == 0) {
-            throw new IllegalArgumentException("O cnpj informado não está cadastrado!");
-        } else if (response.getPageInfo().getTotalElements() > 1) {
-        	throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
-        }
+		return LancamentoMapper.fromEntity(lancamento);
+	}
 
-        // Cria o Arquivo
-        Arquivo arquivo = importaLancamentos.getArquivo();       
-        
-       
-        
-        // Iteração e construção de lista de lançamentos 
-        List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
-            return LancamentoMapper.fromDto(o).toBuilder()
-            	.nomeArquivo(arquivo.getNome())
-                .arquivo(arquivo)
-                .cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
-                .cnpjEmpresa(importaLancamentos.getCnpjEmpresa())
-                .idRoteiro(importaLancamentos.getIdRoteiro()).build();
-        }).collect(Collectors.toList());
-        
-        // Iteração e validação de lista de lançamentos
-        for (Lancamento lancamento : lancamentos) {
-            validaLancamento(lancamento);
-        }
-        lancamentoRepository.saveAll(lancamentos).forEach(results::add);
-        return LancamentoMapper.fromEntities(results);
-    }
-    
-    public ArquivoDTO salvaArquivo(ArquivoDTO filter) {
-    	Arquivo arquivo = arquivoRepository.findArquivo(filter.getCnpjEmpresa(),
-    													filter.getCnpjContabilidade(),
-    													filter.getNome());
-    	
-    	if(arquivo == null) {
-    		arquivo = arquivoRepository.save(Arquivo.builder()
-        	.nome(filter.getNome())
-        	.cnpjContabilidade(filter.getCnpjContabilidade())
-        	.cnpjEmpresa(filter.getCnpjEmpresa())
-        	.labelComplemento01(filter.getLabelComplemento01())
-        	.labelComplemento02(filter.getLabelComplemento02())
-        	.labelComplemento03(filter.getLabelComplemento03())
-        	.labelComplemento04(filter.getLabelComplemento04())
-        	.labelComplemento05(filter.getLabelComplemento05())
-        	
-        	.build());
-    	
-    	}
-    	
-    	lancamentoRepository.atualizaStatus(arquivo.getId());
-    	
-    	//NEW THREAD
-        new Thread() {
-        	@Override
-        	public void run() {
-        		 lancamentoRepository.deleteLancamentosInativos();
-        	}
-        }.start();
-        
-    	return ArquivoMapper.fromEntity(arquivo);
-    }
+	//
+	//
+	//
+	//
+	//
+	//
+	public Page<LancamentoDTO> buscarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa,
+			PageCriteria pageCriteria, Principal principal) throws Exception {
+		return lancamentoRepository
+				.buscarLancamentosPorRegra(regras, cnpjEmpresa,
+						PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize()), principal)
+				.map(LancamentoMapper::fromEntity);
+	}
 
-    private boolean validaLancamento(Lancamento lancamento) throws Exception {
-        if (lancamento.getTipoLancamento() == null) {
-            throw new IllegalArgumentException("Informe o tipo do lançamento!");
-        }
-        if (!Arrays.asList(Lancamento.Tipo.PAGAMENTO, Lancamento.Tipo.RECEBIMENTO).contains(lancamento.getTipoLancamento())) {
-            throw new IllegalArgumentException("Informe um tipo de lançamento válido!");
-        }
-        if (lancamento.getCnpjContabilidade() == null || lancamento.getCnpjContabilidade().equals("")) {
-            throw new IllegalArgumentException("Informe o cnpj da contabilidade relacionada ao lançamento!");
-        }
-        if (lancamento.getCnpjEmpresa() == null || lancamento.getCnpjEmpresa().equals("")) {
-            throw new IllegalArgumentException("Informe o cnpj da empresa relacionada ao lançamento!");
-        }
-        if (lancamento.getIdRoteiro() == null || lancamento.getIdRoteiro().equals("")) {
-            throw new IllegalArgumentException("Informe o Id do Roteiro relacionado ao lançamento!");
-        }
-        if (lancamento.getTipoMovimento() == null || lancamento.getTipoMovimento().equals("")) {
-            throw new IllegalArgumentException("Informe o tipo de movimento do lançamento!");
-        }
-        if (lancamento.getTipoPlanilha() == null || lancamento.getTipoPlanilha().equals("")) {
-            throw new IllegalArgumentException("Informe o tipo da planilha!");
-        }
-        if (lancamento.getArquivo() == null || lancamento.getArquivo().getNome() == null) {
-            throw new IllegalArgumentException("Informe o nome do arquivo relacionado ao lançamento!");
-        }
-        if (lancamento.getDataMovimento() == null) {
-            throw new IllegalArgumentException("Informe a data do lançamento!");
-        }
-        if (lancamento.getDataMovimento().isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("A data do lançamento não pode ser maior que hoje!");
-        }
-        if (lancamento.getValorOriginal() == null || lancamento.getValorOriginal() <= 0) {
-            throw new IllegalArgumentException("Informe o valor do lançamento!");
-        }
-        return true;
-    }
+	//
+	//
+	@Transactional(rollbackFor = Exception.class)
+	public List<LancamentoDTO> importar(ImportacaoLancamentosRequest importaLancamentos,
+			OAuth2Authentication authentication) throws Exception {
+		final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+		String accessToken = details.getTokenValue();
+		String authorization = MessageFormat.format("Bearer {0}", accessToken);
+
+		List<Lancamento> results = new ArrayList<>();
+
+		// Busca detalhes da empresa relacionada aos lançamento importados.
+		OrganizationDTO contabilidade = oauthClient
+				.buscaContabilidade(importaLancamentos.getCnpjContabilidade(), 1, true, authorization).getBody()
+				.getRecords().get(0);
+
+		GenericPageableResponse<OrganizationDTO> response = oauthClient
+				.buscaEmpresa(importaLancamentos.getCnpjEmpresa(), contabilidade.getId(), 2, authorization).getBody();
+		
+		if (response.getPageInfo().getTotalElements() == 1) {
+			OrganizationDTO organizationDTO = response.getRecords().get(0);
+			Empresa empresa = Empresa.builder()
+					.razaoSocial(organizationDTO.getName())
+					.cnpj(organizationDTO.getCnpj().replaceAll("\\D*", ""))
+					.codigoERP(organizationDTO.getCodigoERP())
+					.organizationId(organizationDTO.getId())
+					.accountingId(organizationDTO.getOrganizationId())
+				.build();
+
+			// Usado para encontrar uma empresa quando existe varias com o mesmo cnpj
+			Empresa existente = empresaRepository.buscaEmpresa(empresa.getCnpj(), contabilidade.getId()).orElse(null);
+			if (existente != null && existente.getId() != null) {
+				empresa.setId(existente.getId());
+			}
+			empresaRepository.save(empresa);
+			} else if (response.getPageInfo().getTotalElements() == 0) {
+			
+				
+			try {
+				OrganizationDTO empresaOauth = OrganizationDTO.builder()
+								.name(importaLancamentos.getNomeEmpresa())
+								.cnpj(importaLancamentos.getCnpjEmpresa().replaceAll("\\D*", ""))
+								.codigoERP(importaLancamentos.getCodEmpresa())
+								.organization(OrganizationDTO.builder()
+											.id(contabilidade.getId())
+											.cnpj(importaLancamentos.getCnpjContabilidade())											
+											.build())
+								.organizationId(contabilidade.getId())
+								.type(2)
+						.build();
+				
+				Empresa empresaIntegrador = Empresa.builder()
+								.razaoSocial(importaLancamentos.getNomeEmpresa())
+								.cnpj(empresaOauth.getCnpj().replaceAll("\\D*", ""))
+								.codigoERP(empresaOauth.getCodigoERP())
+								.organizationId(empresaOauth.getId())
+								.accountingId(empresaOauth.getOrganizationId())
+						.build();
+				
+				Empresa existente = empresaRepository.buscaEmpresa(empresaIntegrador.getCnpj(), contabilidade.getId())
+						.orElse(null);
+				if (existente != null && existente.getId() != null) {
+					empresaIntegrador.setId(existente.getId());
+				}
+				
+				empresaRepository.save(empresaIntegrador);
+				oauthClient.salvaEmpresa(empresaOauth, authorization);
+				
+				
+
+			} catch (Exception ex) {
+				ex.getMessage();
+			}
+		} else if (response.getPageInfo().getTotalElements() > 1) {
+			throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
+		}
+
+		
+		// Cria o Arquivo
+		Arquivo arquivo = importaLancamentos.getArquivo();
+
+		// Iteração e construção de lista de lançamentos
+		List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
+			return LancamentoMapper.fromDto(o).toBuilder().nomeArquivo(arquivo.getNome()).arquivo(arquivo)
+					.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
+					.cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).idRoteiro(importaLancamentos.getIdRoteiro())
+					.build();
+		}).collect(Collectors.toList());
+
+		// Iteração e validação de lista de lançamentos
+		for (Lancamento lancamento : lancamentos) {
+			validaLancamento(lancamento);
+		}
+		lancamentoRepository.saveAll(lancamentos).forEach(results::add);
+		return LancamentoMapper.fromEntities(results);
+	}
+
+	public ArquivoDTO salvaArquivo(ArquivoDTO filter) {
+		Arquivo arquivo = arquivoRepository.findArquivo(filter.getCnpjEmpresa(), filter.getCnpjContabilidade(),
+				filter.getNome());
+
+		if (arquivo == null) {
+			arquivo = arquivoRepository
+					.save(Arquivo.builder().nome(filter.getNome()).cnpjContabilidade(filter.getCnpjContabilidade())
+							.cnpjEmpresa(filter.getCnpjEmpresa()).labelComplemento01(filter.getLabelComplemento01())
+							.labelComplemento02(filter.getLabelComplemento02())
+							.labelComplemento03(filter.getLabelComplemento03())
+							.labelComplemento04(filter.getLabelComplemento04())
+							.labelComplemento05(filter.getLabelComplemento05())
+
+							.build());
+
+		}
+
+		lancamentoRepository.atualizaStatus(arquivo.getId());
+
+		return ArquivoMapper.fromEntity(arquivo);
+	}
+
+	private boolean validaLancamento(Lancamento lancamento) throws Exception {
+		if (lancamento.getTipoLancamento() == null) {
+			throw new IllegalArgumentException("Informe o tipo do lançamento!");
+		}
+		if (!Arrays.asList(Lancamento.Tipo.PAGAMENTO, Lancamento.Tipo.RECEBIMENTO)
+				.contains(lancamento.getTipoLancamento())) {
+			throw new IllegalArgumentException("Informe um tipo de lançamento válido!");
+		}
+		if (lancamento.getCnpjContabilidade() == null || lancamento.getCnpjContabilidade().equals("")) {
+			throw new IllegalArgumentException("Informe o cnpj da contabilidade relacionada ao lançamento!");
+		}
+		if (lancamento.getCnpjEmpresa() == null || lancamento.getCnpjEmpresa().equals("")) {
+			throw new IllegalArgumentException("Informe o cnpj da empresa relacionada ao lançamento!");
+		}
+		if (lancamento.getIdRoteiro() == null || lancamento.getIdRoteiro().equals("")) {
+			throw new IllegalArgumentException("Informe o Id do Roteiro relacionado ao lançamento!");
+		}
+		if (lancamento.getTipoMovimento() == null || lancamento.getTipoMovimento().equals("")) {
+			throw new IllegalArgumentException("Informe o tipo de movimento do lançamento!");
+		}
+		if (lancamento.getTipoPlanilha() == null || lancamento.getTipoPlanilha().equals("")) {
+			throw new IllegalArgumentException("Informe o tipo da planilha!");
+		}
+		if (lancamento.getArquivo() == null || lancamento.getArquivo().getNome() == null) {
+			throw new IllegalArgumentException("Informe o nome do arquivo relacionado ao lançamento!");
+		}
+		if (lancamento.getDataMovimento() == null) {
+			throw new IllegalArgumentException("Informe a data do lançamento!");
+		}
+		if (lancamento.getDataMovimento().isAfter(LocalDate.now())) {
+			throw new IllegalArgumentException("A data do lançamento não pode ser maior que hoje!");
+		}
+		if (lancamento.getValorOriginal() == null || lancamento.getValorOriginal() <= 0) {
+			throw new IllegalArgumentException("Informe o valor do lançamento!");
+		}
+		return true;
+	}
 
 }
