@@ -67,6 +67,7 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
                                                                 @Param("tipoLancamento") Short tipoLancamento,
                                                                 @Param("contaSugerida") String contaSugerida, 
                                                                 @Param("cnpjEmpresa") String cnpjEmpresa);
+    
     @Modifying
     @Transactional
     @Query(value = " UPDATE lancamentos 				"
