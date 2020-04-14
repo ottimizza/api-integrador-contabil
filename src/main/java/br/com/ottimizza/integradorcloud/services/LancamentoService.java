@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.ottimizza.integradorcloud.client.DeParaClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
+import br.com.ottimizza.integradorcloud.domain.commands.lancamento.PorcentagemLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.depara.DeParaContaDTO;
@@ -258,16 +259,12 @@ public class LancamentoService {
 
 		GenericPageableResponse<OrganizationDTO> response = oauthClient
 				.buscaEmpresa(importaLancamentos.getCnpjEmpresa(), contabilidade.getId(), 2, authorization).getBody();
-		
+
 		if (response.getPageInfo().getTotalElements() == 1) {
 			OrganizationDTO organizationDTO = response.getRecords().get(0);
-			Empresa empresa = Empresa.builder()
-					.razaoSocial(organizationDTO.getName())
-					.cnpj(organizationDTO.getCnpj().replaceAll("\\D*", ""))
-					.codigoERP(organizationDTO.getCodigoERP())
-					.organizationId(organizationDTO.getId())
-					.accountingId(organizationDTO.getOrganizationId())
-				.build();
+			Empresa empresa = Empresa.builder().razaoSocial(organizationDTO.getName())
+					.cnpj(organizationDTO.getCnpj().replaceAll("\\D*", "")).codigoERP(organizationDTO.getCodigoERP())
+					.organizationId(organizationDTO.getId()).accountingId(organizationDTO.getOrganizationId()).build();
 
 			// Usado para encontrar uma empresa quando existe varias com o mesmo cnpj
 			Empresa existente = empresaRepository.buscaEmpresa(empresa.getCnpj(), contabilidade.getId()).orElse(null);
@@ -275,40 +272,28 @@ public class LancamentoService {
 				empresa.setId(existente.getId());
 			}
 			empresaRepository.save(empresa);
-			} else if (response.getPageInfo().getTotalElements() == 0) {
-			
-				
+		} else if (response.getPageInfo().getTotalElements() == 0) {
+
 			try {
-				OrganizationDTO empresaOauth = OrganizationDTO.builder()
-								.name(importaLancamentos.getNomeEmpresa())
-								.cnpj(importaLancamentos.getCnpjEmpresa().replaceAll("\\D*", ""))
-								.codigoERP(importaLancamentos.getCodEmpresa())
-								.organization(OrganizationDTO.builder()
-											.id(contabilidade.getId())
-											.cnpj(importaLancamentos.getCnpjContabilidade())											
-											.build())
-								.organizationId(contabilidade.getId())
-								.type(2)
-						.build();
-				
-				Empresa empresaIntegrador = Empresa.builder()
-								.razaoSocial(importaLancamentos.getNomeEmpresa())
-								.cnpj(empresaOauth.getCnpj().replaceAll("\\D*", ""))
-								.codigoERP(empresaOauth.getCodigoERP())
-								.organizationId(empresaOauth.getId())
-								.accountingId(empresaOauth.getOrganizationId())
-						.build();
-				
+				OrganizationDTO empresaOauth = OrganizationDTO.builder().name(importaLancamentos.getNomeEmpresa())
+						.cnpj(importaLancamentos.getCnpjEmpresa().replaceAll("\\D*", ""))
+						.codigoERP(importaLancamentos.getCodEmpresa())
+						.organization(OrganizationDTO.builder().id(contabilidade.getId())
+								.cnpj(importaLancamentos.getCnpjContabilidade()).build())
+						.organizationId(contabilidade.getId()).type(2).build();
+
+				Empresa empresaIntegrador = Empresa.builder().razaoSocial(importaLancamentos.getNomeEmpresa())
+						.cnpj(empresaOauth.getCnpj().replaceAll("\\D*", "")).codigoERP(empresaOauth.getCodigoERP())
+						.organizationId(empresaOauth.getId()).accountingId(empresaOauth.getOrganizationId()).build();
+
 				Empresa existente = empresaRepository.buscaEmpresa(empresaIntegrador.getCnpj(), contabilidade.getId())
 						.orElse(null);
 				if (existente != null && existente.getId() != null) {
 					empresaIntegrador.setId(existente.getId());
 				}
-				
+
 				empresaRepository.save(empresaIntegrador);
 				oauthClient.salvaEmpresa(empresaOauth, authorization);
-				
-				
 
 			} catch (Exception ex) {
 				ex.getMessage();
@@ -317,7 +302,6 @@ public class LancamentoService {
 			throw new IllegalArgumentException("O cnpj informado retornou mais de uma empresa!");
 		}
 
-		
 		// Cria o Arquivo
 		Arquivo arquivo = importaLancamentos.getArquivo();
 
@@ -357,6 +341,38 @@ public class LancamentoService {
 		lancamentoRepository.atualizaStatus(arquivo.getId());
 
 		return ArquivoMapper.fromEntity(arquivo);
+	}
+
+	public PorcentagemLancamentosRequest buscaPorcentagem(String cnpjEmpresa, String tipoMovimento, PageCriteria criteria) {
+		
+		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
+		
+		Lancamento filtroRestante = Lancamento.builder()
+					.cnpjEmpresa(cnpjEmpresa)
+					.tipoMovimento(tipoMovimento)
+					.tipoConta((short) 0)
+					.ativo(true)
+				.build();
+		
+		Example<Lancamento> exampleRestante = Example.of(filtroRestante, matcher);
+		Page<Lancamento> restantes = lancamentoRepository.findAll(exampleRestante, LancamentoDTO.getPageRequest(criteria));
+
+		
+		Lancamento filtroTotal = Lancamento.builder()
+					.cnpjEmpresa(cnpjEmpresa)
+					.tipoMovimento(tipoMovimento)
+					.ativo(true)
+				.build();
+		
+		Example<Lancamento> exampleTotal = Example.of(filtroTotal, matcher);
+		Page<Lancamento> total = lancamentoRepository.findAll(exampleTotal, LancamentoDTO.getPageRequest(criteria));
+		
+		PorcentagemLancamentosRequest retorno = PorcentagemLancamentosRequest.builder()
+					.numeroLancamentosRestantes(restantes.getTotalElements())
+					.totalLancamentos(total.getTotalElements())
+				.build();
+		
+		return retorno;
 	}
 
 	private boolean validaLancamento(Lancamento lancamento) throws Exception {
