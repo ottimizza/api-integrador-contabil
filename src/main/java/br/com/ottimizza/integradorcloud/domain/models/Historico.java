@@ -58,6 +58,12 @@ public class Historico implements Serializable {
     @Column(name = "data_atualizacao", nullable = false, columnDefinition = "timestamp default current_timestamp")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataAtualizacao;
+    
+    @Column(name = "tipo_lancamento", nullable = false)
+    private Short tipoLancamento;
+    
+    @Column(name = "id_roteiro",  nullable = false)
+    private String idRoteiro;
 
     @PrePersist
     @PreUpdate
