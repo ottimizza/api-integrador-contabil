@@ -33,7 +33,7 @@ public class HistoricoService {
         return historicoRepository.findAll(example, PageCriteria.getPageRequest(criteria)).map(HistoricoMapper::fromEntity);
     }
 
-    public HistoricoDTO buscarPorContaMovimento(String contaMovimento, String cnpjEmpresa, String tipoLancamento, OAuth2Authentication authentication) {
+    public HistoricoDTO buscarPorContaMovimento(String contaMovimento, String cnpjEmpresa, Short tipoLancamento, OAuth2Authentication authentication) {
         return HistoricoMapper.fromEntity(historicoRepository.buscarPorContaMovimento(contaMovimento, cnpjEmpresa, tipoLancamento));
     }
 

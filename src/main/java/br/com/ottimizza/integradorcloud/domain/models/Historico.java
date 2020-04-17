@@ -59,10 +59,10 @@ public class Historico implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataAtualizacao;
     
-    @Column(name = "tipo_lancamento", nullable = false, columnDefinition = "short default 0")
+    @Column(name = "tipo_lancamento", nullable = false, columnDefinition = "numeric default 0")
     private Short tipoLancamento;
     
-    @Column(name = "id_roteiro",  nullable = false, columnDefinition = "String default 'padrao'")
+    @Column(name = "id_roteiro",  nullable = false, columnDefinition = "varchar default 'padrao'")
     private String idRoteiro;
 
     @PrePersist
