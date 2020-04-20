@@ -19,6 +19,8 @@ public class HistoricoMapper { // @formatter:off
                 .cnpjContabilidade(historico.getCnpjContabilidade())
                 .dataCriacao(historico.getDataCriacao())
                 .dataAtualizacao(historico.getDataAtualizacao())
+                .idRoteiro(historico.getIdRoteiro())
+                .tipoLancamento(historico.getTipoLancamento())
             .build();    
     }
 
@@ -31,6 +33,8 @@ public class HistoricoMapper { // @formatter:off
                 .cnpjContabilidade(historico.getCnpjContabilidade())
                 .dataCriacao(historico.getDataCriacao())
                 .dataAtualizacao(historico.getDataAtualizacao())
+                .idRoteiro(historico.getIdRoteiro())
+                .tipoLancamento(historico.getTipoLancamento())
             .build();
     }
 

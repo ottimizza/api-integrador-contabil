@@ -43,7 +43,7 @@ public class StringUtils {
 			campo = "Documento/NF";
 		}
 		if (campo.contains("complemento")) {
-			campo = campo.replaceFirst("c", "C").replace("o0", "o (0").concat(") contém");
+			campo = campo.replaceFirst("c", "C").replace("o0", "o (0").concat(")");
 		}
 		if(campo.contains("nenhum")) {
 			campo = "-- Nenhum --";
