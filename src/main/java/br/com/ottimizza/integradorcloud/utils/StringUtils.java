@@ -46,7 +46,7 @@ public class StringUtils {
 			campo = campo.replaceFirst("c", "C").replace("o0", "o (0").concat(")");
 		}
 		if(campo.contains("nenhum")) {
-			campo = "-- Nenhum --";
+			campo = "";
 		}
 		return campo;
 	}

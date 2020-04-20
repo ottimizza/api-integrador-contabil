@@ -62,7 +62,6 @@ public class SalesForceApiController {
 		}
 		if(idexRemove != -1) regras.remove(idexRemove);
 		grupoRegra.setRegras(regras);
-		System.out.println("autorization "+authorization);
 		SFParticularidade sfParticularidade = GrupoRegraMapper.toSalesForce(grupoRegra);
 		return salesForceClient.upsert(id, sfParticularidade, authorization);
 	}
