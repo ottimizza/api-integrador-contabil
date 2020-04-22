@@ -262,8 +262,11 @@ public class LancamentoService {
 
 		if (response.getPageInfo().getTotalElements() == 1) {
 			OrganizationDTO organizationDTO = response.getRecords().get(0);
-			Empresa empresa = Empresa.builder().razaoSocial(organizationDTO.getName())
-					.cnpj(organizationDTO.getCnpj().replaceAll("\\D*", "")).codigoERP(organizationDTO.getCodigoERP())
+			Empresa empresa = Empresa.builder()
+					.razaoSocial(organizationDTO.getName())
+					.cnpj(organizationDTO.getCnpj()
+					.replaceAll("\\D*", ""))
+					.codigoERP(organizationDTO.getCodigoERP())
 					.organizationId(organizationDTO.getId()).accountingId(organizationDTO.getOrganizationId()).build();
 
 			// Usado para encontrar uma empresa quando existe varias com o mesmo cnpj
@@ -279,7 +282,7 @@ public class LancamentoService {
 						.cnpj(importaLancamentos.getCnpjEmpresa().replaceAll("\\D*", ""))
 						.codigoERP(importaLancamentos.getCodEmpresa())
 						.organization(OrganizationDTO.builder().id(contabilidade.getId())
-								.cnpj(importaLancamentos.getCnpjContabilidade()).build())
+						.cnpj(importaLancamentos.getCnpjContabilidade()).build())
 						.organizationId(contabilidade.getId()).type(2).build();
 
 				Empresa empresaIntegrador = Empresa.builder().razaoSocial(importaLancamentos.getNomeEmpresa())

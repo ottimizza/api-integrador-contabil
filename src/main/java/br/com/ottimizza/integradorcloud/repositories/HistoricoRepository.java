@@ -12,7 +12,9 @@ import br.com.ottimizza.integradorcloud.domain.models.Historico;
 @Repository
 public interface HistoricoRepository extends JpaRepository<Historico, BigInteger> {
 
-    @Query("select h from Historico h where h.cnpjEmpresa = :cnpjEmpresa and h.contaMovimento = :contaMovimento ")
-    Historico buscarPorContaMovimento(@Param("contaMovimento") String contaMovimento, @Param("cnpjEmpresa") String cnpjEmpresa);
+    @Query("select h from Historico h where h.cnpjEmpresa = :cnpjEmpresa and h.contaMovimento = :contaMovimento and h.tipoLancamento = :tipoLancamento ")
+    Historico buscarPorContaMovimento(@Param("contaMovimento") String contaMovimento,
+    								  @Param("cnpjEmpresa")    String cnpjEmpresa, 
+    								  @Param("tipoLancamento") Short tipoLancamento);
 
 }

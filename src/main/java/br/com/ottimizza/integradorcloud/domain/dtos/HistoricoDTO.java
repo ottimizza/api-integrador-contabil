@@ -26,6 +26,10 @@ public class HistoricoDTO implements Serializable {
     private String cnpjEmpresa;
 
     private String cnpjContabilidade;
+    
+    private Short tipoLancamento;
+    
+    private String idRoteiro;
 
     private Date dataCriacao;
 
