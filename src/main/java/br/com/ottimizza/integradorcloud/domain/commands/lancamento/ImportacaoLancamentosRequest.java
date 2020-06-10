@@ -21,6 +21,10 @@ public class ImportacaoLancamentosRequest implements Serializable {
     private String idRoteiro;
 
     private Arquivo arquivo;
+    
+    private String codEmpresa;
+    
+    private String nomeEmpresa;
 
     private List<LancamentoDTO> lancamentos;
 

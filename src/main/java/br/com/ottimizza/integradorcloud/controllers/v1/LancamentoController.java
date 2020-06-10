@@ -21,6 +21,7 @@ import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -111,5 +112,12 @@ public class LancamentoController {
     public ResponseEntity<?> salvaArquivo(@RequestBody ArquivoDTO arquivo) {
     	return ResponseEntity.ok(lancamentoService.salvaArquivo(arquivo));
     }
+    
+    @GetMapping("/porcentagem")
+    public ResponseEntity<?> buscaLancamentosPorcentagem(@RequestParam String cnpjEmpresa, @RequestParam String tipoMovimento,
+    													 @Valid PageCriteria pageCriteria) throws Exception {
+    	return ResponseEntity.ok(lancamentoService.buscaPorcentagem(cnpjEmpresa, tipoMovimento, pageCriteria));
+    }
+    
 
 }

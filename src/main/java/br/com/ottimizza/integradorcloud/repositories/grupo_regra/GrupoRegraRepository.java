@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.repositories.grupo_regra;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -58,5 +59,18 @@ public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteg
     @Query(value = " update grupo_regras set posicao = :posicao where id = :grupoRegraId ", nativeQuery = true)
     void atualizaPosicaoPorId(@Param("grupoRegraId") BigInteger grupoRegraId, 
                               @Param("posicao") Integer posicao);
+    
+    
+    @Modifying
+    @Transactional
+    @Query(value = " select gr.id 							 " + 
+    			   "from grupo_regras gr 					 " + 
+    			   "where gr.cnpj_empresa = :cnpjEmpresa     " + 
+    			   "and gr.tipo_lancamento = :tipoLancamento " +
+    			   "order by gr.posicao asc 				 ", nativeQuery = true)
+    List<BigInteger>  findId(@Param("cnpjEmpresa")String cnpjEmpresa,
+    						 @Param("tipoLancamento")Short tipoLancamento);
+    
+    
 
 }
