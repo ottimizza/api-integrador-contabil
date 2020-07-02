@@ -20,14 +20,14 @@ spring:
 
 
 oauth2-config:
-  client-id: ${CLIENT_ID:76179baad962d1b8ce4d}
-  client-secret: ${CLIENT_SECRET:8faedc0e6e1520d13f06f787d6760c303f3e8768}
-  server-url: ${OAUTH2_URL:https://development-oauth-server.herokuapp.com}
+  client-id: ${OAUTH2_CLIENT_ID:76179baad962d1b8ce4d}
+  client-secret: ${OAUTH2_CLIENT_SECRET:8faedc0e6e1520d13f06f787d6760c303f3e8768}
+  server-url: ${OAUTH2_SERVER_URL:https://development-oauth-server.herokuapp.com}
   
 oauth:
   service:
     name: oauth-service
-    url: ${OAUTH2_URL:https://development-oauth-server.herokuapp.com}
+    url: ${OAUTH2_SERVER_URL:https://development-oauth-server.herokuapp.com}
 
 depara:
   service:

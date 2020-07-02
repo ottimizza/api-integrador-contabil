@@ -110,7 +110,7 @@ public class LancamentoService {
 		final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
 		String accessToken = details.getTokenValue();
 		String authorization = MessageFormat.format("Bearer {0}", accessToken);
-
+		
 		Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
 
 		// Busca detalhes da empresa relacionada aos lançamento importados.
