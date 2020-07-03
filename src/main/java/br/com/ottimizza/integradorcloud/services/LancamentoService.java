@@ -313,6 +313,7 @@ public class LancamentoService {
 			return LancamentoMapper.fromDto(o).toBuilder().nomeArquivo(arquivo.getNome()).arquivo(arquivo)
 					.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
 					.cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).idRoteiro(importaLancamentos.getIdRoteiro())
+					.accountingId(contabilidade.getId())
 					.build();
 		}).collect(Collectors.toList());
 
