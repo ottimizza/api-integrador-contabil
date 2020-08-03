@@ -6,6 +6,7 @@ import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLan
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
+import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
@@ -38,12 +39,24 @@ public class LancamentoController {
     @Inject
     private LancamentoService lancamentoService;
 
-    @GetMapping
+    /*@GetMapping
     public ResponseEntity<?> fetchAll(@Valid LancamentoDTO filter, @Valid PageCriteria pageCriteria, Principal principal) throws Exception {
         Page<LancamentoDTO> page = lancamentoService.buscarTodos(filter, pageCriteria, principal);
         return ResponseEntity.ok(new GenericPageableResponse<>(page));
+    }*/
+    
+    @GetMapping("/buscar")
+    public ResponseEntity<?> buscaTodos(@Valid LancamentoDTO filter,
+    									@Valid PageCriteria criteria) throws Exception {
+    	//Page<LancamentoDTO> page = lancamentoService.buscarTodos(filter, criteria);
+    	return ResponseEntity.ok(new GenericPageableResponse<Lancamento>(lancamentoService.buscarTodos(filter, criteria)));
     }
-
+    
+    @GetMapping("/total")
+    public ResponseEntity<Long> totalLancamentos(@Valid LancamentoDTO filter) throws Exception {
+    	return ResponseEntity.ok(lancamentoService.totalLancamentos(filter));
+    }
+    
     @PostMapping
     public ResponseEntity<?> create(@RequestBody LancamentoDTO lancamento, OAuth2Authentication authentication) throws Exception {
         LancamentoDTO lancamentoDTO = lancamentoService.salvar(lancamento, authentication);

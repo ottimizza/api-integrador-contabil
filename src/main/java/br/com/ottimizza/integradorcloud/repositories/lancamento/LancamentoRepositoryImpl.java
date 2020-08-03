@@ -22,7 +22,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 
+import com.querydsl.jpa.impl.JPAQuery;
+
+import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
+import br.com.ottimizza.integradorcloud.domain.models.QLancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 
 public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
@@ -31,6 +36,8 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
     private EntityManager em;
 
     long totalElements = 0;
+    
+    QLancamento lancamento = QLancamento.lancamento;
 
     public Long contarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -109,6 +116,38 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 
     private Expression<String> unaccent(CriteriaBuilder cb, Path<String> path) {
         return cb.function("unaccent", String.class, cb.upper(path));
+    }
+    
+    public Page<Lancamento> buscarTodos(LancamentoDTO filter, Pageable page) {
+    	long totalElements = 0;
+    	JPAQuery<Lancamento> query = new JPAQuery<Lancamento>(em).from(lancamento);
+    	
+    	if (filter.getTipoConta() != null)		query.where(lancamento.tipoConta.eq(filter.getTipoConta()));
+    	if (filter.getCnpjEmpresa() != null) 	query.where(lancamento.cnpjEmpresa.eq(filter.getCnpjEmpresa()));
+    	if (filter.getTipoMovimento() != null)	query.where(lancamento.tipoMovimento.eq(filter.getTipoMovimento()));
+    	if (filter.getTipoLancamento() != null) query.where(lancamento.tipoLancamento.eq(filter.getTipoLancamento()));
+    	
+    	query.where(lancamento.ativo.eq(true));
+    	query.where(lancamento.contaMovimento.eq(""));
+    	
+    	totalElements = query.fetchCount();
+    	query.limit(page.getPageSize());
+    	query.offset(page.getPageSize() * page.getPageNumber());
+    	
+    	return new PageImpl<Lancamento>(query.fetch(), page, totalElements);
+    }
+    
+    public long totalLancamentos(LancamentoDTO filter) {
+    	JPAQuery<Lancamento> query = new JPAQuery<Lancamento>(em).from(lancamento);
+    	
+    	if (filter.getTipoConta() != null)		query.where(lancamento.tipoConta.eq(filter.getTipoConta()));
+    	if (filter.getCnpjEmpresa() != null) 	query.where(lancamento.cnpjEmpresa.eq(filter.getCnpjEmpresa()));
+    	if (filter.getTipoMovimento() != null)	query.where(lancamento.tipoMovimento.eq(filter.getTipoMovimento()));
+    	if (filter.getTipoLancamento() != null) query.where(lancamento.tipoLancamento.eq(filter.getTipoLancamento()));
+    	
+    	query.where(lancamento.ativo.eq(true));
+    	
+    	return query.fetchCount();
     }
 
 }
