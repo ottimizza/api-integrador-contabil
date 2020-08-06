@@ -378,6 +378,11 @@ public class LancamentoService {
 		
 		return retorno;
 	}
+	
+	public String inativarLancamentos(BigInteger arquivoId) throws Exception {
+		lancamentoRepository.atualizaStatus(arquivoId);
+		return "Lancamentos inativados com sucesso!";
+	}
 
 	private boolean validaLancamento(Lancamento lancamento) throws Exception {
 		if (lancamento.getTipoLancamento() == null) {
