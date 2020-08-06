@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -38,9 +40,16 @@ public class Empresa implements Serializable {
     private String razaoSocial;
 
     private String codigoERP;
+    
+    private String nomeCompleto;
 
     private BigInteger organizationId;
 
     private BigInteger accountingId;
 
+    @PrePersist @PreUpdate
+    public void prePersist() {
+    	nomeCompleto = codigoERP+" - "+razaoSocial.toUpperCase(); 
+    }
+    
 }
