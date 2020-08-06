@@ -23,6 +23,8 @@ public class EmpresaDTO implements Serializable {
     private String razaoSocial;
 
     private String codigoERP;
+    
+    private String nomeCompleto;
 
     private BigInteger organizationId;
 

@@ -42,6 +42,7 @@ public class LancamentoMapper { // @formatter:off
             .idRoteiro(lancamento.getIdRoteiro())
             .nomeArquivo(lancamento.getNomeArquivo())
             .ativo(lancamento.getAtivo())
+            .accountingId(lancamento.getAccountingId())
         .build();
     }
 
@@ -78,6 +79,7 @@ public class LancamentoMapper { // @formatter:off
                 .idRoteiro(lancamento.getIdRoteiro())
                 .nomeArquivo(lancamento.getNomeArquivo())
                 .ativo(lancamento.getAtivo())
+                .accountingId(lancamento.getAccountingId())
             .build();
     }
 

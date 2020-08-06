@@ -110,7 +110,7 @@ public class LancamentoService {
 		final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
 		String accessToken = details.getTokenValue();
 		String authorization = MessageFormat.format("Bearer {0}", accessToken);
-
+		
 		Lancamento lancamento = LancamentoMapper.fromDto(lancamentoDTO);
 
 		// Busca detalhes da empresa relacionada aos lançamento importados.
@@ -313,6 +313,7 @@ public class LancamentoService {
 			return LancamentoMapper.fromDto(o).toBuilder().nomeArquivo(arquivo.getNome()).arquivo(arquivo)
 					.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
 					.cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).idRoteiro(importaLancamentos.getIdRoteiro())
+					.accountingId(contabilidade.getId())
 					.build();
 		}).collect(Collectors.toList());
 
@@ -376,6 +377,11 @@ public class LancamentoService {
 				.build();
 		
 		return retorno;
+	}
+	
+	public String inativarLancamentos(BigInteger arquivoId) throws Exception {
+		lancamentoRepository.atualizaStatus(arquivoId);
+		return "Lancamentos inativados com sucesso!";
 	}
 
 	private boolean validaLancamento(Lancamento lancamento) throws Exception {
