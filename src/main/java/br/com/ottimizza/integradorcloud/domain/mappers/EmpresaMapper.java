@@ -24,6 +24,7 @@ public class EmpresaMapper {
                 .razaoSocial(empresaDTO.getRazaoSocial())
                 .codigoERP(empresaDTO.getCodigoERP())
                 .cnpj(empresaDTO.getCnpj())
+                .nomeCompleto(empresaDTO.getNomeCompleto())
                 .organizationId(empresaDTO.getOrganizationId())
                 .accountingId(empresaDTO.getAccountingId())
             .build(); 
@@ -41,6 +42,7 @@ public class EmpresaMapper {
                 .razaoSocial(empresa.getRazaoSocial())
                 .codigoERP(empresa.getCodigoERP())
                 .cnpj(empresa.getCnpj())
+                .nomeCompleto(empresa.getNomeCompleto())
                 .organizationId(empresa.getOrganizationId())
                 .accountingId(empresa.getAccountingId())
             .build(); 
