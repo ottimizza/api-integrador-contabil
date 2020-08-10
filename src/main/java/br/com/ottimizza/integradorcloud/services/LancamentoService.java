@@ -74,20 +74,12 @@ public class LancamentoService {
 				"Não foi encontrado nenhum lançamento com o Id especificado!"));
 	}
 
-	/*public Page<LancamentoDTO> buscarTodos(LancamentoDTO filter, PageCriteria criteria, Principal principal)
+	public Page<LancamentoDTO> buscarTodos(LancamentoDTO filter, PageCriteria criteria, Principal principal)
 			throws Exception {
 		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
 		Example<Lancamento> example = Example.of(LancamentoMapper.fromDto(filter), matcher);
 		return lancamentoRepository.findAll(example, LancamentoDTO.getPageRequest(criteria))
 				.map(LancamentoMapper::fromEntity);
-	}*/
-	
-	public Page<Lancamento> buscarTodos(LancamentoDTO filter, PageCriteria criteria) throws Exception {
-		return lancamentoRepository.buscarTodos(filter, PageCriteria.getPageRequest(criteria));
-	}
-	
-	public long totalLancamentos(LancamentoDTO filter) throws Exception {
-		return lancamentoRepository.totalLancamentos(filter);
 	}
 
 	public KPILancamento buscaStatusLancementosPorCNPJEmpresa(String cnpjEmpresa, OAuth2Authentication authentication)
