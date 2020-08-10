@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -31,6 +32,10 @@ public class HistoricoService {
     public Page<HistoricoDTO> buscar(HistoricoDTO filter, PageCriteria criteria, OAuth2Authentication authentication) throws Exception {
         Example<Historico> example = this.getDefaultQueryByExample(filter);
         return historicoRepository.findAll(example, PageCriteria.getPageRequest(criteria)).map(HistoricoMapper::fromEntity);
+    }
+    
+    public List<Historico> buscaHistoricosProSF(HistoricoDTO filter, OAuth2Authentication authentication) throws Exception {
+    	return historicoRepository.buscaHistoricosParaSalesForce(filter.getCnpjContabilidade(), filter.getCnpjEmpresa(), filter.getTipoLancamento());
     }
 
     public HistoricoDTO buscarPorContaMovimento(String contaMovimento, String cnpjEmpresa, Short tipoLancamento, OAuth2Authentication authentication) {
