@@ -117,37 +117,5 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
     private Expression<String> unaccent(CriteriaBuilder cb, Path<String> path) {
         return cb.function("unaccent", String.class, cb.upper(path));
     }
-    
-    public Page<Lancamento> buscarTodos(LancamentoDTO filter, Pageable page) {
-    	long totalElements = 0;
-    	JPAQuery<Lancamento> query = new JPAQuery<Lancamento>(em).from(lancamento);
-    	
-    	if (filter.getTipoConta() != null)		query.where(lancamento.tipoConta.eq(filter.getTipoConta()));
-    	if (filter.getCnpjEmpresa() != null) 	query.where(lancamento.cnpjEmpresa.eq(filter.getCnpjEmpresa()));
-    	if (filter.getTipoMovimento() != null)	query.where(lancamento.tipoMovimento.eq(filter.getTipoMovimento()));
-    	if (filter.getTipoLancamento() != null) query.where(lancamento.tipoLancamento.eq(filter.getTipoLancamento()));
-    	
-    	query.where(lancamento.ativo.eq(true));
-    	query.where(lancamento.contaMovimento.eq(""));
-    	
-    	totalElements = query.fetchCount();
-    	query.limit(page.getPageSize());
-    	query.offset(page.getPageSize() * page.getPageNumber());
-    	
-    	return new PageImpl<Lancamento>(query.fetch(), page, totalElements);
-    }
-    
-    public long totalLancamentos(LancamentoDTO filter) {
-    	JPAQuery<Lancamento> query = new JPAQuery<Lancamento>(em).from(lancamento);
-    	
-    	if (filter.getTipoConta() != null)		query.where(lancamento.tipoConta.eq(filter.getTipoConta()));
-    	if (filter.getCnpjEmpresa() != null) 	query.where(lancamento.cnpjEmpresa.eq(filter.getCnpjEmpresa()));
-    	if (filter.getTipoMovimento() != null)	query.where(lancamento.tipoMovimento.eq(filter.getTipoMovimento()));
-    	if (filter.getTipoLancamento() != null) query.where(lancamento.tipoLancamento.eq(filter.getTipoLancamento()));
-    	
-    	query.where(lancamento.ativo.eq(true));
-    	
-    	return query.fetchCount();
-    }
 
 }

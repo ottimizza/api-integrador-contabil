@@ -40,22 +40,10 @@ public class LancamentoController {
     @Inject
     private LancamentoService lancamentoService;
 
-    /*@GetMapping
+    @GetMapping
     public ResponseEntity<?> fetchAll(@Valid LancamentoDTO filter, @Valid PageCriteria pageCriteria, Principal principal) throws Exception {
         Page<LancamentoDTO> page = lancamentoService.buscarTodos(filter, pageCriteria, principal);
         return ResponseEntity.ok(new GenericPageableResponse<>(page));
-    }*/
-    
-    @GetMapping("/buscar")
-    public ResponseEntity<?> buscaTodos(@Valid LancamentoDTO filter,
-    									@Valid PageCriteria criteria) throws Exception {
-    	//Page<LancamentoDTO> page = lancamentoService.buscarTodos(filter, criteria);
-    	return ResponseEntity.ok(new GenericPageableResponse<Lancamento>(lancamentoService.buscarTodos(filter, criteria)));
-    }
-    
-    @GetMapping("/total")
-    public ResponseEntity<Long> totalLancamentos(@Valid LancamentoDTO filter) throws Exception {
-    	return ResponseEntity.ok(lancamentoService.totalLancamentos(filter));
     }
     
     @PostMapping

@@ -21,7 +21,4 @@ public interface LancamentoRepositoryCustom { // @formatter:off LancamentoReposi
     @Transactional
     int atualizaLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, String contaMovimento);
     
-    Page<Lancamento> buscarTodos(LancamentoDTO filter, Pageable page);
-    
-    long totalLancamentos(LancamentoDTO filter);
 }
