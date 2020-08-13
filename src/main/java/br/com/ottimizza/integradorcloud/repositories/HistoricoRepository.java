@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.repositories;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,8 @@ public interface HistoricoRepository extends JpaRepository<Historico, BigInteger
     								  @Param("cnpjEmpresa")    String cnpjEmpresa, 
     								  @Param("tipoLancamento") Short tipoLancamento);
 
+    @Query("SELECT h FROM Historico h WHERE h.cnpjContabilidade = :cnpjContabilidade and h.cnpjEmpresa = :cnpjEmpresa and h.tipoLancamento = :tipoLancamento")
+    List<Historico> buscaHistoricosParaSalesForce(@Param("cnpjContabilidade") String cnpjContabilidade,
+    											  @Param("cnpjEmpresa")       String cnpjEmpresa,
+    											  @Param("tipoLancamento")    Short tipoLancamento);
 }
