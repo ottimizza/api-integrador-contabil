@@ -22,7 +22,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 
+import com.querydsl.jpa.impl.JPAQuery;
+
+import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
+import br.com.ottimizza.integradorcloud.domain.models.QLancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 
 public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
@@ -31,6 +36,8 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
     private EntityManager em;
 
     long totalElements = 0;
+    
+    QLancamento lancamento = QLancamento.lancamento;
 
     public Long contarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa) {
         CriteriaBuilder cb = em.getCriteriaBuilder();

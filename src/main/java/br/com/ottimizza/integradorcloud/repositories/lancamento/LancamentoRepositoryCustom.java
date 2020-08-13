@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 
+import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 
@@ -19,4 +20,5 @@ public interface LancamentoRepositoryCustom { // @formatter:off LancamentoReposi
     @Modifying
     @Transactional
     int atualizaLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, String contaMovimento);
+    
 }

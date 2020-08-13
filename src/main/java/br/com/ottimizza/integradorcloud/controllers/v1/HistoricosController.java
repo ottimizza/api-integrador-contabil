@@ -32,6 +32,14 @@ public class HistoricosController {
         ));
     }
 
+    @GetMapping("/sf")
+    public ResponseEntity<?> buscaHistoricosProSF(@Valid HistoricoDTO filter, 
+                                                  OAuth2Authentication authentication) throws Exception {
+    	return ResponseEntity.ok(new GenericResponse<>(
+    		historicoService.buscaHistoricosProSF(filter, authentication)
+    	));
+    }
+    
     @GetMapping
     public ResponseEntity<?> buscarPorContaMovimento(@Valid PageCriteria pageCriteria,
                                                      @Valid HistoricoDTO historicoDTO,

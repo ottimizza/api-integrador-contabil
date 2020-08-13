@@ -6,6 +6,7 @@ import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLan
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
+import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
@@ -44,7 +45,7 @@ public class LancamentoController {
         Page<LancamentoDTO> page = lancamentoService.buscarTodos(filter, pageCriteria, principal);
         return ResponseEntity.ok(new GenericPageableResponse<>(page));
     }
-
+    
     @PostMapping
     public ResponseEntity<?> create(@RequestBody LancamentoDTO lancamento, OAuth2Authentication authentication) throws Exception {
         LancamentoDTO lancamentoDTO = lancamentoService.salvar(lancamento, authentication);
