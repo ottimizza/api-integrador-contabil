@@ -99,6 +99,7 @@ public class GrupoRegraMapper {
     			.E_04__c(e04)
     			.O_texto_05__c(txt05)
     			.Sequencia_das_Regras__c(sequenciaRegras)
+    			.Ordem_OUD__c(grupoRegra.getPosicao())
     		.build();
     	
     	if(comIdExterno) s.setID_Externo__c(grupoRegra.getId().toString());
@@ -161,6 +162,7 @@ public class GrupoRegraMapper {
     			.E_04__c(e04)
     			.O_texto_05__c(txt05)
     			.Sequencia_das_Regras__c(sequenciaRegras)
+    			.Ordem_OUD__c(grupoRegra.getPosicao())
     		.build();
     	
     	if(comIdExterno) s.setID_Externo__c(grupoRegra.getId().toString());
