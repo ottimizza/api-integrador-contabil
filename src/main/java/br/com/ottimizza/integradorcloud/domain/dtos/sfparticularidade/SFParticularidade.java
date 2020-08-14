@@ -36,6 +36,9 @@ public class SFParticularidade implements Serializable{
     @JsonProperty(value="Sequencia_das_Regras__c")
     private String Sequencia_das_Regras__c;
     
+    @JsonProperty(value="Ordem_OUD__c")
+    private Integer Ordem_OUD__c;
+    
     // Regras
     // 01
     @JsonProperty(value="Se_Campo__c") 
