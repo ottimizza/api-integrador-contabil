@@ -60,7 +60,8 @@ public class RegraService {
             grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getTipoLancamento()
         ));
         grupoRegraDTO.setPosicao(grupoRegraDTO.getPosicao() == null ? 1 : grupoRegraDTO.getPosicao() + 1);
-
+        grupoRegraDTO.setContagemRegras(grupoRegraDTO.getRegras().size());
+        
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
         List<Regra> regrasSalvas = salvarRegras(grupoRegra, grupoRegraDTO.getRegras());
 
@@ -91,6 +92,7 @@ public class RegraService {
         }
 
         grupoRegraDTO.setId(id);
+        grupoRegraDTO.setContagemRegras(grupoRegraDTO.getRegras().size()); 
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
 
         regraRepository.apagarPorGrupoRegra(id);

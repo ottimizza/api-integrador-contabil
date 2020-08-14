@@ -1,9 +1,6 @@
 package br.com.ottimizza.integradorcloud.domain.dtos.sfparticularidade;
 
 import java.io.Serializable;
-import java.util.List;
-
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,6 +33,9 @@ public class SFParticularidade implements Serializable{
     @JsonProperty(value="Conta_Movimento__c")
     private String Conta_Movimento__c;
 
+    @JsonProperty(value="Sequencia_das_Regras__c")
+    private String Sequencia_das_Regras__c;
+    
     // Regras
     // 01
     @JsonProperty(value="Se_Campo__c") 
