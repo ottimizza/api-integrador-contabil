@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.domain.mappers.grupo_regra;
 
 
-import java.math.BigInteger;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,6 +25,7 @@ public class GrupoRegraMapper {
                 .tipoLancamento(grupoRegraDTO.getTipoLancamento())
                 .idRoteiro(grupoRegraDTO.getIdRoteiro())
                 .cnpjEmpresa(grupoRegraDTO.getCnpjEmpresa())
+                .contagemRegras(grupoRegraDTO.getContagemRegras())
                 .dataCriacao(DateUtils.toDate(grupoRegraDTO.getDataCriacao()))
                 .dataAtualizacao(DateUtils.toDate(grupoRegraDTO.getDataAtualizacao()))
                 .cnpjContabilidade(grupoRegraDTO.getCnpjContabilidade())
@@ -41,13 +41,15 @@ public class GrupoRegraMapper {
                 .idRoteiro(grupoRegra.getIdRoteiro())
                 .cnpjEmpresa(grupoRegra.getCnpjEmpresa())
                 .cnpjContabilidade(grupoRegra.getCnpjContabilidade())
+                .contagemRegras(grupoRegra.getContagemRegras())
                 .dataCriacao(DateUtils.toLocalDateTime(grupoRegra.getDataCriacao()))
                 .dataAtualizacao(DateUtils.toLocalDateTime(grupoRegra.getDataAtualizacao()))
             .build();   
     }
     
     public static SFParticularidade toSalesForce(GrupoRegra grupoRegra, boolean comIdExterno) {
-   
+    	String sequenciaRegras = "500";
+    	
     	List<Regra> regras = grupoRegra.getRegras();
     	String e01 = ""; 
     	String txt02 = "";	
@@ -64,18 +66,22 @@ public class GrupoRegraMapper {
     	if(regras.size() > 1) {
     		e01   = regras.get(1).getCampo();
     		txt02 = regras.get(1).getValor();
+    		sequenciaRegras = "520";
     	}
     	if(regras.size() > 2) {
     		e02   = regras.get(2).getCampo();
     		txt03 = regras.get(2).getValor();
+    		sequenciaRegras = "530";
     	}
     	if(regras.size() > 3 ) {
     		e03   = regras.get(3).getCampo();
-    		txt04 =	regras.get(3).getValor(); 
+    		txt04 =	regras.get(3).getValor();
+    		sequenciaRegras = "540";
     	}
     	if(regras.size() > 4) {
     		e04   = regras.get(4).getCampo();
     		txt05 = regras.get(4).getValor();
+    		sequenciaRegras = "550";
     	}
     	
     	SFParticularidade s = SFParticularidade.builder()
@@ -92,6 +98,7 @@ public class GrupoRegraMapper {
     			.O_texto_04__c(txt04)
     			.E_04__c(e04)
     			.O_texto_05__c(txt05)
+    			.Sequencia_das_Regras__c(sequenciaRegras)
     		.build();
     	
     	if(comIdExterno) s.setID_Externo__c(grupoRegra.getId().toString());
@@ -104,6 +111,7 @@ public class GrupoRegraMapper {
     }
 
     public static SFParticularidade toSalesForce(GrupoRegra grupoRegra, List<Regra> regras, boolean comIdExterno) {
+    	String sequenciaRegras = "500";
     	
     	String e01 = ""; 
     	String txt02 = "";	
@@ -120,18 +128,22 @@ public class GrupoRegraMapper {
     	if(regras.size() > 1) {
     		e01   = regras.get(1).getCampo();
     		txt02 = regras.get(1).getValor();
+    		sequenciaRegras = "520";
     	}
     	if(regras.size() > 2) {
     		e02   = regras.get(2).getCampo();
     		txt03 = regras.get(2).getValor();
+    		sequenciaRegras = "530";
     	}
     	if(regras.size() > 3 ) {
     		e03   = regras.get(3).getCampo();
     		txt04 =	regras.get(3).getValor(); 
+    		sequenciaRegras = "540";
     	}
     	if(regras.size() > 4) {
     		e04   = regras.get(4).getCampo();
     		txt05 = regras.get(4).getValor();
+    		sequenciaRegras = "550";
     	}
     	
     	SFParticularidade s = SFParticularidade.builder()
@@ -148,6 +160,7 @@ public class GrupoRegraMapper {
     			.O_texto_04__c(txt04)
     			.E_04__c(e04)
     			.O_texto_05__c(txt05)
+    			.Sequencia_das_Regras__c(sequenciaRegras)
     		.build();
     	
     	if(comIdExterno) s.setID_Externo__c(grupoRegra.getId().toString());
