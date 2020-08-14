@@ -25,6 +25,7 @@ public class GrupoRegraMapper {
                 .tipoLancamento(grupoRegraDTO.getTipoLancamento())
                 .idRoteiro(grupoRegraDTO.getIdRoteiro())
                 .cnpjEmpresa(grupoRegraDTO.getCnpjEmpresa())
+                .contagemRegras(grupoRegraDTO.getContagemRegras())
                 .dataCriacao(DateUtils.toDate(grupoRegraDTO.getDataCriacao()))
                 .dataAtualizacao(DateUtils.toDate(grupoRegraDTO.getDataAtualizacao()))
                 .cnpjContabilidade(grupoRegraDTO.getCnpjContabilidade())
@@ -40,6 +41,7 @@ public class GrupoRegraMapper {
                 .idRoteiro(grupoRegra.getIdRoteiro())
                 .cnpjEmpresa(grupoRegra.getCnpjEmpresa())
                 .cnpjContabilidade(grupoRegra.getCnpjContabilidade())
+                .contagemRegras(grupoRegra.getContagemRegras())
                 .dataCriacao(DateUtils.toLocalDateTime(grupoRegra.getDataCriacao()))
                 .dataAtualizacao(DateUtils.toLocalDateTime(grupoRegra.getDataAtualizacao()))
             .build();   

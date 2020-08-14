@@ -39,7 +39,7 @@ public class GrupoRegraDTO implements Serializable {
 
     private LocalDateTime dataAtualizacao;
     
-    private int contagemRegras;
+    private Integer contagemRegras;
 
     private List<Regra> regras;
     

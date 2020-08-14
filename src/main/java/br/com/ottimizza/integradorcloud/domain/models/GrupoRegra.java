@@ -61,7 +61,7 @@ public class GrupoRegra implements Serializable {
     private String cnpjContabilidade;
     
     @Column(name = "contagem_regras")
-    private int contagemRegras;
+    private Integer contagemRegras;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataCriacao;
