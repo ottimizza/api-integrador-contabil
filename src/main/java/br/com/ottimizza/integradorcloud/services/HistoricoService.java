@@ -1,9 +1,11 @@
 package br.com.ottimizza.integradorcloud.services;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -40,6 +42,23 @@ public class HistoricoService {
 
     public HistoricoDTO buscarPorContaMovimento(String contaMovimento, String cnpjEmpresa, Short tipoLancamento, OAuth2Authentication authentication) {
         return HistoricoMapper.fromEntity(historicoRepository.buscarPorContaMovimento(contaMovimento, cnpjEmpresa, tipoLancamento));
+    }
+    
+    public String deletaPorId(BigInteger id) throws Exception {
+    	historicoRepository.deleteById(id);
+    	return "Historico removido com sucesso!";
+    }
+    
+    public HistoricoDTO atualizar(BigInteger id, HistoricoDTO historico, OAuth2Authentication authentication) throws Exception {
+    	Historico existente = historicoRepository.findById(id).orElseThrow(() -> new NoResultException("Historico não encontrada!"));
+    	historico.setCnpjContabilidade(existente.getCnpjContabilidade());
+    	historico.setCnpjEmpresa(existente.getCnpjEmpresa());
+    	historico.setContaMovimento(existente.getContaMovimento());
+    	historico.setTipoLancamento(existente.getTipoLancamento());
+    	historico.setIdRoteiro(existente.getIdRoteiro());
+    	historico.setDataCriacao(existente.getDataCriacao());
+    	
+    	return HistoricoMapper.fromEntity(historicoRepository.save(HistoricoMapper.fromDto(historico)));
     }
 
     public String getAuthorizationHeader(OAuth2Authentication authentication) {
