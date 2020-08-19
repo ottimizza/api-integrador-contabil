@@ -1,9 +1,11 @@
 package br.com.ottimizza.integradorcloud.services;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -25,8 +27,10 @@ public class HistoricoService {
     @Inject
     HistoricoRepository historicoRepository;
 
-    public HistoricoDTO salvar(HistoricoDTO historicoDTO, OAuth2Authentication authentication) {
-        return HistoricoMapper.fromEntity(historicoRepository.save(HistoricoMapper.fromDto(historicoDTO)));
+    public HistoricoDTO salvar(HistoricoDTO historicoDTO, OAuth2Authentication authentication) throws Exception {
+    	Historico historico = HistoricoMapper.fromDto(historicoDTO);
+    	validaHistorico(historico);
+        return HistoricoMapper.fromEntity(historicoRepository.save(historico));
     }
 
     public Page<HistoricoDTO> buscar(HistoricoDTO filter, PageCriteria criteria, OAuth2Authentication authentication) throws Exception {
@@ -41,6 +45,26 @@ public class HistoricoService {
     public HistoricoDTO buscarPorContaMovimento(String contaMovimento, String cnpjEmpresa, Short tipoLancamento, OAuth2Authentication authentication) {
         return HistoricoMapper.fromEntity(historicoRepository.buscarPorContaMovimento(contaMovimento, cnpjEmpresa, tipoLancamento));
     }
+    
+    public String deletaPorId(BigInteger id) throws Exception {
+    	historicoRepository.deleteById(id);
+    	return "Historico removido com sucesso!";
+    }
+    
+    public HistoricoDTO atualizar(BigInteger id, HistoricoDTO historicoDTO, OAuth2Authentication authentication) throws Exception {
+    	Historico existente = historicoRepository.findById(id).orElseThrow(() -> new NoResultException("Historico não encontrada!"));
+    	Historico historico = HistoricoMapper.fromDto(historicoDTO);
+    	validaHistorico(historico);
+    	
+    	historico.setCnpjContabilidade(existente.getCnpjContabilidade());
+    	historico.setCnpjEmpresa(existente.getCnpjEmpresa());
+    	historico.setContaMovimento(existente.getContaMovimento());
+    	historico.setTipoLancamento(existente.getTipoLancamento());
+    	historico.setIdRoteiro(existente.getIdRoteiro());
+    	historico.setDataCriacao(existente.getDataCriacao());
+    	
+    	return HistoricoMapper.fromEntity(historicoRepository.save(historico));
+    }
 
     public String getAuthorizationHeader(OAuth2Authentication authentication) {
         final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
@@ -52,5 +76,22 @@ public class HistoricoService {
         ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.EXACT);
         return Example.of(HistoricoMapper.fromDto(historicoDTO), matcher);
     }
+    
+    public boolean validaHistorico(Historico historico) throws Exception {
+    	if(historico.getContaMovimento() == null || historico.getContaMovimento().equals(""))
+    		throw new IllegalArgumentException("Informe a conta movimento relacionada ao historico!");
+    	if(historico.getHistorico() == null || historico.getHistorico().equals(""))
+    		throw new IllegalArgumentException("Informe a regra do historico!");
+    	if(historico.getCnpjEmpresa() == null || historico.getCnpjEmpresa().equals(""))
+    		throw new IllegalArgumentException("Informe o cnpj da empresa relacionado ao historico!");
+    	if(historico.getCnpjContabilidade() == null || historico.getCnpjContabilidade().equals(""))
+       		throw new IllegalArgumentException("Informe o cnpj da contabilidade relacionado ao historico!");
+    	if(historico.getTipoLancamento() == null)
+    		throw new IllegalArgumentException("Informe o tipo de lancamento relacionado ao historico!");
+    	if(historico.getIdRoteiro() == null || historico.getIdRoteiro().equals(""))
+    		throw new IllegalArgumentException("Informe o id de roteiro relacionado ao historico!");
+    	return true;
+    }
+
 
 }

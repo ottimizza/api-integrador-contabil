@@ -13,6 +13,8 @@ import javax.persistence.NoResultException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
@@ -44,8 +46,16 @@ public class RegraService {
             throws Exception {
         ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
         Example<GrupoRegra> example = Example.of(GrupoRegraMapper.fromDto(filtro), matcher);
+
+        // sot by fixo
+        Sort sort = Sort.by( // contagemRegras , posicao
+            Sort.Order.asc("contagemRegras"),
+            Sort.Order.asc("posicao")
+        );
+
+        // PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize(), sort);
         
-        return grupoRegraRepository.findAll(example, PageCriteria.getPageRequest(pageCriteria))
+        return grupoRegraRepository.findAll(example, PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize(), sort))
                             .map((grupoRegra) -> {
                                 GrupoRegraDTO grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
                                 grupoRegraDTO.setRegras(regraRepository.buscarPorGrupoRegra(grupoRegra.getId()));
