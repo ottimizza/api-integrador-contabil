@@ -10,6 +10,8 @@ import javax.persistence.NoResultException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
@@ -35,7 +37,10 @@ public class HistoricoService {
 
     public Page<HistoricoDTO> buscar(HistoricoDTO filter, PageCriteria criteria, OAuth2Authentication authentication) throws Exception {
         Example<Historico> example = this.getDefaultQueryByExample(filter);
-        return historicoRepository.findAll(example, PageCriteria.getPageRequest(criteria)).map(HistoricoMapper::fromEntity);
+        Sort sort = Sort.by(
+        		Sort.Order.asc("dataCriacao")
+        	);
+        return historicoRepository.findAll(example, PageRequest.of(criteria.getPageIndex(), criteria.getPageSize(), sort)).map(HistoricoMapper::fromEntity);
     }
     
     public List<Historico> buscaHistoricosProSF(HistoricoDTO filter, OAuth2Authentication authentication) throws Exception {
