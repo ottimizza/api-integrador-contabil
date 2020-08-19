@@ -31,7 +31,7 @@ public class HistoricosController {
 
     @PostMapping
     public ResponseEntity<?> salvar(@RequestBody HistoricoDTO historicoDTO, 
-                                                     OAuth2Authentication authentication) {
+                                                     OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(new GenericResponse<>(
             historicoService.salvar(historicoDTO, authentication)
         ));
