@@ -27,8 +27,10 @@ public class HistoricoService {
     @Inject
     HistoricoRepository historicoRepository;
 
-    public HistoricoDTO salvar(HistoricoDTO historicoDTO, OAuth2Authentication authentication) {
-        return HistoricoMapper.fromEntity(historicoRepository.save(HistoricoMapper.fromDto(historicoDTO)));
+    public HistoricoDTO salvar(HistoricoDTO historicoDTO, OAuth2Authentication authentication) throws Exception {
+    	Historico historico = HistoricoMapper.fromDto(historicoDTO);
+    	validaHistorico(historico);
+        return HistoricoMapper.fromEntity(historicoRepository.save(historico));
     }
 
     public Page<HistoricoDTO> buscar(HistoricoDTO filter, PageCriteria criteria, OAuth2Authentication authentication) throws Exception {
@@ -51,15 +53,16 @@ public class HistoricoService {
     
     public HistoricoDTO atualizar(BigInteger id, HistoricoDTO historicoDTO, OAuth2Authentication authentication) throws Exception {
     	Historico existente = historicoRepository.findById(id).orElseThrow(() -> new NoResultException("Historico não encontrada!"));
-    	historicoDTO.setCnpjContabilidade(existente.getCnpjContabilidade());
-    	historicoDTO.setCnpjEmpresa(existente.getCnpjEmpresa());
-    	historicoDTO.setContaMovimento(existente.getContaMovimento());
-    	historicoDTO.setTipoLancamento(existente.getTipoLancamento());
-    	historicoDTO.setIdRoteiro(existente.getIdRoteiro());
-    	historicoDTO.setDataCriacao(existente.getDataCriacao());
     	Historico historico = HistoricoMapper.fromDto(historicoDTO);
-    	
     	validaHistorico(historico);
+    	
+    	historico.setCnpjContabilidade(existente.getCnpjContabilidade());
+    	historico.setCnpjEmpresa(existente.getCnpjEmpresa());
+    	historico.setContaMovimento(existente.getContaMovimento());
+    	historico.setTipoLancamento(existente.getTipoLancamento());
+    	historico.setIdRoteiro(existente.getIdRoteiro());
+    	historico.setDataCriacao(existente.getDataCriacao());
+    	
     	return HistoricoMapper.fromEntity(historicoRepository.save(historico));
     }
 
