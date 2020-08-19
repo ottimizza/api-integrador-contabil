@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.security.Principal;
 import java.sql.Date;
 import java.time.Instant;
-import java.time.LocalDate;
 
 
 import org.junit.jupiter.api.TestMethodOrder;
@@ -26,7 +25,7 @@ import br.com.ottimizza.integradorcloud.domain.dtos.HistoricoDTO;
 @RunWith(SpringRunner.class)
 @TestMethodOrder(OrderAnnotation.class)
 @SpringBootTest(classes = IntegradorCloudApplication.class)
-public class HistoricoServiceTest {
+class HistoricoServiceTest {
 
 	public static final String ADMINISTRATOR = "administrator@ottimizza.com.br";
     public static final String ACCOUNTANT = "accountant@ottimizza.com.br";
