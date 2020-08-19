@@ -143,7 +143,7 @@ public class RegraService {
             grupoRegraRepository.atualizaPosicaoPorId(id, posicaoAtual);
             grupoRegra.setPosicao(posicaoAtual);
         }
-
+        grupoRegraRepository.ajustePosicao(grupoRegra.getCnpjEmpresa(), grupoRegra.getCnpjContabilidade(), grupoRegra.getTipoLancamento());
         return GrupoRegraMapper.fromEntity(grupoRegra);
     }
 
