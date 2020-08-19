@@ -81,6 +81,7 @@ public class RegraService {
         lancamentoRepository.atualizaLancamentosPorRegra(
             regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getContaMovimento());
 
+        grupoRegraRepository.ajustePosicao(grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getTipoLancamento());
         return grupoRegraDTO;
     }
 
@@ -110,16 +111,21 @@ public class RegraService {
 
         grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
         grupoRegraDTO.setRegras(regrasSalvas);
-
+        
+        if(grupoRegraDTO.getContagemRegras() != existente.getContagemRegras())
+        	grupoRegraRepository.ajustePosicao(grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getTipoLancamento());
+        
         return grupoRegraDTO;
     }
 
     public String apagar(BigInteger id, OAuth2Authentication authentication) throws Exception {
-
+    	 GrupoRegra grupoRegra = grupoRegraRepository.findById(id)
+    	            .orElseThrow(() -> new NoResultException("Regra não encontrada!"));
+    	
         regraRepository.apagarPorGrupoRegra(id);
-
         grupoRegraRepository.deleteById(id);
 
+        grupoRegraRepository.ajustePosicao(grupoRegra.getCnpjEmpresa(), grupoRegra.getCnpjContabilidade(), grupoRegra.getTipoLancamento());
         return "Grupo de Regra removido com sucesso!";
     }
 
