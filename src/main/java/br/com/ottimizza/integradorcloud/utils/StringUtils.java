@@ -5,6 +5,7 @@ public class StringUtils {
 	
 	
 	public static String trataProSalesForce(String campo, Short condicao) {
+		
 		if (campo.contains("complemento")) {
 			campo = campo.replaceFirst("c", "C").replace("o0", "o (0").concat(")");
 		}
@@ -27,16 +28,16 @@ public class StringUtils {
 		//TRATANDO CONDICAO 
 		
 		if(condicao == 1) {
-			campo.concat(" contém");
+			campo = campo.concat(" contém");
 		}
 		else if(condicao == 2) {
-			campo.concat(" não contém");
+			campo = campo.concat(" não contém");
 		}
 		else if(condicao == 3) {
-			campo.concat(" começa com");
+			campo = campo.concat(" começa com");
 		}
 		else if(condicao == 4) {
-			campo.concat(" igual a");
+			campo = campo.concat(" igual a");
 		}
 		return campo;
 		
