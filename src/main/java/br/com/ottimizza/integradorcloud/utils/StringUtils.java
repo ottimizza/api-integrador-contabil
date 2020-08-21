@@ -51,11 +51,14 @@ public class StringUtils {
 			campo = "Portador";
 		}
 		if(campo.contains("competencia")) {
-			campo = "Mes-Ano Atual";
+			if(campo.contains("Anterior"))
+				campo = "Mes-Ano Anterior";
+			else
+				campo = "Mes-Ano Atual";
 		}
-		if(campo.contains("competenciaAnterior")) {
-			campo = "Mes-Ano Anterior";
-		}
+		/*if(campo.contains("competenciaAnterior")) {
+		
+		}*/
 		if(campo.contains("documento")) {
 			campo = "Documento/NF";
 		}

@@ -58,6 +58,12 @@ public class SFHistorico {
 	@JsonProperty(value = "Texto_04__c")
 	private String Texto_04__c;
 
+	@JsonProperty(value = "Campo_04__c")
+	private String Campo_04__c;
 	
+	@JsonProperty(value = "Texto_05__c")
+	private String Texto_05__c;
 	
+	@JsonProperty(value = "Campo_05__c")
+	private String Campo_05__c;
 }
