@@ -71,6 +71,20 @@ public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteg
     List<BigInteger>  findId(@Param("cnpjEmpresa")String cnpjEmpresa,
     						 @Param("tipoLancamento")Short tipoLancamento);
     
-    
+    @Modifying
+    @Transactional
+    @Query(value = "with grupo_regras_cte as (											     " + 
+    		"	select 																		 " + 
+    		"		id,     																 " + 
+    		"		posicao, 																 " + 
+    		"		(row_number() over (order by contagem_regras asc, posicao asc)) -1 as rn " + 
+    		" from grupo_regras  							 				    			 " + 
+    		" where cnpj_empresa     = :cnpjEmpresa 			 							 " + 
+    		" and cnpj_contabilidade = :cnpjContabilidade 				 	    			 " + 
+    		" and tipo_lancamento    = :tipoLancamento)				    				 	 " +  
+    		" update grupo_regras set posicao = grupo_regras_cte.rn from grupo_regras_cte where grupo_regras.id = grupo_regras_cte.id",nativeQuery = true)
+    void ajustePosicao(@Param("cnpjEmpresa")String cnpjEmpresa,
+    				   @Param("cnpjContabilidade") String cnpjContabilidade,
+    				   @Param("tipoLancamento") Short tipoLancamento);
 
 }
