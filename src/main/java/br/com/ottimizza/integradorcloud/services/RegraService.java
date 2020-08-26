@@ -117,6 +117,28 @@ public class RegraService {
         
         return grupoRegraDTO;
     }
+    
+    public GrupoRegraDTO clonar(BigInteger id, OAuth2Authentication authentication) throws Exception {
+    	GrupoRegra existente = grupoRegraRepository.findById(id).orElseThrow(() -> new NoResultException("Regra não encontrada!"));
+    	List<Regra> regrasExistentes = regraRepository.buscarPorGrupoRegra(id);
+    	
+    	GrupoRegraDTO grupoRegraDto = GrupoRegraDTO.builder()
+    			.posicao(existente.getPosicao())
+    			.contaMovimento(existente.getContaMovimento())
+    			.tipoLancamento(existente.getTipoLancamento())
+    			.idRoteiro(existente.getIdRoteiro())
+    			.cnpjEmpresa(existente.getCnpjEmpresa())
+    			.cnpjContabilidade(existente.getCnpjContabilidade())
+    			.contagemRegras(existente.getContagemRegras())
+    		.build();
+    	GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDto));
+    	List<Regra> regras = regrasExistentes.stream().map((Regra r) -> {
+    		return regraRepository.save(r.toBuilder().id(null).grupoRegra(grupoRegra).build());
+    	}).collect(Collectors.toList()); 
+    	grupoRegraRepository.ajustePosicao(grupoRegra.getCnpjEmpresa(), grupoRegra.getCnpjContabilidade(), grupoRegra.getTipoLancamento());
+    	
+    	return GrupoRegraMapper.fromEntity(grupoRegra).toBuilder().regras(regras).build();
+    }
 
     public String apagar(BigInteger id, OAuth2Authentication authentication) throws Exception {
     	 GrupoRegra grupoRegra = grupoRegraRepository.findById(id)

@@ -39,9 +39,6 @@ public class StringUtils {
 			else
 				campo = "Mes-Ano Atual";
 		}
-		/*if(campo.contains("competenciaAnterior")) {
-		
-		}*/
 		if(campo.contains("documento")) {
 			campo = "Documento/NF";
 		}
