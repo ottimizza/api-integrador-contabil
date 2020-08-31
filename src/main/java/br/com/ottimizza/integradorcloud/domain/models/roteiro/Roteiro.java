@@ -3,12 +3,7 @@ package br.com.ottimizza.integradorcloud.domain.models.roteiro;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +18,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor
 public class Roteiro {
 
+	@Id
+	@SequenceGenerator(name = "roteiros_sequence", sequenceName = "roteiros_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roteiros_sequence")
 	@Column(name = "id")
 	private BigInteger id;
 
