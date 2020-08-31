@@ -38,3 +38,8 @@ salesforce:
   service:
     name: salesforce-service
     url: ${SALES_FORCE_URL:https://api-salesforce-client.herokuapp.com}
+
+storage-s3:
+  service:
+    name: s3-service
+    url: ${STORAGE_URL:https://api-s3-storage.herokuapp.com}

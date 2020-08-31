@@ -4,6 +4,7 @@ import java.math.BigInteger;
 
 import javax.inject.Inject;
 
+import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.ArquivoS3DTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,9 @@ public class RoteiroService {
 											SalvaArquivoRequest salvaArquivo,
 											MultipartFile arquivo,
 											OAuth2Authentication authentication) throws Exception {
-		return s3Client.uploadArquivo(salvaArquivo, arquivo, authentication);
+		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo, arquivo, authentication).getBody();
+		return ResponseEntity.ok(arquivoS3);
 	}
-	
+
+
 }
