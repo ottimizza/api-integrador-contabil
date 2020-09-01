@@ -3,6 +3,11 @@ package br.com.ottimizza.integradorcloud.domain.dtos.roteiro;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Mapeamento;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
 import lombok.AllArgsConstructor;
@@ -55,5 +60,23 @@ public class RoteiroDTO {
 		
 		return roteiro;
 	}
+	
+	public static Pageable getPageRequest(PageCriteria searchCriteria) {
+        return PageRequest.of(searchCriteria.getPageIndex(), searchCriteria.getPageSize(), getSort(searchCriteria));
+    }
+
+    public static Sort getSort(PageCriteria searchCriteria) {
+        Sort sort = Sort.unsorted();
+        if (searchCriteria.getSortOrder() != null && searchCriteria.getSortBy() != null) {
+            sort = Sort.by(searchCriteria.getSortBy());
+            if (searchCriteria.getSortOrder().equals(PageCriteria.Order.ASC)) {
+                sort = sort.ascending();    
+            } else if (searchCriteria.getSortOrder().equals(PageCriteria.Order.DESC)) {
+                sort = sort.descending();
+            }
+        }
+
+        return sort;
+    }
 	
 }
