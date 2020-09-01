@@ -51,7 +51,7 @@ public class RoteiroController {
 		return ResponseEntity.ok(new GenericResponse<RoteiroDTO>(roteiroService.patch(roteiroId, roteiro)));
 	}
 	
-	@DeleteMapping("{roteiroId}")
+	@DeleteMapping("/{roteiroId}")
 	ResponseEntity<?> deletaRoteiro(@PathVariable("roteiroId") BigInteger roteiroId) throws Exception {
 		return ResponseEntity.ok(new GenericResponse<>(roteiroService.deleta(roteiroId)));
 	}
