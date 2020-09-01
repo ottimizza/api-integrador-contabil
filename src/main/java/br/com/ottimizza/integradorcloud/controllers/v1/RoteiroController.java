@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.RoteiroDTO;
+import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.RoteiroService;
 
 import java.math.BigInteger;
@@ -24,15 +25,21 @@ public class RoteiroController {
 	@PostMapping
 	ResponseEntity<?> criaRoteiro(RoteiroDTO roteiro,
 								  OAuth2Authentication authentication) throws Exception {
-		return ResponseEntity.ok(roteiroService.salva(roteiro));
+		return ResponseEntity.ok(new GenericResponse<RoteiroDTO>(roteiroService.salva(roteiro)));
 	}
 	
 	@PostMapping("/{roteiroId}")
 	ResponseEntity<?> uploadPlanilha(@PathVariable("roteiroId") BigInteger roteiroId,
 									 @Valid SalvaArquivoRequest salvaArquivo,
 									 @RequestParam MultipartFile arquivo,
-									 OAuth2Authentication authentication) throws Exception {
-		return ResponseEntity.ok(roteiroService.uploadPlanilha(roteiroId, salvaArquivo, arquivo, authentication));
+									 @RequestHeader("Authorization") String authorization) throws Exception {
+		return ResponseEntity.ok(roteiroService.uploadPlanilha(roteiroId, salvaArquivo, arquivo, authorization));
+	}
+	
+	@PatchMapping("/{roteiroId}")
+	ResponseEntity<?> patchRoteiro(@PathVariable("roteiroId") BigInteger roteiroId,
+								   @RequestBody RoteiroDTO roteiro) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<RoteiroDTO>(roteiroService.patch(roteiroId, roteiro)));
 	}
 	
 	

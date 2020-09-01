@@ -3,6 +3,7 @@ package br.com.ottimizza.integradorcloud.services;
 import java.math.BigInteger;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.ArquivoS3DTO;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +33,20 @@ public class RoteiroService {
 	}
 	
 	
-	public ResponseEntity<?> uploadPlanilha(BigInteger idRoteiro,
+	public ResponseEntity<?> uploadPlanilha(BigInteger roteiroId,
 											SalvaArquivoRequest salvaArquivo,
 											MultipartFile arquivo,
-											OAuth2Authentication authentication) throws Exception {
-		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo, arquivo, authentication).getBody();
+											String authorization) throws Exception {
+		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo, arquivo, authorization).getBody();
+		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
+		roteiro.setUrlArquivo(arquivoS3.getId().toString());
+		repository.save(roteiro);
 		return ResponseEntity.ok(arquivoS3);
+	}
+	
+	public RoteiroDTO patch(BigInteger roteiroId, RoteiroDTO roteiroDTO) throws Exception {
+		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
+		return RoteiroMapper.fromEntity(repository.save(roteiroDTO.patch(roteiro)));
 	}
 
 

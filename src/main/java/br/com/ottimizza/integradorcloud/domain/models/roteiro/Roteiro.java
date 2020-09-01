@@ -1,21 +1,21 @@
 package br.com.ottimizza.integradorcloud.domain.models.roteiro;
 
-import java.math.BigInteger;
-import java.time.LocalDateTime;
-
-import javax.persistence.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigInteger;
+import java.time.LocalDateTime;
+
+import javax.persistence.*;
 
 @Entity
 @Data
 @Table(name = "roteiros")
 @Builder(toBuilder = true)
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Roteiro {
 
 	@Id

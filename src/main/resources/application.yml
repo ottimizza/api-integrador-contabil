@@ -44,7 +44,7 @@ salesforce:
 
 storage-s3:
   service:
-    name: s3-service
+    name: storages3-service
     url: ${STORAGE_URL:https://api-s3-storage.herokuapp.com}
 
 security:
