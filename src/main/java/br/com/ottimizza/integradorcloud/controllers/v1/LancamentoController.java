@@ -121,6 +121,15 @@ public class LancamentoController {
     	return ResponseEntity.ok(lancamentoService.buscaPorcentagem(cnpjEmpresa, tipoMovimento, pageCriteria));
     }
     
+    @GetMapping("/total_arquivos")
+    public ResponseEntity<?> buscaTotalLancamntosArquivo(@RequestParam String cnpjEmpresa,
+    													 @RequestParam String cnpjContabilidade,
+    													 @RequestParam String tipoMovimento) throws Exception {
+    	return ResponseEntity.ok(new GenericResponse<>(
+    			lancamentoService.lancamentosPorArquivo(cnpjEmpresa, cnpjContabilidade, tipoMovimento)
+    		));
+    }
+    
     @PutMapping("/inativar/{arquivoId}")
     public ResponseEntity<?> inativaLancamentosPorArquivoId(@PathVariable BigInteger arquivoId) throws Exception {
     	return ResponseEntity.ok(new GenericResponse<LancamentoDTO>(

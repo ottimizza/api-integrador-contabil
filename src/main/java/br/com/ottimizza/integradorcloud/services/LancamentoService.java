@@ -25,6 +25,7 @@ import br.com.ottimizza.integradorcloud.client.DeParaClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.PorcentagemLancamentosRequest;
+import br.com.ottimizza.integradorcloud.domain.commands.lancamento.TotalLanvamentosArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.depara.DeParaContaDTO;
@@ -377,6 +378,10 @@ public class LancamentoService {
 				.build();
 		
 		return retorno;
+	}
+	
+	public List<TotalLanvamentosArquivoRequest> lancamentosPorArquivo(String cnpjEmpresa, String cnpjContabilidade, String tipoMovimento) throws Exception {
+		return lancamentoRepository.lancamentosPorArquivo(cnpjEmpresa, cnpjContabilidade, tipoMovimento);
 	}
 	
 	public String inativarLancamentos(BigInteger arquivoId) throws Exception {
