@@ -45,8 +45,8 @@ public interface OAuthClient {
     																			 @RequestParam("type") Integer type,
     																			 @RequestHeader("Authorization") String authorization);
     
-    @GetMapping("/api/v1/organizations")
-    public ResponseEntity<GenericPageableResponse<OrganizationDTO>> buscaContabilidadePorId(@RequestParam("id") BigInteger id,
+    @GetMapping("/api/v1/organizations/{id}")
+    public ResponseEntity<GenericResponse<OrganizationDTO>> buscaContabilidadePorId(@PathVariable("id") BigInteger id,
     																				@RequestHeader("Authorization") String authorization);
    
     @PostMapping("/api/v1/organizations")

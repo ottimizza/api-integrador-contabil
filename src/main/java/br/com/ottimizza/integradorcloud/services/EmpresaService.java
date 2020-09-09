@@ -58,7 +58,7 @@ public class EmpresaService {
 
     public EmpresaDTO salvar(EmpresaDTO empresaDTO, OAuth2Authentication authentication) throws Exception {
     	UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
-    	OrganizationDTO contabilidadeOauth = oauthClient.buscaContabilidadePorId(userInfo.getOrganizationId(), getAuthorizationHeader(authentication)).getBody().getRecords().get(0);
+    	OrganizationDTO contabilidadeOauth = oauthClient.buscaContabilidadePorId(userInfo.getOrganization().getId(), getAuthorizationHeader(authentication)).getBody().getRecord();
     	OrganizationDTO empresaOauth = null;
     	Contabilidade contabilidade = null;
     	try {
@@ -95,9 +95,8 @@ public class EmpresaService {
         				.salesForceId("IdCRM")
         				//.salesForceId(sfContabilidade.getId())
         			.build());
-        	
-        	empresaDTO.setContabilidadeCrmId(contabilidade.getSalesForceId());
         }
+        empresaDTO.setContabilidadeCrmId(contabilidade.getSalesForceId());
         Empresa empresa = empresaRepository.save(EmpresaMapper.fromDto(empresaDTO));
         //SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO);
         //salesForceClient.upsertEmpresa(empresa.getNomeResumido(), empresaSf, getAuthorizationHeader(authentication));
