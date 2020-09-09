@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.RoteiroDTO;
+import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.RoteiroService;
 
@@ -28,7 +29,7 @@ public class RoteiroController {
 	ResponseEntity<?> buscaTodos(@Valid RoteiroDTO filtro,
 								 @Valid PageCriteria criteria,
 								 Principal principal) throws Exception {
-		return ResponseEntity.ok(roteiroService.buscaTodos(filtro, criteria, principal));
+		return ResponseEntity.ok(new GenericPageableResponse<>(roteiroService.buscaTodos(filtro, criteria, principal)));
 	}
 	
 	@PostMapping
@@ -40,9 +41,9 @@ public class RoteiroController {
 	@PostMapping("/{roteiroId}")
 	ResponseEntity<?> uploadPlanilha(@PathVariable("roteiroId") BigInteger roteiroId,
 									 @Valid SalvaArquivoRequest salvaArquivo,
-									 @RequestParam MultipartFile arquivo,
+									 @RequestParam("file") MultipartFile arquivo,
 									 @RequestHeader("Authorization") String authorization) throws Exception {
-		return ResponseEntity.ok(roteiroService.uploadPlanilha(roteiroId, salvaArquivo, arquivo, authorization));
+		return ResponseEntity.ok(new GenericResponse<>(roteiroService.uploadPlanilha(roteiroId, salvaArquivo, arquivo, authorization)));
 	}
 	
 	@PatchMapping("/{roteiroId}")

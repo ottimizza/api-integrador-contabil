@@ -20,6 +20,8 @@ public class EmpresaDTO implements Serializable {
 
     private String cnpj;
 
+    private String nomeResumido;
+    
     private String razaoSocial;
 
     private String codigoERP;
@@ -29,5 +31,8 @@ public class EmpresaDTO implements Serializable {
     private BigInteger organizationId;
 
     private BigInteger accountingId;
+    
+    private String contabilidadeCrmId;
+    
 
 }

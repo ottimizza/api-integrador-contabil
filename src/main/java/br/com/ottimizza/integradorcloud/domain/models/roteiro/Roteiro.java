@@ -26,7 +26,7 @@ public class Roteiro {
 
 	@Column(name = "nome")
 	private String nome;
-
+	
 	@Column(name = "url_arquivo")
 	private String urlArquivo;
 
