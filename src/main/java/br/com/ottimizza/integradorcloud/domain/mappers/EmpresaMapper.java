@@ -61,7 +61,6 @@ public class EmpresaMapper {
     	int dia = LocalDate.now().getDayOfMonth(); int mes = LocalDate.now().getMonthValue(); int ano = LocalDate.now().getYear();
     	
     	return SFEmpresa.builder()
-    			.ID_Externo(empresa.getRazaoSocial())
     			.Possui_OIC("Possui OIC")
     			.Resumo_Prox_Passo("Ativar OIC - Entraremos em contato para termos mais informacoes do projeto.")
     			.Status_Projeto("01. Empresa Listada")
