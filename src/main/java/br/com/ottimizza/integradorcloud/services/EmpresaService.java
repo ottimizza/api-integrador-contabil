@@ -6,14 +6,22 @@ import java.text.MessageFormat;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.client.SalesForceClient;
@@ -44,6 +52,9 @@ public class EmpresaService {
     @Inject
     SalesForceClient salesForceClient;
     
+    @Value("${oauth.service.url}")
+    private String OAUTH2_SERVER_URL;
+    
     public Empresa buscarPorId(BigInteger id) throws Exception {
         return empresaRepository.buscarPorId(id).orElseThrow(() -> new NoResultException());
     }
@@ -57,16 +68,20 @@ public class EmpresaService {
     }
 
     public EmpresaDTO salvar(EmpresaDTO empresaDTO, OAuth2Authentication authentication) throws Exception {
+    	ObjectMapper mapper = new ObjectMapper();
     	UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
     	OrganizationDTO contabilidadeOauth = oauthClient.buscaContabilidadePorId(userInfo.getOrganization().getId(), getAuthorizationHeader(authentication)).getBody().getRecord();
     	OrganizationDTO empresaOauth = null;
     	Contabilidade contabilidade = null;
+    	String empresaOauthString = "";
     	try {
     		empresaOauth = oauthClient.buscaEmpresa(empresaDTO.getCnpj(),userInfo.getOrganization().getId(), 2, getAuthorizationHeader(authentication)).getBody().getRecords().get(0);
     	} catch(Exception ex) { }
         if(empresaOauth != null ) {
-        	if(empresaOauth.getCodigoERP().equals("") || empresaOauth.getCodigoERP().equals(null)) 
-        		oauthClient.patchOrganization(empresaOauth.getId(), OrganizationDTO.builder().codigoERP(empresaDTO.getCodigoERP()).build(), getAuthorizationHeader(authentication));
+			if(empresaOauth.getCodigoERP().equals("") || empresaOauth.getCodigoERP().equals(null))
+				empresaOauthString = mapper.writeValueAsString(OrganizationDTO.builder().codigoERP(empresaDTO.getCodigoERP()).build());
+        		defaultPatch(OAUTH2_SERVER_URL+"/api/v1/organizations/"+empresaOauth.getId(), empresaOauthString, getAuthorizationHeader(authentication));
+        		//oauthClient.patchOrganization(empresaOauth.getId(), OrganizationDTO.builder().codigoERP(empresaDTO.getCodigoERP()).build(), getAuthorizationHeader(authentication));
         }
         else {
         	empresaOauth = oauthClient.salvaEmpresa(OrganizationDTO.builder()
@@ -119,6 +134,22 @@ public class EmpresaService {
         final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
         String accessToken = details.getTokenValue();
         return MessageFormat.format("Bearer {0}", accessToken);
+    }
+    
+    private String defaultPatch(String url, String body, String authentication) {
+    	RestTemplate template = new RestTemplate();
+    	
+    	HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+    	requestFactory.setConnectTimeout(15000);
+    	requestFactory.setReadTimeout(15000);
+    	
+    	template.setRequestFactory(requestFactory);
+    	
+    	HttpHeaders headers =  new HttpHeaders();
+    	headers.setContentType(MediaType.APPLICATION_JSON);
+    	headers.set("Authorization", authentication);
+    	
+    	return template.patchForObject(url, new HttpEntity<String>(body, headers), String.class);
     }
   
 
