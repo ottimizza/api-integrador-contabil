@@ -31,7 +31,7 @@ public interface SalesForceClient {
 												  @RequestBody SFHistorico hisorico, 
 												  @RequestHeader("Authorization")  String authorization);
 	
-	@PostMapping("/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/{id}")
+	@PostMapping("/api/v1/salesforce/sobjects/Empresa__c/ID_Externo__c/{id}")
 	public ResponseEntity<String> upsertEmpresa(@PathVariable("id") String nomeResumido,
 												@RequestBody SFEmpresa empresa, 
 												@RequestHeader("Authorization")  String authorization);
