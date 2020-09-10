@@ -58,6 +58,9 @@ public class RoteiroDTO {
 		if(mapeamento != null)
 			roteiro.setMapeamento(mapeamento);
 		
+		if(tipoRoteiro != null)
+			roteiro.setTipoRoteiro(tipoRoteiro);
+		
 		return roteiro;
 	}
 	
