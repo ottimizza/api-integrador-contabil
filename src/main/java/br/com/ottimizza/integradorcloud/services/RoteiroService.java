@@ -44,7 +44,7 @@ public class RoteiroService {
 											String authorization) throws Exception {
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo, arquivo, authorization).getBody();
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
-		roteiro.toBuilder().status((short) 2).urlArquivo(arquivoS3.getId().toString()).build();
+		roteiro.toBuilder().status((short) 3).urlArquivo(arquivoS3.getId().toString()).build();
 		repository.save(roteiro);
 		return ResponseEntity.ok(arquivoS3);
 	}

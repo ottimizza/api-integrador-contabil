@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.domain.dtos.sfempresa;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,12 +13,11 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor @AllArgsConstructor
-public class SFEmpresa {
+public class SFEmpresa implements Serializable {
 	
-	public static final String S_NAME = "Empresa__c";
+	static final long serialVersionUID = 1L;
 
-	@JsonProperty(value = "ID_Externo__c")
-	private String ID_Externo;
+	public static final String S_NAME = "Empresa__c";
 	
 	@JsonProperty(value = "Tipo_de_Projeto__c")
 	private String Possui_OIC;
