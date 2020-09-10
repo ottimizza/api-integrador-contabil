@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.domain.models;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 import javax.persistence.Column;
@@ -20,8 +21,10 @@ import lombok.NoArgsConstructor;
 @Table(name = "contabilidades")
 @Builder(toBuilder = true)
 @NoArgsConstructor @AllArgsConstructor
-public class Contabilidade {
+public class Contabilidade implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
     @Column(name = "id", nullable = false)
     @SequenceGenerator(name = "contabilidades_sequence", sequenceName = "contabilidades_seq", allocationSize = 1)

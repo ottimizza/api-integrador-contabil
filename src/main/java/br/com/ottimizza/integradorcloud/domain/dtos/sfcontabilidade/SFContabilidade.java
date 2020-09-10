@@ -1,5 +1,7 @@
 package br.com.ottimizza.integradorcloud.domain.dtos.sfcontabilidade;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -10,8 +12,10 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor @AllArgsConstructor
-public class SFContabilidade {
+public class SFContabilidade implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@JsonProperty(value = "CNPJ_Numeros__c")
 	private String cnpj;
 	
