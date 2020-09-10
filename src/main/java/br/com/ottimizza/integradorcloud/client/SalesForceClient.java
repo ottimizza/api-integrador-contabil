@@ -35,7 +35,7 @@ public interface SalesForceClient {
 												@RequestBody SFEmpresa empresa, 
 												@RequestHeader("Authorization")  String authorization);
 		
-	@GetMapping("/api/v1/salesforce/sobjects/Contabilidade__c/CNPJ__c/{cnpj}")
+	@GetMapping("/api/v1/salesforce/sobjects/Contabilidade__c/CNPJ_Numeros__c/{cnpj}")
 	public ResponseEntity<SFContabilidade> getContabilidade(@PathVariable("cnpj") String cnpj,
 											  				@RequestHeader("Authorization")  String authorization);
 }
