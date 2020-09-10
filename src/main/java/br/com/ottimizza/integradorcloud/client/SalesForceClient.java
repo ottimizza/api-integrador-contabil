@@ -3,6 +3,7 @@ package br.com.ottimizza.integradorcloud.client;
 import java.math.BigInteger;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +36,7 @@ public interface SalesForceClient {
 												@RequestBody SFEmpresa empresa, 
 												@RequestHeader("Authorization")  String authorization);
 		
-	@GetMapping("/api/v1/salesforce/sobjects/Contabilidade__c/CNPJ_Numeros__c/{cnpj}")
+	@GetMapping(value = "/api/v1/salesforce/sobjects/Contabilidade__c/CNPJ_Numeros__c/{cnpj}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<SFContabilidade> getContabilidade(@PathVariable("cnpj") String cnpj,
 											  				@RequestHeader("Authorization")  String authorization);
 }
