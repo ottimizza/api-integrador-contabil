@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor
 public class SFContabilidade {
 	
-	@JsonProperty(value = "CNPJ__c")
+	@JsonProperty(value = "CNPJ_Numeros__c")
 	private String cnpj;
 	
-	@JsonProperty(value = "name")
+	@JsonProperty(value = "Name")
 	private String name;
 	
 	@JsonProperty(value = "Id")
