@@ -83,22 +83,23 @@ public class EmpresaService {
         	contabilidade = contabilidadeRepository.buscaPorCnpj(contabilidadeOauth.getCnpj());
         } catch(Exception ex) { }
         if(contabilidade == null) {
-        	SFContabilidade sfContabilidade = salesForceClient.getContabilidade(new StringBuilder(contabilidadeOauth.getCnpj())
+        	/*SFContabilidade sfContabilidade = salesForceClient.getContabilidade(new StringBuilder(contabilidadeOauth.getCnpj())
         																							.insert(2, ".")
     			    																				.insert(6, ".")
     			    																				.insert(10, "/")
-    			    																				.insert(15, "-").toString(), getAuthorizationHeader(authentication)).getBody();
+    			    																				.insert(15, "-").toString(), getAuthorizationHeader(authentication)).getBody();*/
         	contabilidade = contabilidadeRepository.save(Contabilidade.builder()
         				.cnpj(contabilidadeOauth.getCnpj())
         				.nome(contabilidadeOauth.getName())
         				.ouathId(contabilidadeOauth.getId())
-        				.salesForceId(sfContabilidade.getId())
+        				.salesForceId("idCrm")
+        				//.salesForceId(sfContabilidade.getId())
         			.build());
         }
         empresaDTO.setContabilidadeCrmId(contabilidade.getSalesForceId());
         Empresa empresa = empresaRepository.save(EmpresaMapper.fromDto(empresaDTO));
-        SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO);
-        salesForceClient.upsertEmpresa(empresa.getNomeResumido(), empresaSf, getAuthorizationHeader(authentication));
+        //SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO);
+        //salesForceClient.upsertEmpresa(empresa.getNomeResumido(), empresaSf, getAuthorizationHeader(authentication));
 		return EmpresaMapper.fromEntity(empresa);
     }
     
