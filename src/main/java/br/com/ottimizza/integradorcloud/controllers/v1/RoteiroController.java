@@ -33,7 +33,7 @@ public class RoteiroController {
 	}
 	
 	@PostMapping
-	ResponseEntity<?> criaRoteiro(RoteiroDTO roteiro,
+	ResponseEntity<?> criaRoteiro(@RequestBody RoteiroDTO roteiro,
 								  OAuth2Authentication authentication) throws Exception {
 		return ResponseEntity.ok(new GenericResponse<RoteiroDTO>(roteiroService.salva(roteiro)));
 	}
