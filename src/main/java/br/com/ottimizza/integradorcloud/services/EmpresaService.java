@@ -108,7 +108,8 @@ public class EmpresaService {
         }
         empresaDTO.setContabilidadeCrmId(contabilidade.getSalesForceId());
         Empresa empresa = empresaRepository.save(EmpresaMapper.fromDto(empresaDTO));
-        empresaDTO.setNomeCompleto(empresaDTO.getNomeCompleto().toUpperCase());
+        if(empresa.getRazaoSocial() != null && !empresa.getRazaoSocial().equals(""))
+        	empresaDTO.setRazaoSocial(empresaDTO.getRazaoSocial().toUpperCase());
         SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO);
         salesForceClient.upsertEmpresa(empresa.getNomeResumido(), empresaSf, getAuthorizationHeader(authentication));
 		return EmpresaMapper.fromEntity(empresa);

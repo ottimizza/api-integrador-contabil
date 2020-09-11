@@ -66,7 +66,7 @@ public class EmpresaMapper {
     			.Codigo_Empresa_ERP(empresa.getCodigoERP())
     			.Status_Report_Data(LocalDateTime.now())
     			.Contabilidade_Id(empresa.getContabilidadeCrmId())
-    			.Nome_Empresa(empresa.getNomeCompleto())
+    			.Nome_Empresa(empresa.getRazaoSocial())
     			.Cnpj(empresa.getCnpj())
     			.Envolvidos("Kleber")
     			.Proximo_Passo(LocalDateTime.now().plusDays(2))
