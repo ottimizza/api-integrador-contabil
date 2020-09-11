@@ -73,7 +73,7 @@ public class EmpresaMapper {
     			.Contabilidade_Id(empresa.getContabilidadeCrmId())
     			.Nome_Empresa(empresa.getNomeCompleto())
     			.Cnpj(empresa.getCnpj())
-    			.Nome_Resumido(empresa.getNomeResumido())
+    			//.Nome_Resumido(empresa.getNomeResumido())
     			.Envolvidos("Kleber")
     			.Proximo_Passo(LocalDateTime.now())
     			//.Proximo_Passo(ano+"/"+mes+"/"+(dia + 2))
