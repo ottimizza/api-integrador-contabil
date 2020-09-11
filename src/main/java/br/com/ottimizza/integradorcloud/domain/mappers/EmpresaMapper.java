@@ -59,7 +59,6 @@ public class EmpresaMapper {
     }
     
     public static SFEmpresa toSalesFoce(EmpresaDTO empresa) {
-    	System.out.println(empresa.getContabilidadeCrmId());
     	return SFEmpresa.builder()
     			.Possui_OIC("Possui OIC")
     			.Resumo_Prox_Passo("Ativar OIC - Entraremos em contato para termos mais informacoes do projeto.")
@@ -67,8 +66,8 @@ public class EmpresaMapper {
     			.Codigo_Empresa_ERP(empresa.getCodigoERP())
     			.Status_Report_Data(LocalDateTime.now())
     			.Contabilidade_Id(empresa.getContabilidadeCrmId())
-    			.Nome_Empresa(empresa.getNomeCompleto())
-    			.Cnpj(new StringBuilder(empresa.getCnpj()).insert(2, ".").insert(6, ".").insert(10, "/").insert(15, "-").toString())
+    			.Nome_Empresa(empresa.getNomeCompleto().toUpperCase())
+    			.Cnpj(empresa.getCnpj())
     			.Envolvidos("Kleber")
     			.Proximo_Passo(LocalDateTime.now().plusDays(2))
     		.build();

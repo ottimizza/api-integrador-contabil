@@ -38,7 +38,7 @@ public class SFEmpresa implements Serializable {
 	@JsonProperty(value = "Contabilidade__c")
 	private String Contabilidade_Id;
 	
-	@JsonProperty(value = "Name__c")
+	@JsonProperty(value = "Name")
 	private String Nome_Empresa;
 	
 	@JsonProperty(value = "CNPJ__c")
