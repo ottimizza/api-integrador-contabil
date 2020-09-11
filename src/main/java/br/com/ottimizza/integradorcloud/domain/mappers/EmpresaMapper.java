@@ -59,6 +59,7 @@ public class EmpresaMapper {
     }
     
     public static SFEmpresa toSalesFoce(EmpresaDTO empresa) {
+    	System.out.println(empresa.getContabilidadeCrmId());
     	return SFEmpresa.builder()
     			.Possui_OIC("Possui OIC")
     			.Resumo_Prox_Passo("Ativar OIC - Entraremos em contato para termos mais informacoes do projeto.")
