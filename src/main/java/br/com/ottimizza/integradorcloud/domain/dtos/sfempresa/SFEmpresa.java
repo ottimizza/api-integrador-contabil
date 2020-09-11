@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.domain.dtos.sfempresa;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -32,7 +33,7 @@ public class SFEmpresa implements Serializable {
 	private String Codigo_Empresa_ERP;
 	
 	@JsonProperty(value = "Status_Report_Data__c")
-	private String Status_Report_Data;
+	private LocalDateTime Status_Report_Data;
 	
 	@JsonProperty(value = "Contabilidade__c")
 	private String Contabilidade_Id;
@@ -53,5 +54,5 @@ public class SFEmpresa implements Serializable {
 	private String Envolvidos;
 	
 	@JsonProperty(value = "Proximo_Passo__c")
-	private String Proximo_Passo;
+	private LocalDateTime Proximo_Passo;
 }

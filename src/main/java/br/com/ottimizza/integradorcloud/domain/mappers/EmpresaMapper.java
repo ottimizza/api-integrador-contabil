@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.domain.mappers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,14 +68,16 @@ public class EmpresaMapper {
     			.Resumo_Prox_Passo("Ativar OIC - Entraremos em contato para termos mais informacoes do projeto.")
     			.Status_Projeto("01. Empresa Listada")
     			.Codigo_Empresa_ERP(empresa.getCodigoERP())
-    			.Status_Report_Data(ano +"/"+mes+"/"+ dia)
+    			.Status_Report_Data(LocalDateTime.now())
+    			//.Status_Report_Data(ano +"/"+mes+"/"+ dia)
     			.Contabilidade_Id(empresa.getContabilidadeCrmId())
     			.Nome_Empresa(empresa.getNomeCompleto())
     			.O_Que_Foi_Feito_Hoje("Novo cliente OIC")
     			.Cnpj(empresa.getCnpj())
     			.Nome_Resumido(empresa.getNomeResumido())
     			.Envolvidos("Kleber")
-    			.Proximo_Passo(ano+"/"+mes+"/"+(dia + 2))
+    			.Proximo_Passo(LocalDateTime.now())
+    			//.Proximo_Passo(ano+"/"+mes+"/"+(dia + 2))
     		.build();
     }
 
