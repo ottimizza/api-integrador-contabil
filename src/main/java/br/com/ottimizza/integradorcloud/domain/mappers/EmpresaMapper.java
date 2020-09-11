@@ -59,24 +59,17 @@ public class EmpresaMapper {
     }
     
     public static SFEmpresa toSalesFoce(EmpresaDTO empresa) {
-    	int dia = LocalDate.now().getDayOfMonth(); 
-    	int mes = LocalDate.now().getMonthValue(); 
-    	int ano = LocalDate.now().getYear();
-    	
     	return SFEmpresa.builder()
     			.Possui_OIC("Possui OIC")
     			.Resumo_Prox_Passo("Ativar OIC - Entraremos em contato para termos mais informacoes do projeto.")
     			.Status_Projeto("01. Empresa Listada")
     			.Codigo_Empresa_ERP(empresa.getCodigoERP())
     			.Status_Report_Data(LocalDateTime.now())
-    			//.Status_Report_Data(ano +"/"+mes+"/"+ dia)
     			.Contabilidade_Id(empresa.getContabilidadeCrmId())
     			.Nome_Empresa(empresa.getNomeCompleto())
-    			.Cnpj(empresa.getCnpj())
-    			//.Nome_Resumido(empresa.getNomeResumido())
+    			.Cnpj(new StringBuilder(empresa.getCnpj()).insert(2, ".").insert(6, ".").insert(10, "/").insert(15, "-").toString())
     			.Envolvidos("Kleber")
-    			.Proximo_Passo(LocalDateTime.now())
-    			//.Proximo_Passo(ano+"/"+mes+"/"+(dia + 2))
+    			.Proximo_Passo(LocalDateTime.now().plusDays(2))
     		.build();
     }
 
