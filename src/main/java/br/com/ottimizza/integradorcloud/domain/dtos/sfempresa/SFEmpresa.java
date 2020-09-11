@@ -41,9 +41,6 @@ public class SFEmpresa implements Serializable {
 	@JsonProperty(value = "name")
 	private String Nome_Empresa;
 	
-	@JsonProperty(value = "O_que_foi_feito_foje")
-	private String O_Que_Foi_Feito_Hoje;
-	
 	@JsonProperty(value = "CNPJ__c")
 	private String Cnpj;
 	

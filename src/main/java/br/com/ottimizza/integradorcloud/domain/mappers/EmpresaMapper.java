@@ -72,7 +72,6 @@ public class EmpresaMapper {
     			//.Status_Report_Data(ano +"/"+mes+"/"+ dia)
     			.Contabilidade_Id(empresa.getContabilidadeCrmId())
     			.Nome_Empresa(empresa.getNomeCompleto())
-    			.O_Que_Foi_Feito_Hoje("Novo cliente OIC")
     			.Cnpj(empresa.getCnpj())
     			.Nome_Resumido(empresa.getNomeResumido())
     			.Envolvidos("Kleber")
