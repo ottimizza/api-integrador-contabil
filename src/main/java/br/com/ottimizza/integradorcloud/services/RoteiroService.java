@@ -42,6 +42,7 @@ public class RoteiroService {
 											SalvaArquivoRequest salvaArquivo,
 											MultipartFile arquivo,
 											String authorization) throws Exception {
+		System.out.println("salvaArquivo: "+salvaArquivo.getApplicationId() +" "+salvaArquivo.getCnpjContabilidade() +" "+salvaArquivo.getCnpjEmpresa());
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo, arquivo, authorization).getBody();
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
 		roteiro.toBuilder().status((short) 3).urlArquivo(arquivoS3.getId().toString()).build();

@@ -17,7 +17,7 @@ public interface StorageS3Client {
 
 	@PostMapping("/api/v1/arquivos")
 	public ResponseEntity<ArquivoS3DTO> uploadArquivo(@Valid SalvaArquivoRequest salvaArquivo,
-											   		  @RequestParam MultipartFile arquivo,
+											   		  @RequestParam("file") MultipartFile arquivo,
 											   		  @RequestHeader("Authorization") String authorization);
 	
 	
