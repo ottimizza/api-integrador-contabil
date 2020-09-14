@@ -1,6 +1,5 @@
 package br.com.ottimizza.integradorcloud.client;
 
-import javax.validation.Valid;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.ArquivoS3DTO;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -8,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 
 @FeignClient(name = "${storage-s3.service.name}", url = "${storage-s3.service.url}")
 public interface StorageS3Client {
@@ -24,7 +23,7 @@ public interface StorageS3Client {
 	public ResponseEntity<ArquivoS3DTO> uploadArquivo(@RequestParam("cnpjEmpresa") String cnpjEmpresa,
 													  @RequestParam("cnpjContabilidade") String cnpjContabilidade,
 													  @RequestParam("applicationId") String applicationId,
-											   		  @RequestParam("file") MultipartFile arquivo,
+													  @RequestPart("file") MultipartFile arquivo,
 											   		  @RequestHeader("Authorization") String authorization);
 	
 	
