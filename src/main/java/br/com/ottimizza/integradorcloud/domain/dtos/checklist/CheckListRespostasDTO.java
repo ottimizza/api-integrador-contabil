@@ -1,4 +1,4 @@
-package br.com.ottimizza.integradorcloud.domain.models.checklist;
+package br.com.ottimizza.integradorcloud.domain.dtos.checklist;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -9,15 +9,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor @AllArgsConstructor
-public class PerguntasOpcoesResposta implements Serializable{
+@Builder(toBuilder = true)
+public class CheckListRespostasDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-
+	
 	private BigInteger id;
 	
-	private String descricao;
+	private BigInteger perguntaId;
 	
-	private String valor;
+	private BigInteger roteiroId;
+	
+	private String resposta;
+	
+	private String observacoes;
+
 }

@@ -47,6 +47,6 @@ public class CheckListPerguntas {
 	private String sugestao;
 	
 	@Column(name = "grupo")
-	private Integer grupo;
+	private String grupo;
 	
 }

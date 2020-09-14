@@ -54,6 +54,9 @@ public class Roteiro implements Serializable {
 	@Column(name = "mapeamento")
 	@Convert(converter = MapeamentoConverter.class)
 	private Mapeamento mapeamento;
+	
+	@Column(name = "checklist")
+	private Boolean checklist;
 
 	@Column(name = "data_criacao")
 	private LocalDateTime dataCriacao;
@@ -65,6 +68,7 @@ public class Roteiro implements Serializable {
 	@PreUpdate 
 	public void prePersist() {
 		if(this.dataCriacao == null) {
+			this.checklist = false;
 			this.dataCriacao = LocalDateTime.now();
 		}
 		this.dataAtualizacao = LocalDateTime.now();

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListRespostas;
 
 @Repository
-public interface CheckListRepository extends JpaRepository<CheckListRespostas, BigInteger>{
+public interface CheckListRespostasRepository extends JpaRepository<CheckListRespostas, BigInteger>{
 
 }

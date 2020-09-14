@@ -20,26 +20,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "checklist_respostas")
-public class CheckListRespostas implements Serializable{
+@Table(name = "checklist_observacoes")
+public class CheckListObservacoes implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "respostas_sequence", sequenceName = "respostas_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "respostas_sequence")
+	@SequenceGenerator(name = "observacoes_sequence", sequenceName = "observacoes_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "observacoes_sequence")
 	@Column(name = "id")
 	private BigInteger id;
 	
-	@Column(name = "fk_pergunta_id")
-	private BigInteger perguntaId;
+	@Column(name = "descricao")
+	private String descricao;
 	
-	@Column(name = "fk_roteiro_id")
-	private BigInteger roteiroId;
-	
-	@Column(name = "resposta")
-	private String resposta;
-	
-	@Column(name = "observacao")
-	private String observacoes;
+	@Column(name = "importante")
+	private Boolean importante;
 }
