@@ -38,15 +38,14 @@ public class RoteiroService {
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
 	
-	public ResponseEntity<?> uploadPlanilha(BigInteger roteiroId,
+	public RoteiroDTO uploadPlanilha(BigInteger roteiroId,
 											SalvaArquivoRequest salvaArquivo,
 											MultipartFile arquivo,
 											String authorization) throws Exception {
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
 		roteiro = roteiro.toBuilder().status((short) 3).urlArquivo(arquivoS3.getId().toString()).build();
-		repository.save(roteiro);
-		return ResponseEntity.ok(arquivoS3);
+		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
 	
 	public RoteiroDTO patch(BigInteger roteiroId, RoteiroDTO roteiroDTO) throws Exception {
