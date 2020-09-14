@@ -19,7 +19,7 @@ public interface StorageS3Client {
 											   		  @RequestParam("file") MultipartFile arquivo,
 											   		  @RequestHeader("Authorization") String authorization);*/
 	
-	@PostMapping("/api/v1/arquivos")
+	@PostMapping(value = "/api/v1/arquivos", consumes = "multipart/form-data")
 	public ResponseEntity<ArquivoS3DTO> uploadArquivo(@RequestParam("cnpjEmpresa") String cnpjEmpresa,
 													  @RequestParam("cnpjContabilidade") String cnpjContabilidade,
 													  @RequestParam("applicationId") String applicationId,
