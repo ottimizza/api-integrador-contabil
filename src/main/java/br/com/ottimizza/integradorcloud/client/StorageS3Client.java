@@ -1,6 +1,5 @@
 package br.com.ottimizza.integradorcloud.client;
 
-import javax.validation.Valid;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.ArquivoS3DTO;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -16,7 +15,7 @@ import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequ
 public interface StorageS3Client {
 
 	@PostMapping("/api/v1/arquivos")
-	public ResponseEntity<ArquivoS3DTO> uploadArquivo(@Valid SalvaArquivoRequest salvaArquivo,
+	public ResponseEntity<ArquivoS3DTO> uploadArquivo(@RequestParam SalvaArquivoRequest salvaArquivo,
 											   		  @RequestParam("file") MultipartFile arquivo,
 											   		  @RequestHeader("Authorization") String authorization);
 	
