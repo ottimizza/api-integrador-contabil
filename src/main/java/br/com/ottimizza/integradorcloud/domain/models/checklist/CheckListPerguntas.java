@@ -39,6 +39,9 @@ public class CheckListPerguntas implements Serializable{
 	@Column(name = "tipo")
 	private Short tipo;
 	
+	@Column(name = "tipo_input")
+	private Short tipoInput;
+	
 	@Column(name = "opcoes_respostas")
 	@Convert(converter = PerguntasOpcoesRespostaConverter.class)
 	private PerguntasOpcoesResposta[] opcoesResposta;

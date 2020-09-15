@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.ottimizza.integradorcloud.domain.dtos.checklist.CheckListRespostasDTO;
 import br.com.ottimizza.integradorcloud.domain.models.checklist.CheckList;
 import br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListPerguntas;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
@@ -25,12 +26,22 @@ public class CheckListController {
 	
 	@PostMapping
 	public ResponseEntity<?> salvaCheckListPergunta(@RequestBody CheckListPerguntas pergunta) throws Exception {
-		System.out.println("opcoes "+pergunta.getOpcoesResposta().toString());
-		return ResponseEntity.ok(new GenericResponse<>(checklistService.salvaPerguntas(pergunta)));
+		return ResponseEntity.ok(new GenericResponse<>(
+				checklistService.salvaPerguntas(pergunta)
+			));
 	}
 	
 	@GetMapping("/{tipo}")
 	public ResponseEntity<?> buscaCheckList(@PathVariable("tipo") Short tipo)throws Exception {
-		return ResponseEntity.ok(new GenericResponse<CheckList>(checklistService.buscaCheckList(tipo)));
+		return ResponseEntity.ok(new GenericResponse<CheckList>(
+				checklistService.buscaCheckList(tipo)
+			));
+	}
+	
+	@PostMapping("/resposta")
+	public ResponseEntity<?> salvaCheckListResposta(@RequestBody CheckListRespostasDTO resposta) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<CheckListRespostasDTO>(
+				checklistService.salvaResposta(resposta)
+			));
 	}
 }
