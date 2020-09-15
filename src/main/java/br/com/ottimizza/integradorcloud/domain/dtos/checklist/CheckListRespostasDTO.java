@@ -27,13 +27,8 @@ public class CheckListRespostasDTO implements Serializable{
 	private String observacoes;
 
 	public CheckListRespostas patch(CheckListRespostas respostaCheckList) {
-		
-		if(resposta != null && !resposta.equals(""))
-			respostaCheckList.setResposta(resposta);
-		
-		if(observacoes != null && !observacoes.equals(""))
-			respostaCheckList.setObservacoes(observacoes);
-		
+		respostaCheckList.setResposta(resposta);
+		respostaCheckList.setObservacoes(observacoes); 
 		return respostaCheckList;
 	}
 }

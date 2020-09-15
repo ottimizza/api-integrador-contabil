@@ -63,6 +63,9 @@ public class RoteiroDTO {
 		if(tipoRoteiro != null)
 			roteiro.setTipoRoteiro(tipoRoteiro);
 		
+		if(checkList != null)
+			roteiro.setChecklist(checkList);
+			
 		return roteiro;
 	}
 	
