@@ -18,4 +18,6 @@ public interface CheckListPerguntasRepository  extends JpaRepository<CheckListPe
 	
 	@Query(value = "SELECT new br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListObservacoes(co.id, co.descricao, co.importante) FROM CheckListObservacoes co")
 	CheckListObservacoes[] buscaObservacoes();
+	
+	
 }

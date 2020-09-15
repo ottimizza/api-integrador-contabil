@@ -23,6 +23,8 @@ public class CheckListPerguntasDTO implements Serializable{
 	
 	private Short tipo;
 	
+	private Short tipoInput;
+	
 	private PerguntasOpcoesResposta[] opcoesResposta;
 	
 	private String sugestao;

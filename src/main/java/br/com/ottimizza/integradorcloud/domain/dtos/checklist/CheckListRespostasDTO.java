@@ -3,6 +3,7 @@ package br.com.ottimizza.integradorcloud.domain.dtos.checklist;
 import java.io.Serializable;
 import java.math.BigInteger;
 
+import br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListRespostas;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,4 +26,14 @@ public class CheckListRespostasDTO implements Serializable{
 	
 	private String observacoes;
 
+	public CheckListRespostas patch(CheckListRespostas respostaCheckList) {
+		
+		if(resposta != null && !resposta.equals(""))
+			respostaCheckList.setResposta(resposta);
+		
+		if(observacoes != null && !observacoes.equals(""))
+			respostaCheckList.setObservacoes(observacoes);
+		
+		return respostaCheckList;
+	}
 }

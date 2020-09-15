@@ -39,6 +39,7 @@ public class CheckListMapper {
 				.opcoesResposta(pergunta.getOpcoesResposta())
 				.sugestao(pergunta.getSugestao())
 				.tipo(pergunta.getTipo())
+				.tipoInput(pergunta.getTipoInput())
 			.build();
 	}
 	
@@ -50,6 +51,7 @@ public class CheckListMapper {
 				.opcoesResposta(pergunta.getOpcoesResposta())
 				.sugestao(pergunta.getSugestao())
 				.tipo(pergunta.getTipo())
+				.tipoInput(pergunta.getTipoInput())
 			.build();
 	}
 }

@@ -40,6 +40,8 @@ public class RoteiroDTO {
 	
 	private Mapeamento mapeamento;
 	
+	private Boolean checkList;
+	
 	private LocalDateTime dataCriacao;
 	
 	private LocalDateTime dataAtualizacao;
