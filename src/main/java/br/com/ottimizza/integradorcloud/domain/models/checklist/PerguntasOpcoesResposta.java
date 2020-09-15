@@ -14,8 +14,6 @@ import lombok.NoArgsConstructor;
 public class PerguntasOpcoesResposta implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-
-	private BigInteger id;
 	
 	private String descricao;
 	

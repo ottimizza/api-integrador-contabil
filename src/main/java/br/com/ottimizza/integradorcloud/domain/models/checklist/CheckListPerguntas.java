@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.domain.models.checklist;
 
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 import javax.persistence.Column;
@@ -22,7 +23,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor
 @Entity
 @Table(name = "checklist_perguntas")
-public class CheckListPerguntas {
+public class CheckListPerguntas implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@SequenceGenerator(name = "perguntas_sequence", sequenceName = "perguntas_seq", allocationSize = 1)
@@ -38,10 +41,7 @@ public class CheckListPerguntas {
 	
 	@Column(name = "opcoes_respostas")
 	@Convert(converter = PerguntasOpcoesRespostaConverter.class)
-	private PerguntasOpcoesResposta opcoesResposta;
-	
-	@Column(name = "valor")
-	private String valor;
+	private PerguntasOpcoesResposta[] opcoesResposta;
 	
 	@Column(name = "sugestao")
 	private String sugestao;

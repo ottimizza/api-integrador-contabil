@@ -17,7 +17,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "checklist_observacoes")
@@ -36,4 +36,14 @@ public class CheckListObservacoes implements Serializable{
 	
 	@Column(name = "importante")
 	private Boolean importante;
+
+	public CheckListObservacoes(BigInteger id, String descricao, Boolean importante) {
+		super();
+		this.id = id;
+		this.descricao = descricao;
+		this.importante = importante;
+	}
+	
+	
 }
+
