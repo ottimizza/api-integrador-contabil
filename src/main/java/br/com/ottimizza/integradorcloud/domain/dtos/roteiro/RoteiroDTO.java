@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.domain.dtos.roteiro;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
@@ -18,7 +19,9 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor @AllArgsConstructor
-public class RoteiroDTO {
+public class RoteiroDTO implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	private BigInteger id;
 	
