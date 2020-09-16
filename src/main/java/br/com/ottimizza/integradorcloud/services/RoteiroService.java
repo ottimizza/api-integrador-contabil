@@ -64,9 +64,11 @@ public class RoteiroService {
 		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
 		roteiroDTO.setUsuario(userInfo.getUsername());
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
-		if(repository.buscaPorNomeEmpresaIdTipo(roteiroDTO.getNome(), roteiro.getEmpresaId(), roteiro.getTipoRoteiro()) > 0)
-			throw new IllegalArgumentException("Nome de roteiro já existente nesta empresa para este tipo de roteiro!");
-		
+		if(roteiroDTO.getNome() != null && !roteiroDTO.getNome().equals("")) {
+			if(repository.buscaPorNomeEmpresaIdTipo(roteiroDTO.getNome(), roteiro.getEmpresaId(), roteiro.getTipoRoteiro()) > 0)
+				throw new IllegalArgumentException("Nome de roteiro já existente nesta empresa para este tipo de roteiro!");
+			
+		}
 		return RoteiroMapper.fromEntity(repository.save(roteiroDTO.patch(roteiro)));
 	}
 
