@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.services;
 
 
+
 import javax.inject.Inject;
 
 import org.springframework.data.domain.Example;

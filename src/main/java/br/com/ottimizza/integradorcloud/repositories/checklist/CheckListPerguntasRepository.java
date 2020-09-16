@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.repositories.checklist;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +18,11 @@ public interface CheckListPerguntasRepository  extends JpaRepository<CheckListPe
 	CheckListPerguntas[] buscaPorTipo(@Param("tipo") Short tipo);
 	
 	@Query(value = "SELECT new br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListObservacoes(co.id, co.descricao, co.importante) FROM CheckListObservacoes co")
-	CheckListObservacoes[] buscaObservacoes();
+	List<CheckListObservacoes> buscaObservacoes();
+	
+	
+	/*@Query(value = "SELECT new br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListObservacoes(co.id, co.descricao, co.importante) FROM CheckListObservacoes co")
+	CheckListObservacoes[] buscaObservacoes();*/
 	
 	
 }

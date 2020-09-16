@@ -52,4 +52,7 @@ public class SFEmpresa implements Serializable {
 	
 	@JsonProperty(value = "Proximo_Passo__c")
 	private LocalDateTime Proximo_Passo;
+	
+	@JsonProperty(value = "Arquivo_Portal__c")
+	private String Arquivo_Portal;
 }
