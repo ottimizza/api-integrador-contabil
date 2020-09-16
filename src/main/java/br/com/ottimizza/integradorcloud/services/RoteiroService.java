@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
 import java.security.Principal;
+import java.text.MessageFormat;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -14,13 +15,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.client.StorageS3Client;
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.RoteiroDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.roteiro.RoteiroMapper;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
 import br.com.ottimizza.integradorcloud.repositories.roteiro.RoteiroRepository;
@@ -34,7 +39,13 @@ public class RoteiroService {
 	@Inject
 	StorageS3Client s3Client;
 	
-	public RoteiroDTO salva(RoteiroDTO roteiroDTO) throws Exception {
+	@Inject
+	OAuthClient oauthClient;
+	
+	public RoteiroDTO salva(RoteiroDTO roteiroDTO, OAuth2Authentication authentication) throws Exception {
+		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+		roteiroDTO.setUsuario(userInfo.getUsername());
+		
 		Roteiro roteiro = RoteiroMapper.fromDTO(roteiroDTO);
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
@@ -49,8 +60,13 @@ public class RoteiroService {
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
 	
-	public RoteiroDTO patch(BigInteger roteiroId, RoteiroDTO roteiroDTO) throws Exception {
+	public RoteiroDTO patch(BigInteger roteiroId, RoteiroDTO roteiroDTO, OAuth2Authentication authentication) throws Exception {
+		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+		roteiroDTO.setUsuario(userInfo.getUsername());
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
+		if(repository.buscaPorNomeEmpresaIdTipo(roteiroDTO.getNome(), roteiro.getEmpresaId(), roteiro.getTipoRoteiro()) > 0)
+			throw new IllegalArgumentException("Nome de roteiro já existente nesta empresa para este tipo de roteiro!");
+		
 		return RoteiroMapper.fromEntity(repository.save(roteiroDTO.patch(roteiro)));
 	}
 
@@ -66,5 +82,10 @@ public class RoteiroService {
 		return "Roteiro removido com sucesso!";
 	}
 
-
+	private String getAuthorizationHeader(OAuth2Authentication authentication) {
+        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+        String accessToken = details.getTokenValue();
+        return MessageFormat.format("Bearer {0}", accessToken);
+    }
+	
 }

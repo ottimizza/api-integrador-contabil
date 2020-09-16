@@ -45,6 +45,8 @@ public class RoteiroDTO implements Serializable{
 	
 	private Boolean checkList;
 	
+	private String usuario;
+	
 	private LocalDateTime dataCriacao;
 	
 	private LocalDateTime dataAtualizacao;
@@ -68,6 +70,9 @@ public class RoteiroDTO implements Serializable{
 		
 		if(checkList != null)
 			roteiro.setChecklist(checkList);
+		
+		if(usuario != null && !usuario.equals(""))
+			roteiro.setUsuario(usuario);
 			
 		return roteiro;
 	}

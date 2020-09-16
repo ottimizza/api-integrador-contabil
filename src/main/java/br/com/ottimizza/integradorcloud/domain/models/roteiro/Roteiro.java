@@ -58,6 +58,9 @@ public class Roteiro implements Serializable {
 	@Column(name = "checklist")
 	private Boolean checklist;
 
+	@Column(name = "usuario")
+	private String usuario;
+	
 	@Column(name = "data_criacao")
 	private LocalDateTime dataCriacao;
 

@@ -35,7 +35,7 @@ public class RoteiroController {
 	@PostMapping
 	ResponseEntity<?> criaRoteiro(@RequestBody RoteiroDTO roteiro,
 								  OAuth2Authentication authentication) throws Exception {
-		return ResponseEntity.ok(new GenericResponse<RoteiroDTO>(roteiroService.salva(roteiro)));
+		return ResponseEntity.ok(new GenericResponse<RoteiroDTO>(roteiroService.salva(roteiro, authentication)));
 	}
 	
 	@PostMapping("/{roteiroId}")
@@ -48,8 +48,9 @@ public class RoteiroController {
 	
 	@PatchMapping("/{roteiroId}")
 	ResponseEntity<?> patchRoteiro(@PathVariable("roteiroId") BigInteger roteiroId,
-								   @RequestBody RoteiroDTO roteiro) throws Exception {
-		return ResponseEntity.ok(new GenericResponse<RoteiroDTO>(roteiroService.patch(roteiroId, roteiro)));
+								   @RequestBody RoteiroDTO roteiro,
+								   OAuth2Authentication authentication) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<RoteiroDTO>(roteiroService.patch(roteiroId, roteiro, authentication)));
 	}
 	
 	@DeleteMapping("/{roteiroId}")
