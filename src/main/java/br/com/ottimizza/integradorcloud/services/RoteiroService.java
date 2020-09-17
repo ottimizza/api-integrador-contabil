@@ -28,7 +28,6 @@ import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.RoteiroDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.roteiro.RoteiroMapper;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
-import br.com.ottimizza.integradorcloud.domain.models.roteiro.StatusRoteiro;
 import br.com.ottimizza.integradorcloud.repositories.roteiro.RoteiroRepository;
 
 @Service
@@ -57,7 +56,7 @@ public class RoteiroService {
 											String authorization) throws Exception {
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
-		roteiro = roteiro.toBuilder().status(StatusRoteiro.ARQUIVO_OK).urlArquivo(arquivoS3.getId().toString()).build();
+		roteiro = roteiro.toBuilder().status((short) 3).urlArquivo(arquivoS3.getId().toString()).build();
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
 	

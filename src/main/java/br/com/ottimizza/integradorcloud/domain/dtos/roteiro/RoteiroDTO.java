@@ -13,8 +13,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Mapeamento;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
-import br.com.ottimizza.integradorcloud.domain.models.roteiro.StatusRoteiro;
-import br.com.ottimizza.integradorcloud.domain.models.roteiro.TipoProjeto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,7 +41,7 @@ public class RoteiroDTO implements Serializable{
 	
 	private String tipoRoteiro;
 	
-	private StatusRoteiro status;
+	private Short status;
 	
 	private Mapeamento mapeamento;
 	
@@ -51,7 +49,7 @@ public class RoteiroDTO implements Serializable{
 	
 	private String usuario;
 	
-	private TipoProjeto tipoProjeto;
+	private Short tipoProjeto;
 	
 	private LocalDateTime dataCriacao;
 	
