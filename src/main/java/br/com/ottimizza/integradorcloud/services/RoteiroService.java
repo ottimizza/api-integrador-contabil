@@ -11,10 +11,17 @@ import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.ArquivoS3DTO;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.client.SalesForceClient;
@@ -56,6 +63,9 @@ public class RoteiroService {
 	@Value("${storage-s3.service.url}")
     private String S3_SERVICE_URL;
 	
+	@Value("${salesforce-s3.service.url}")
+    private String SF_SERVICE_URL;
+	
 	public RoteiroDTO salva(RoteiroDTO roteiroDTO, OAuth2Authentication authentication) throws Exception {
 		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
 		roteiroDTO.setUsuario(userInfo.getUsername());
@@ -68,16 +78,16 @@ public class RoteiroService {
 									 SalvaArquivoRequest salvaArquivo,
 									 MultipartFile arquivo,
 									 String authorization) throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
 		roteiro = roteiro.toBuilder().status((short) 3).urlArquivo(arquivoS3.getId().toString()).build();
 		
 		Empresa empresa = empresaRepository.buscarPorId(roteiro.getEmpresaId()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
-		Contabilidade contabilidade = contabilidadeRepository.buscaPorCnpj(roteiro.getCnpjContabilidade());
-		SFEmpresa empresaCrm = SFEmpresa.builder()
-				.Arquivo_Portal(S3_SERVICE_URL+"/api/v1/arquivos/"+arquivoS3.getId().toString()+"/download")
-			.build();
-		sfClient.patchEmpresa(empresa.getNomeResumido(), empresaCrm, authorization);
+		SFEmpresa empresaCrm = SFEmpresa.builder().Arquivo_Portal(S3_SERVICE_URL+"/api/v1/arquivos/"+arquivoS3.getId().toString()+"/download").build();
+		String empresaCrmString = mapper.writeValueAsString(empresaCrm);
+		defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, authentication);
+		//sfClient.patchEmpresa(empresa.getNomeResumido(), empresaCrm, authorization);
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
 	
@@ -106,6 +116,22 @@ public class RoteiroService {
         final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
         String accessToken = details.getTokenValue();
         return MessageFormat.format("Bearer {0}", accessToken);
+    }
+	
+	private String defaultPatch(String url, String body, String authentication) {
+    	RestTemplate template = new RestTemplate();
+    	
+    	HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+    	requestFactory.setConnectTimeout(15000);
+    	requestFactory.setReadTimeout(15000);
+    	
+    	template.setRequestFactory(requestFactory);
+    	
+    	HttpHeaders headers =  new HttpHeaders();
+    	headers.setContentType(MediaType.APPLICATION_JSON);
+    	headers.set("Authorization", authentication);
+    	
+    	return template.patchForObject(url, new HttpEntity<String>(body, headers), String.class);
     }
 	
 }
