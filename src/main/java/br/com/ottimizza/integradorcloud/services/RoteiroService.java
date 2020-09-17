@@ -25,8 +25,10 @@ import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.RoteiroDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.sfempresa.SFEmpresa;
 import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.roteiro.RoteiroMapper;
+import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
+import br.com.ottimizza.integradorcloud.repositories.ContabilidadeRepository;
 import br.com.ottimizza.integradorcloud.repositories.empresa.EmpresaRepository;
 import br.com.ottimizza.integradorcloud.repositories.roteiro.RoteiroRepository;
 
@@ -38,6 +40,9 @@ public class RoteiroService {
 	
 	@Inject
 	EmpresaRepository empresaRepository;
+	
+	@Inject
+	ContabilidadeRepository contabilidadeRepository;
 	
 	@Inject
 	StorageS3Client s3Client;
@@ -68,8 +73,10 @@ public class RoteiroService {
 		roteiro = roteiro.toBuilder().status((short) 3).urlArquivo(arquivoS3.getId().toString()).build();
 		
 		Empresa empresa = empresaRepository.buscarPorId(roteiro.getEmpresaId()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
+		Contabilidade contabilidade = contabilidadeRepository.buscaPorCnpj(roteiro.getCnpjContabilidade());
 		SFEmpresa empresaCrm = SFEmpresa.builder()
 				.Arquivo_Portal(S3_SERVICE_URL+"/api/v1/arquivos/"+arquivoS3.getId().toString()+"/download")
+				.Contabilidade_Id(contabilidade.getSalesForceId())
 			.build();
 		sfClient.upsertEmpresa(empresa.getNomeResumido(), empresaCrm, authorization);
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
