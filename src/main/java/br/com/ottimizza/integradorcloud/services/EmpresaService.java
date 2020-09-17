@@ -74,6 +74,8 @@ public class EmpresaService {
     	OrganizationDTO empresaOauth = null;
     	Contabilidade contabilidade = null;
     	String empresaOauthString = "";
+    	String nomeResumido = empresaDTO.getNomeResumido().trim();
+        nomeResumido = nomeResumido.replaceFirst(nomeResumido.substring(0, 1), nomeResumido.substring(0, 1).toUpperCase());
     	try {
     		empresaOauth = oauthClient.buscaEmpresa(empresaDTO.getCnpj(),userInfo.getOrganization().getId(), 2, getAuthorizationHeader(authentication)).getBody().getRecords().get(0);
     	} catch(Exception ex) { }
@@ -111,8 +113,6 @@ public class EmpresaService {
         if(empresa.getRazaoSocial() != null && !empresa.getRazaoSocial().equals(""))
         	empresaDTO.setRazaoSocial(empresaDTO.getRazaoSocial().toUpperCase());
         SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO);
-        String nomeResumido = empresa.getNomeResumido().trim();
-        nomeResumido = nomeResumido.replaceFirst(nomeResumido.substring(0, 1), nomeResumido.substring(0, 1).toUpperCase());
         salesForceClient.upsertEmpresa(nomeResumido, empresaSf, getAuthorizationHeader(authentication));
 		return EmpresaMapper.fromEntity(empresa);
     }
