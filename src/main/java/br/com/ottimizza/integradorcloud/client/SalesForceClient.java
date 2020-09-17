@@ -39,4 +39,10 @@ public interface SalesForceClient {
 	@GetMapping(value = "/api/v1/salesforce/sobjects/Contabilidade__c/CNPJ_Numeros__c/{cnpj}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<SFContabilidade> getContabilidade(@PathVariable("cnpj") String cnpj,
 											  				@RequestHeader("Authorization")  String authorization);
+	
+	@GetMapping(value = "/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/{nomeResumido}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<SFEmpresa> getEmpresa(@PathVariable("nomeResumido") String nomeResumido,
+											  				@RequestHeader("Authorization")  String authorization);
+	
+	
 }
