@@ -111,7 +111,9 @@ public class EmpresaService {
         if(empresa.getRazaoSocial() != null && !empresa.getRazaoSocial().equals(""))
         	empresaDTO.setRazaoSocial(empresaDTO.getRazaoSocial().toUpperCase());
         SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO);
-        salesForceClient.upsertEmpresa(empresa.getNomeResumido(), empresaSf, getAuthorizationHeader(authentication));
+        String nomeResumido = empresa.getNomeResumido().trim();
+        nomeResumido = nomeResumido.replaceFirst(nomeResumido.substring(0, 1), nomeResumido.substring(0, 1).toUpperCase());
+        salesForceClient.upsertEmpresa(nomeResumido, empresaSf, getAuthorizationHeader(authentication));
 		return EmpresaMapper.fromEntity(empresa);
     }
     
