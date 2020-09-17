@@ -90,7 +90,9 @@ public class RoteiroService {
 				.Arquivo_Portal(S3_SERVICE_URL+"/api/v1/arquivos/"+arquivoS3.getId().toString()+"/download")
 				.Contabilidade_Id(contabilidade.getSalesForceId())
 			.build();
+		System.out.println("nome resumido antes "+empresa.getNomeResumido());
 		String empresaCrmString = mapper.writeValueAsString(empresaCrm);
+		System.out.println("empresa string "+empresaCrmString);
 		defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, authorization);
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
