@@ -63,7 +63,7 @@ public class RoteiroService {
 	@Value("${storage-s3.service.url}")
     private String S3_SERVICE_URL;
 	
-	@Value("${salesforce-s3.service.url}")
+	@Value("${salesforce.service.url}")
     private String SF_SERVICE_URL;
 	
 	public RoteiroDTO salva(RoteiroDTO roteiroDTO, OAuth2Authentication authentication) throws Exception {
