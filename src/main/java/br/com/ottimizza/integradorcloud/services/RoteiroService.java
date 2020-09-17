@@ -84,10 +84,14 @@ public class RoteiroService {
 		roteiro = roteiro.toBuilder().status((short) 3).urlArquivo(arquivoS3.getId().toString()).build();
 		
 		Empresa empresa = empresaRepository.buscarPorId(roteiro.getEmpresaId()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
-		SFEmpresa empresaCrm = SFEmpresa.builder().Arquivo_Portal(S3_SERVICE_URL+"/api/v1/arquivos/"+arquivoS3.getId().toString()+"/download").build();
+		
+		Contabilidade contabilidade = contabilidadeRepository.buscaPorCnpj(roteiro.getCnpjContabilidade());
+		SFEmpresa empresaCrm = SFEmpresa.builder()
+				.Arquivo_Portal(S3_SERVICE_URL+"/api/v1/arquivos/"+arquivoS3.getId().toString()+"/download")
+				.Contabilidade_Id(contabilidade.getSalesForceId())
+			.build();
 		String empresaCrmString = mapper.writeValueAsString(empresaCrm);
 		defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, authorization);
-		//sfClient.patchEmpresa(empresa.getNomeResumido(), empresaCrm, authorization);
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
 	
