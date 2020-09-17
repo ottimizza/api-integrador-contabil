@@ -6,6 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +36,11 @@ public interface SalesForceClient {
 	public ResponseEntity<String> upsertEmpresa(@PathVariable("id") String nomeResumido,
 												@RequestBody SFEmpresa empresa, 
 												@RequestHeader("Authorization")  String authorization);
+	
+	@PatchMapping("/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/{id}")
+	public ResponseEntity<String> patchEmpresa(@PathVariable("id") String nomeResumido,
+											   @RequestBody SFEmpresa empresa, 
+											   @RequestHeader("Authorization")  String authorization);
 		
 	@GetMapping(value = "/api/v1/salesforce/sobjects/Contabilidade__c/CNPJ_Numeros__c/{cnpj}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<SFContabilidade> getContabilidade(@PathVariable("cnpj") String cnpj,
