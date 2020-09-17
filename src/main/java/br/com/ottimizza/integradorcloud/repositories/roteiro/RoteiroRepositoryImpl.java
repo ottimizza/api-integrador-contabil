@@ -30,13 +30,13 @@ public class RoteiroRepositoryImpl implements RoteiroRepositoryCustom{
 			sb.append("AND r.nome ILIKE unaccent(:nome) ");
 		
 		if(filtro.getStatus() !=null)
-			sb.append("AND r.status = :status");
+			sb.append("AND r.status = :status ");
 		
 		if(filtro.getTipoRoteiro() != null && !filtro.getTipoRoteiro().equals(""))
-			sb.append("AND r.tipo_roteiro = :tipoRoteiro");
+			sb.append("AND r.tipo_roteiro = :tipoRoteiro ");
 		
 		if(filtro.getId() != null)
-			sb.append("AND r.id = :id");
+			sb.append("AND r.id = :roteiroId ");
 		
 		sb.append("ORDER BY e.razao_social ASC");
 		
@@ -58,7 +58,7 @@ public class RoteiroRepositoryImpl implements RoteiroRepositoryCustom{
 			query.setParameter("tipoRoteiro", filtro.getTipoRoteiro());
 		
 		if(filtro.getId() != null)
-			query.setParameter("id", filtro.getId());
+			query.setParameter("roteiroId", filtro.getId());
 		
 		query.setFirstResult(criteria.getPageIndex() * criteria.getPageSize());
 		query.setMaxResults(criteria.getPageSize());
