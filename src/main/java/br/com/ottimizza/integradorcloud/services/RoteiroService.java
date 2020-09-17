@@ -28,6 +28,7 @@ import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.RoteiroDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.roteiro.RoteiroMapper;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
+import br.com.ottimizza.integradorcloud.domain.models.roteiro.StatusRoteiro;
 import br.com.ottimizza.integradorcloud.repositories.roteiro.RoteiroRepository;
 
 @Service
@@ -56,7 +57,7 @@ public class RoteiroService {
 											String authorization) throws Exception {
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
-		roteiro = roteiro.toBuilder().status((short) 3).urlArquivo(arquivoS3.getId().toString()).build();
+		roteiro = roteiro.toBuilder().status(StatusRoteiro.ARQUIVO_OK).urlArquivo(arquivoS3.getId().toString()).build();
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
 	
@@ -71,12 +72,9 @@ public class RoteiroService {
 		}
 		return RoteiroMapper.fromEntity(repository.save(roteiroDTO.patch(roteiro)));
 	}
-
-	public Page<RoteiroDTO> buscaTodos(RoteiroDTO filtro, PageCriteria criteria, Principal principal) throws Exception {
-		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
-		Example<Roteiro> exemplo = Example.of(RoteiroMapper.fromDTO(filtro), matcher);
-		Sort sort = Sort.by(Sort.Order.asc("nome"));
-		return repository.findAll(exemplo, PageRequest.of(criteria.getPageIndex(), criteria.getPageSize(), sort)).map(RoteiroMapper::fromEntity);
+	
+	public Page<Roteiro> busca(RoteiroDTO filtro, PageCriteria criteria) throws Exception {
+		return repository.buscaRoteiros(filtro, criteria);
 	}
 	
 	public String deleta(BigInteger roteiroId) throws Exception {

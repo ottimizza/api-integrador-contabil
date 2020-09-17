@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
 
 @Repository
-public interface RoteiroRepository extends JpaRepository<Roteiro, BigInteger>{
+public interface RoteiroRepository extends JpaRepository<Roteiro, BigInteger>, RoteiroRepositoryCustom{
 
 	@Query(value = "SELECT COUNT(*) FROM roteiros r WHERE r.nome = :nome AND r.fk_empresa_id = :empresaId AND r.tipo_roteiro = :tipoRoteiro", nativeQuery = true)
 	Integer buscaPorNomeEmpresaIdTipo(@Param("nome") String nome, @Param("empresaId") BigInteger empresaId, @Param("tipoRoteiro") String tipoRoteiro);

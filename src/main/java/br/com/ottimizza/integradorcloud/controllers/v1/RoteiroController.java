@@ -26,10 +26,10 @@ public class RoteiroController {
 	RoteiroService roteiroService;
 
 	@GetMapping
-	ResponseEntity<?> buscaTodos(@Valid RoteiroDTO filtro,
-								 @Valid PageCriteria criteria,
-								 Principal principal) throws Exception {
-		return ResponseEntity.ok(new GenericPageableResponse<>(roteiroService.buscaTodos(filtro, criteria, principal)));
+	ResponseEntity<?> buscaRoteiros(@Valid RoteiroDTO filtro,
+			  @Valid PageCriteria criteria,
+			  Principal principal) throws Exception {
+		return ResponseEntity.ok(new GenericPageableResponse<>(roteiroService.busca(filtro, criteria)));
 	}
 	
 	@PostMapping

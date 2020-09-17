@@ -19,6 +19,7 @@ public class RoteiroMapper {
 				.mapeamento(roteiro.getMapeamento())
 				.checklist(roteiro.getCheckList())
 				.usuario(roteiro.getUsuario())
+				.tipoProjeto(roteiro.getTipoProjeto())
 				.dataCriacao(roteiro.getDataCriacao())
 				.dataAtualizacao(roteiro.getDataAtualizacao())
 			.build();
@@ -38,6 +39,7 @@ public class RoteiroMapper {
 				.mapeamento(roteiro.getMapeamento())
 				.checkList(roteiro.getChecklist())
 				.usuario(roteiro.getUsuario())
+				.tipoProjeto(roteiro.getTipoProjeto())
 				.dataCriacao(roteiro.getDataCriacao())
 				.dataAtualizacao(roteiro.getDataAtualizacao())
 			.build();

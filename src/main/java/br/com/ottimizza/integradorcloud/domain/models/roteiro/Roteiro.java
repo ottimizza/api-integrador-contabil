@@ -49,7 +49,10 @@ public class Roteiro implements Serializable {
 	private String tipoRoteiro;
 
 	@Column(name = "status")
-	private Short status;
+	private StatusRoteiro status;
+	
+	@Column(name = "tipo_projetoo")
+	private TipoProjeto tipoProjeto;
 
 	@Column(name = "mapeamento")
 	@Convert(converter = MapeamentoConverter.class)

@@ -8,9 +8,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Mapeamento;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
+import br.com.ottimizza.integradorcloud.domain.models.roteiro.StatusRoteiro;
+import br.com.ottimizza.integradorcloud.domain.models.roteiro.TipoProjeto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,7 +43,7 @@ public class RoteiroDTO implements Serializable{
 	
 	private String tipoRoteiro;
 	
-	private Short status;
+	private StatusRoteiro status;
 	
 	private Mapeamento mapeamento;
 	
@@ -47,9 +51,14 @@ public class RoteiroDTO implements Serializable{
 	
 	private String usuario;
 	
+	private TipoProjeto tipoProjeto;
+	
 	private LocalDateTime dataCriacao;
 	
 	private LocalDateTime dataAtualizacao;
+	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String nomeCompleto;
 	
 	public Roteiro patch(Roteiro roteiro) {
 		
