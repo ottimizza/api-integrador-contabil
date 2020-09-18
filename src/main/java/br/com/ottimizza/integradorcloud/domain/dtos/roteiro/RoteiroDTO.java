@@ -80,6 +80,9 @@ public class RoteiroDTO implements Serializable{
 		
 		if(usuario != null && !usuario.equals(""))
 			roteiro.setUsuario(usuario);
+		
+		if(tipoProjeto != null && !tipoProjeto.equals(""))
+			roteiro.setTipoProjeto(tipoProjeto);
 			
 		return roteiro;
 	}
