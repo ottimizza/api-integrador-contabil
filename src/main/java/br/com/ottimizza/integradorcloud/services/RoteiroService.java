@@ -67,8 +67,8 @@ public class RoteiroService {
     private String SF_SERVICE_URL;
 	
 	public RoteiroDTO salva(RoteiroDTO roteiroDTO, OAuth2Authentication authentication) throws Exception {
-		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
-		roteiroDTO.setUsuario(userInfo.getUsername());
+		//UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+		//roteiroDTO.setUsuario(userInfo.getUsername());
 		
 		Roteiro roteiro = RoteiroMapper.fromDTO(roteiroDTO);
 		validaRoteiro(roteiro);
