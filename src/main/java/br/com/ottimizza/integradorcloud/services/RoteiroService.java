@@ -97,8 +97,8 @@ public class RoteiroService {
 	}
 	
 	public RoteiroDTO patch(BigInteger roteiroId, RoteiroDTO roteiroDTO, OAuth2Authentication authentication) throws Exception {
-		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
-		roteiroDTO.setUsuario(userInfo.getUsername());
+		//UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+		//roteiroDTO.setUsuario(userInfo.getUsername());
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
 		if(roteiroDTO.getNome() != null && !roteiroDTO.getNome().equals("")) {
 			if(repository.buscaPorNomeEmpresaIdTipo(roteiroDTO.getNome(), roteiro.getEmpresaId(), roteiro.getTipoRoteiro()) > 0)
