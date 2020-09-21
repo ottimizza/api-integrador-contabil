@@ -5,6 +5,7 @@ import java.security.Principal;
 
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +47,7 @@ class RoteiroServiceTest {
     	.build();
     
     @Test
+    @Order(1)
     public void dadoRoteiroDTO_quandoIniciaProjeto_entaoOK() throws Exception {
     	Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
     	
@@ -76,6 +78,7 @@ class RoteiroServiceTest {
     }*/
     
     @Test
+    @Order(2)
     public void dadoRoteiroDTO_quandoSalvaTipoRoteiro_entaoOk() throws Exception {
     	Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
     	
