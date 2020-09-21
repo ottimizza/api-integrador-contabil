@@ -1,8 +1,5 @@
 package br.com.ottimizza.integradorcloud.services;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.Principal;
 
@@ -17,10 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.multipart.MultipartFile;
 
 import br.com.ottimizza.integradorcloud.IntegradorCloudApplication;
-import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.RoteiroDTO;
 
 @RunWith(SpringRunner.class)
