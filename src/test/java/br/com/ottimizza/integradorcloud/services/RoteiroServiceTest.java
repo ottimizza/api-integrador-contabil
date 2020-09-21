@@ -84,7 +84,7 @@ class RoteiroServiceTest {
     public void dadoRoteiroDTO_quandoSalvaTipoRoteiro_entaoOk() throws Exception {
     	Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
     	
-    	roteiro = roteiro.builder()
+    	roteiro = RoteiroDTO.builder()
     			.tipoRoteiro("PAG")
     			.status((short) 5)
     		.build();
@@ -108,7 +108,7 @@ class RoteiroServiceTest {
     public void dadoRoteiroDTO_quandoFinalizaProjeto_entaoOK() throws Exception {
     	Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
     	
-    	roteiro = roteiro.builder()
+    	roteiro = RoteiroDTO.builder()
     			.status((short) 7)
     			.checkList(true)
     			.nome("Pagamentos Possamai")
