@@ -193,6 +193,7 @@ class RoteiroServiceTest {
     	Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
     	
     	roteiro =  roteiro.toBuilder()
+    			.status((short) 5)
     			.tipoRoteiro(null)
     		.build();
     	
@@ -208,6 +209,7 @@ class RoteiroServiceTest {
     	Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
     	
     	roteiro =  roteiro.toBuilder()
+    			.status((short) 7)
     			.nome(null)
     		.build();
     	
