@@ -47,6 +47,7 @@ class RoteiroServiceTest {
     		.cnpjEmpresa("12123456712312")
     		.empresaId(BigInteger.valueOf(120))
     		.status((short) 1)
+    		.urlArquivo("porenquanto")
     	.build();
     
     @Test
@@ -65,6 +66,19 @@ class RoteiroServiceTest {
     	Assertions.assertNotNull(created.getDataCriacao());
     	Assertions.assertNotNull(created.getDataAtualizacao());
     }
+    
+  /*@Test
+    public void dadoRoteiroDTO_quandoFazUploadPlanilha_entaoOK() throws Exception {
+    	Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
+    	
+    	SalvaArquivoRequest info = SalvaArquivoRequest.builder()
+    			.cnpjContabilidade("20000000000000")
+    			.cnpjEmpresa("12123456712312")
+    			.applicationId("armazem-arquivos")
+    		.build();
+    	
+    	RoteiroDTO created = roteiroService.uploadPlanilha(BigInteger.ONE, info, M, oauth2Authentication);
+    }*/
     
     @Test
     public void dadoRoteiroDTO_quandoSalvaTipoRoteiro_entaoOk() throws Exception {
@@ -88,21 +102,7 @@ class RoteiroServiceTest {
     	Assertions.assertNotNull(created.getUsuario());
     	Assertions.assertNotNull(created.getDataCriacao());
     	Assertions.assertNotNull(created.getDataAtualizacao());
-    }
-    
-  /*@Test
-    public void dadoRoteiroDTO_quandoFazUploadPlanilha_entaoOK() throws Exception {
-    	Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
-    	
-    	SalvaArquivoRequest info = SalvaArquivoRequest.builder()
-    			.cnpjContabilidade("20000000000000")
-    			.cnpjEmpresa("12123456712312")
-    			.applicationId("armazem-arquivos")
-    		.build();
-    	
-    	RoteiroDTO created = roteiroService.uploadPlanilha(BigInteger.ONE, info, M, oauth2Authentication);
-    }*/
-    
+    }    
     
     @Test
     public void dadoRoteiroDTO_quandoFinalizaProjeto_entaoOK() throws Exception {
