@@ -67,8 +67,7 @@ public class RoteiroService {
     private String SF_SERVICE_URL;
 	
 	public RoteiroDTO salva(RoteiroDTO roteiroDTO, OAuth2Authentication authentication) throws Exception {
-		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
-		roteiroDTO.setUsuario(userInfo.getUsername());
+		roteiroDTO.setUsuario(authentication.getName());
 		
 		Roteiro roteiro = RoteiroMapper.fromDTO(roteiroDTO);
 		validaRoteiro(roteiro);
@@ -97,8 +96,7 @@ public class RoteiroService {
 	}
 	
 	public RoteiroDTO patch(BigInteger roteiroId, RoteiroDTO roteiroDTO, OAuth2Authentication authentication) throws Exception {
-		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
-		roteiroDTO.setUsuario(userInfo.getUsername());
+		roteiroDTO.setUsuario(authentication.getName());
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
 		if(roteiroDTO.getNome() != null && !roteiroDTO.getNome().equals("")) {
 			if(repository.buscaPorNomeEmpresaIdTipo(roteiroDTO.getNome(), roteiro.getEmpresaId(), roteiro.getTipoRoteiro()) > 0)
