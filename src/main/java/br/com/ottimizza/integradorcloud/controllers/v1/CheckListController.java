@@ -27,7 +27,7 @@ public class CheckListController {
 	CheckListService checklistService;
 	
 	@GetMapping("/{tipo}")
-	public ResponseEntity<?> buscaCheckList(@PathVariable("tipo") Short tipo)throws Exception {
+	public ResponseEntity<?> buscaCheckList(@PathVariable("tipo") String tipo)throws Exception {
 		return ResponseEntity.ok(new GenericResponse<CheckList>(
 				checklistService.buscaCheckList(tipo)
 			));

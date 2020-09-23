@@ -30,7 +30,7 @@ public class CheckListService {
 	CheckListRespostasRepository respostasRepository;
 	
 
-	public CheckList buscaCheckList(Short tipoRoteiro) throws Exception {
+	public CheckList buscaCheckList(String tipoRoteiro) throws Exception {
 		CheckList checkList = new CheckList();
 		checkList.setPerguntas(perguntasRepository.buscaPorTipo(tipoRoteiro));
 		checkList.setObservacoes(perguntasRepository.buscaObservacoes());
