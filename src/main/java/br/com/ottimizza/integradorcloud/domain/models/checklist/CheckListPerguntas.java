@@ -37,7 +37,7 @@ public class CheckListPerguntas implements Serializable{
 	private String descricao;
 	
 	@Column(name = "tipo")
-	private Short tipo;
+	private String tipo;
 	
 	@Column(name = "tipo_input")
 	private Short tipoInput;

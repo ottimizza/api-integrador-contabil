@@ -44,7 +44,6 @@ class RoteiroServiceTest {
     		.empresaId(BigInteger.valueOf(120))
     		.status((short) 1)
     		.urlArquivo("porenquanto")
-    		.usuario("Deux")
     	.build();
     
     @Test

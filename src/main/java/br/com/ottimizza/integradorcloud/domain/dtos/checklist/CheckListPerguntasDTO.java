@@ -21,7 +21,7 @@ public class CheckListPerguntasDTO implements Serializable{
 	
 	private String descricao;
 	
-	private Short tipo;
+	private String tipo;
 	
 	private Short tipoInput;
 	
