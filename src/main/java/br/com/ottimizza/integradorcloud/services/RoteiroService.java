@@ -81,7 +81,7 @@ public class RoteiroService {
 		ObjectMapper mapper = new ObjectMapper();
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
-		roteiro = roteiro.toBuilder().status((short) 3).urlArquivo(arquivoS3.getId().toString()).build();
+		roteiro = roteiro.toBuilder().status((short) 3).urlArquivo(S3_SERVICE_URL+"/api/v1/arquivos/"+arquivoS3.getId().toString()+"/download").build();
 		validaRoteiro(roteiro);
 		Empresa empresa = empresaRepository.buscarPorId(roteiro.getEmpresaId()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
 		
