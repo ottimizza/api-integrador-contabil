@@ -128,6 +128,37 @@ class RoteiroServiceTest {
     	Assertions.assertNotNull(created.getDataCriacao());
     	Assertions.assertNotNull(created.getDataAtualizacao());
     }
+    
+    @Test
+    public void dadoRoteiroDTO_quandoFinalizaProjetoNomeRepetido_entaoLancaExecao() throws Exception {
+    	Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
+    	
+    	roteiro = RoteiroDTO.builder()    		
+    			.cnpjContabilidade("20000000000000")
+        		.contabilidadeId(BigInteger.valueOf(1830))
+        		.cnpjEmpresa("12123456712312")
+        		.empresaId(BigInteger.valueOf(120))
+        		.status((short) 1)
+        		.urlArquivo("porenquanto")
+        	.build();
+    	RoteiroDTO created = roteiroService.salva(roteiro, oauth2Authentication);
+    	
+    	roteiro = RoteiroDTO.builder()
+    			.tipoRoteiro("PAG")
+    			.status((short) 5)
+    		.build();
+    	created = roteiroService.patch(BigInteger.TEN, roteiro, oauth2Authentication);
+    	roteiro = RoteiroDTO.builder()
+    			.status((short) 7)
+    			.checkList(true)
+    			.nome("Pagamentos Possamai")
+    		.build();
+    	
+    	Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    		roteiroService.patch(BigInteger.TEN, roteiro, oauth2Authentication);
+    	});
+    	
+    }
 	
     // CONTABILIDADE
     
@@ -197,7 +228,7 @@ class RoteiroServiceTest {
     		.build();
     	
     	Assertions.assertThrows(IllegalArgumentException.class, () -> {
-    		roteiroService.salva(roteiro, oauth2Authentication);
+    		roteiroService.patch(BigInteger.ONE, roteiro, oauth2Authentication);
     	});
     }
     
@@ -213,7 +244,7 @@ class RoteiroServiceTest {
     		.build();
     	
     	Assertions.assertThrows(IllegalArgumentException.class, () -> {
-    		roteiroService.salva(roteiro, oauth2Authentication);
+    		roteiroService.patch(BigInteger.ONE, roteiro, oauth2Authentication);
     	});
     }
     
