@@ -15,6 +15,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
@@ -77,9 +78,14 @@ public class LancamentoService {
 
 	public Page<LancamentoDTO> buscarTodos(LancamentoDTO filter, PageCriteria criteria, Principal principal)
 			throws Exception {
+		Sort sort = Sort.by( // Arquivo, Data, NomeFornecedor
+	            Sort.Order.asc("arquivo"),
+	            Sort.Order.asc("dataCriacao"),
+	            Sort.Order.asc("descricao")
+	        );
 		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
 		Example<Lancamento> example = Example.of(LancamentoMapper.fromDto(filter), matcher);
-		return lancamentoRepository.findAll(example, LancamentoDTO.getPageRequest(criteria))
+		return lancamentoRepository.findAll(example, PageRequest.of(criteria.getPageIndex(), criteria.getPageSize(), sort))
 				.map(LancamentoMapper::fromEntity);
 	}
 
@@ -341,6 +347,16 @@ public class LancamentoService {
 
 							.build());
 
+		}
+		else {
+			arquivo = arquivoRepository.save(Arquivo.builder().id(arquivo.getId()).nome(filter.getNome()).cnpjContabilidade(filter.getCnpjContabilidade())
+					.cnpjEmpresa(filter.getCnpjEmpresa()).labelComplemento01(filter.getLabelComplemento01())
+					.labelComplemento02(filter.getLabelComplemento02())
+					.labelComplemento03(filter.getLabelComplemento03())
+					.labelComplemento04(filter.getLabelComplemento04())
+					.labelComplemento05(filter.getLabelComplemento05())
+
+					.build());
 		}
 
 		lancamentoRepository.atualizaStatus(arquivo.getId());

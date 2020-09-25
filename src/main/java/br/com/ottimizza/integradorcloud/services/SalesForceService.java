@@ -42,7 +42,7 @@ public class SalesForceService {
 		for(Regra regra : regras) {
 			String campo = regra.getCampo();
 			if(campo.contains("tipoMovimento")) idexRemove = contador;
-			regra.setCampo(StringUtils.trataProSalesForce(campo));
+			regra.setCampo(StringUtils.trataProSalesForce(campo, regra.getCondicao()));
 			contador ++;
 		}
 		if(idexRemove != -1) regras.remove(idexRemove);
