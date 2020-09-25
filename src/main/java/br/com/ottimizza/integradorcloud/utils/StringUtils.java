@@ -1,8 +1,6 @@
 package br.com.ottimizza.integradorcloud.utils;
 
 public class StringUtils {
-
-	
 	
 	public static String trataProSalesForce(String campo, Short condicao) {
 		

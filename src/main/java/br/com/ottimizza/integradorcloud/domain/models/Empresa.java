@@ -37,6 +37,10 @@ public class Empresa implements Serializable {
     @Column(name = "cnpj", nullable = false, unique = true)
     private String cnpj;
 
+	@Column(name = "nome_resumido")
+	private String nomeResumido;
+
+    
     private String razaoSocial;
 
     private String codigoERP;
