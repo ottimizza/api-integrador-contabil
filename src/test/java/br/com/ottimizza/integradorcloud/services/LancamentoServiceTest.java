@@ -172,7 +172,7 @@ class LancamentoServiceTest {
         });
 	}
 
-    @Test
+    /*@Test
     public void dadoLancamentoDTO_quandoSalvaLancamentoDataMovimentoFuturo_entaoThrowIllegalArgumentsException() throws Exception { 
         Mockito.when(principal.getName()).thenReturn(ADMINISTRATOR);
         lancamento = lancamento.toBuilder()
@@ -181,7 +181,7 @@ class LancamentoServiceTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             lancamentoService.salvar(lancamento, principal);
         });
-	}
+	}*/
 
     /** *********************************************************************************************************************
      * Tipo Planilha
