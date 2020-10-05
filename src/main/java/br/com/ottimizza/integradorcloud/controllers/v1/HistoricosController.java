@@ -55,9 +55,10 @@ public class HistoricosController {
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePorId(@PathVariable("id") BigInteger id) throws Exception {
+    public ResponseEntity<?> deletePorId(@PathVariable("id") BigInteger id,
+                                         OAuth2Authentication authentication) throws Exception {
     	return ResponseEntity.ok(new GenericResponse<>(
-    		historicoService.deletaPorId(id)
+    		historicoService.deletaPorId(id, authentication)
     	));
     }
     

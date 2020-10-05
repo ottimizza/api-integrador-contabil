@@ -86,5 +86,8 @@ public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteg
     void ajustePosicao(@Param("cnpjEmpresa")String cnpjEmpresa,
     				   @Param("cnpjContabilidade") String cnpjContabilidade,
     				   @Param("tipoLancamento") Short tipoLancamento);
-
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE grupo_regras SET ativo = false, usuario = :usuario WHERE id = :grupoRegraId", nativeQuery = true)
+    void inativarGrupoRegra(@Param("grupoRegraId") BigInteger grupoRegraId, @Param("usuario") String usuario);
 }

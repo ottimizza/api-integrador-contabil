@@ -30,12 +30,14 @@ public class HistoricoService {
     HistoricoRepository historicoRepository;
 
     public HistoricoDTO salvar(HistoricoDTO historicoDTO, OAuth2Authentication authentication) throws Exception {
+        historicoDTO.setUsuario(authentication.getName());
     	Historico historico = HistoricoMapper.fromDto(historicoDTO);
     	validaHistorico(historico);
         return HistoricoMapper.fromEntity(historicoRepository.save(historico));
     }
 
     public Page<HistoricoDTO> buscar(HistoricoDTO filter, PageCriteria criteria, OAuth2Authentication authentication) throws Exception {
+        filter.setAtivo(true);
         Example<Historico> example = this.getDefaultQueryByExample(filter);
         Sort sort = Sort.by(
         		Sort.Order.asc("dataCriacao")
@@ -51,8 +53,9 @@ public class HistoricoService {
         return HistoricoMapper.fromEntity(historicoRepository.buscarPorContaMovimento(contaMovimento, cnpjEmpresa, tipoLancamento));
     }
     
-    public String deletaPorId(BigInteger id) throws Exception {
-    	historicoRepository.deleteById(id);
+    public String deletaPorId(BigInteger id, OAuth2Authentication authentication) throws Exception {
+    	historicoRepository.inativarHistorico(id, authentication.getName());
+        //historicoRepository.deleteById(id);
     	return "Historico removido com sucesso!";
     }
     
@@ -67,6 +70,7 @@ public class HistoricoService {
     	historico.setTipoLancamento(existente.getTipoLancamento());
     	historico.setIdRoteiro(existente.getIdRoteiro());
     	historico.setDataCriacao(existente.getDataCriacao());
+    	historico.setUsuario(authentication.getName());
     	
     	return HistoricoMapper.fromEntity(historicoRepository.save(historico));
     }

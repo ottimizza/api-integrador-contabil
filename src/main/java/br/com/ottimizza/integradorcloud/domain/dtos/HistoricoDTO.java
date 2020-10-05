@@ -35,4 +35,8 @@ public class HistoricoDTO implements Serializable {
 
     private Date dataAtualizacao;
 
+    private Boolean ativo;
+
+    private String usuario;
+
 }

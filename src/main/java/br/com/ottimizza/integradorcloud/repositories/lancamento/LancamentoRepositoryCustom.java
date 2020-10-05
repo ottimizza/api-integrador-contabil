@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.repositories.lancamento;
 
+import java.math.BigInteger;
 import java.security.Principal;
 import java.util.List;
 
@@ -19,6 +20,6 @@ public interface LancamentoRepositoryCustom { // @formatter:off LancamentoReposi
 
     @Modifying
     @Transactional
-    int atualizaLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, String contaMovimento);
+    int atualizaLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, String contaMovimento, BigInteger regraId);
     
 }

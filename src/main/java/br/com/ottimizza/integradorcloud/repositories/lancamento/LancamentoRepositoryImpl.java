@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.repositories.lancamento;
 
+import java.math.BigInteger;
 import java.security.Principal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 
     @Modifying
     @Transactional
-    public int atualizaLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, String contaMovimento) {
+    public int atualizaLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, String contaMovimento, BigInteger regraId) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaUpdate<Lancamento> update = cb.createCriteriaUpdate(Lancamento.class);
         Root<Lancamento> root = update.from(Lancamento.class);
@@ -86,6 +87,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 
         update.set(root.get("contaMovimento"), contaMovimento);
         update.set(root.get("tipoConta"), Lancamento.TipoConta.OUTRAS_CONTAS);
+        update.set(root.get("regraId"), regraId);
         update.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 
         // perform update and return affected rows.

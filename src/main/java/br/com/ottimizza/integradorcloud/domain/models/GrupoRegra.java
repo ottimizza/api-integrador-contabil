@@ -72,6 +72,12 @@ public class GrupoRegra implements Serializable {
     @Transient
     private List<Regra> regras;
 
+    @Column(columnDefinition = "boolean default true")
+    private Boolean ativo;
+
+    @Column(name = "usuario")
+    public String usuario;
+
     @PrePersist
     @PreUpdate
     public void preUpdate() {
