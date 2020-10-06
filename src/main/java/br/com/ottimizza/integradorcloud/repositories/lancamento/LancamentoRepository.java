@@ -94,5 +94,13 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
     			 + " WHERE ativo = false				", nativeQuery = true)
     Integer deleteLancamentosInativos();
 
+    @Modifying
+    @Transactional
+    @Query(value = " UPDATE lancamentos l            "
+                 + " SET conta_movimento = null,     "
+                 + " tipo_conta = 0,                 "
+                 + " fk_regras_id = null             "
+                 + " WHERE l.fk_regras_id = :regraId ", nativeQuery = true)
+    void restaurarPorRegraId(@Param("regraId") BigInteger regraId);
 
 }
