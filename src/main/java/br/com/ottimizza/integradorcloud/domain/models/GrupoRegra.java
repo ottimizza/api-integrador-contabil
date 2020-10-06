@@ -83,6 +83,7 @@ public class GrupoRegra implements Serializable {
     public void preUpdate() {
         if (this.dataCriacao == null) {
             this.dataCriacao = new Date();
+            this.ativo = true;
         }      
         this.dataAtualizacao = new Date();
         this.cnpjContabilidade = this.cnpjContabilidade.replaceAll("\\D*", "");
