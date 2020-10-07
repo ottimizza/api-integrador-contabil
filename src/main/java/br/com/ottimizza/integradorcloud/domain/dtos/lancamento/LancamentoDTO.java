@@ -84,6 +84,8 @@ public class LancamentoDTO implements Serializable {
     
     private BigInteger accountingId;
 
+    private BigInteger regraId;
+
     public Lancamento patch(Lancamento lancamento) {
         if (contaMovimento != null && !contaMovimento.equals("")) {
             lancamento.setContaMovimento(contaMovimento);

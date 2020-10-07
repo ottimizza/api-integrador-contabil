@@ -42,5 +42,9 @@ public class GrupoRegraDTO implements Serializable {
     private Integer contagemRegras;
 
     private List<Regra> regras;
+
+    private Boolean ativo;
+
+    private String usuario;
     
 }

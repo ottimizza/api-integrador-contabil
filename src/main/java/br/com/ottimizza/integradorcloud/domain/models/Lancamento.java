@@ -132,6 +132,9 @@ public class Lancamento implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataAtualizacao;
 
+    @Column(name = "fk_regras_id")
+    private BigInteger regraId;
+
     @PrePersist
     public void prePersist() {
         this.dataCriacao = new Date();

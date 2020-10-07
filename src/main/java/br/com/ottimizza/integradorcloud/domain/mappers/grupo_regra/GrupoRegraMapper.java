@@ -29,6 +29,8 @@ public class GrupoRegraMapper {
                 .dataCriacao(DateUtils.toDate(grupoRegraDTO.getDataCriacao()))
                 .dataAtualizacao(DateUtils.toDate(grupoRegraDTO.getDataAtualizacao()))
                 .cnpjContabilidade(grupoRegraDTO.getCnpjContabilidade())
+				.ativo(grupoRegraDTO.getAtivo())
+				.usuario(grupoRegraDTO.getUsuario())
             .build();    
     }
 
@@ -44,6 +46,8 @@ public class GrupoRegraMapper {
                 .contagemRegras(grupoRegra.getContagemRegras())
                 .dataCriacao(DateUtils.toLocalDateTime(grupoRegra.getDataCriacao()))
                 .dataAtualizacao(DateUtils.toLocalDateTime(grupoRegra.getDataAtualizacao()))
+				.ativo(grupoRegra.getAtivo())
+				.usuario(grupoRegra.getUsuario())
             .build();   
     }
     
