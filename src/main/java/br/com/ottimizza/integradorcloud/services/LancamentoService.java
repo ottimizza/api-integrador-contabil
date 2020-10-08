@@ -434,9 +434,9 @@ public class LancamentoService {
 		if (lancamento.getDataMovimento() == null) {
 			throw new IllegalArgumentException("Informe a data do lançamento!");
 		}
-		if (lancamento.getDataMovimento().isAfter(LocalDate.now())) {
+		/*if (lancamento.getDataMovimento().isAfter(LocalDate.now())) {
 			throw new IllegalArgumentException("A data do lançamento não pode ser maior que hoje!");
-		}
+		}*/
 		if (lancamento.getValorOriginal() == null || lancamento.getValorOriginal() <= 0) {
 			throw new IllegalArgumentException("Informe o valor do lançamento!");
 		}
