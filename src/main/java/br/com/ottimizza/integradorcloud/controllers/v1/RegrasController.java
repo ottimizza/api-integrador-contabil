@@ -46,6 +46,14 @@ public class RegrasController {
             regraService.salvar(grupoRegraDTO, authentication)
         ));
     }
+    
+    @PostMapping("{id}")
+    public ResponseEntity<?> clonarRegra(@PathVariable("id")BigInteger id,
+    									 OAuth2Authentication authentication) throws Exception {
+    	return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
+    		regraService.clonar(id, authentication)
+    	));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarRegra(@PathVariable BigInteger id, 

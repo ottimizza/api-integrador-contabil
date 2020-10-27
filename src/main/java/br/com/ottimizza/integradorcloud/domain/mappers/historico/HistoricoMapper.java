@@ -21,6 +21,8 @@ public class HistoricoMapper { // @formatter:off
                 .dataAtualizacao(historico.getDataAtualizacao())
                 .idRoteiro(historico.getIdRoteiro())
                 .tipoLancamento(historico.getTipoLancamento())
+				.ativo(historico.getAtivo())
+				.usuario(historico.getUsuario())
             .build();    
     }
 
@@ -35,6 +37,8 @@ public class HistoricoMapper { // @formatter:off
                 .dataAtualizacao(historico.getDataAtualizacao())
                 .idRoteiro(historico.getIdRoteiro())
                 .tipoLancamento(historico.getTipoLancamento())
+				.ativo(historico.getAtivo())
+				.usuario(historico.getUsuario())
             .build();
     }
 

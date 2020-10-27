@@ -44,6 +44,7 @@ public class RegraService {
 
     public Page<GrupoRegraDTO> buscarRegras(GrupoRegraDTO filtro, PageCriteria pageCriteria, OAuth2Authentication authentication) 
             throws Exception {
+        filtro.setAtivo(true);
         ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
         Example<GrupoRegra> example = Example.of(GrupoRegraMapper.fromDto(filtro), matcher);
 
@@ -65,6 +66,7 @@ public class RegraService {
 
     public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
         validaGrupoRegra(grupoRegraDTO);
+        grupoRegraDTO.setUsuario(authentication.getName());
 
         grupoRegraDTO.setPosicao(grupoRegraRepository.buscarUltimaPosicaoPorEmpresaETipoLancamento(
             grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getTipoLancamento()
@@ -79,7 +81,7 @@ public class RegraService {
         grupoRegraDTO.setRegras(regrasSalvas);
 
         lancamentoRepository.atualizaLancamentosPorRegra(
-            regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getContaMovimento());
+            regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getContaMovimento(), grupoRegra.getId());
 
         grupoRegraRepository.ajustePosicao(grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getTipoLancamento());
         return grupoRegraDTO;
@@ -87,7 +89,8 @@ public class RegraService {
 
     public GrupoRegraDTO atualizar(BigInteger id, GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
         GrupoRegra existente = grupoRegraRepository.findById(id).orElseThrow(() -> new NoResultException("Regra não encontrada!"));
-        
+        grupoRegraDTO.setUsuario(authentication.getName());
+
         grupoRegraDTO.setPosicao(existente.getPosicao());
         grupoRegraDTO.setTipoLancamento(existente.getTipoLancamento());
         grupoRegraDTO.setIdRoteiro(existente.getIdRoteiro());
@@ -117,13 +120,38 @@ public class RegraService {
         
         return grupoRegraDTO;
     }
+    
+    public GrupoRegraDTO clonar(BigInteger id, OAuth2Authentication authentication) throws Exception {
+    	GrupoRegra existente = grupoRegraRepository.findById(id).orElseThrow(() -> new NoResultException("Regra não encontrada!"));
+    	List<Regra> regrasExistentes = regraRepository.buscarPorGrupoRegra(id);
+    	
+    	GrupoRegraDTO grupoRegraDto = GrupoRegraDTO.builder()
+    			.posicao(existente.getPosicao())
+    			.contaMovimento(existente.getContaMovimento())
+    			.tipoLancamento(existente.getTipoLancamento())
+    			.idRoteiro(existente.getIdRoteiro())
+    			.cnpjEmpresa(existente.getCnpjEmpresa())
+    			.cnpjContabilidade(existente.getCnpjContabilidade())
+    			.contagemRegras(existente.getContagemRegras())
+                .usuario(authentication.getName())
+    		.build();
+    	GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDto));
+    	List<Regra> regras = regrasExistentes.stream().map((Regra r) -> {
+    		return regraRepository.save(r.toBuilder().id(null).grupoRegra(grupoRegra).build());
+    	}).collect(Collectors.toList()); 
+    	grupoRegraRepository.ajustePosicao(grupoRegra.getCnpjEmpresa(), grupoRegra.getCnpjContabilidade(), grupoRegra.getTipoLancamento());
+    	
+    	return GrupoRegraMapper.fromEntity(grupoRegra).toBuilder().regras(regras).build();
+    }
 
     public String apagar(BigInteger id, OAuth2Authentication authentication) throws Exception {
     	 GrupoRegra grupoRegra = grupoRegraRepository.findById(id)
     	            .orElseThrow(() -> new NoResultException("Regra não encontrada!"));
     	
-        regraRepository.apagarPorGrupoRegra(id);
-        grupoRegraRepository.deleteById(id);
+        //regraRepository.apagarPorGrupoRegra(id);
+        //grupoRegraRepository.deleteById(id);
+        grupoRegraRepository.inativarGrupoRegra(id, authentication.getName());
+        lancamentoRepository.restaurarPorRegraId(id);
 
         grupoRegraRepository.ajustePosicao(grupoRegra.getCnpjEmpresa(), grupoRegra.getCnpjContabilidade(), grupoRegra.getTipoLancamento());
         return "Grupo de Regra removido com sucesso!";

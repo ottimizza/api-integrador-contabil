@@ -1,10 +1,14 @@
 package br.com.ottimizza.integradorcloud.client;
 
 import java.math.BigInteger;
+import java.security.Principal;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -41,8 +45,18 @@ public interface OAuthClient {
     																			 @RequestParam("type") Integer type,
     																			 @RequestHeader("Authorization") String authorization);
     
+    @GetMapping("/api/v1/organizations/{id}")
+    public ResponseEntity<GenericResponse<OrganizationDTO>> buscaContabilidadePorId(@PathVariable("id") BigInteger id,
+    																				@RequestHeader("Authorization") String authorization);
+   
     @PostMapping("/api/v1/organizations")
-    public ResponseEntity<GenericPageableResponse<OrganizationDTO>> salvaEmpresa(@RequestBody OrganizationDTO organization,
-    																			 @RequestHeader("Authorization") String authorization);
+    public ResponseEntity<GenericResponse<OrganizationDTO>> salvaEmpresa(@RequestBody OrganizationDTO organization,
+    																	 @RequestHeader("Authorization") String authorization);
+    
+    @PatchMapping("/api/v1/organizations/{id}")
+    public HttpEntity<OrganizationDTO> patchOrganization(@PathVariable("id") BigInteger id, 
+    													 @RequestBody OrganizationDTO organizationDTO, 
+    													 @RequestHeader("Authorization") String authorization);																			 
+    																		
     
 }

@@ -65,6 +65,12 @@ public class Historico implements Serializable {
     @Column(name = "id_roteiro",  nullable = false, columnDefinition = "varchar default 'padrao'")
     private String idRoteiro;
 
+    @Column(columnDefinition = "boolean default true")
+    private Boolean ativo;
+
+    @Column(name = "usuario")
+    private String usuario;
+
     @PrePersist
     @PreUpdate
     public void preUpdate() {

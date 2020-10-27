@@ -72,11 +72,18 @@ public class GrupoRegra implements Serializable {
     @Transient
     private List<Regra> regras;
 
+    @Column(columnDefinition = "boolean default true")
+    private Boolean ativo;
+
+    @Column(name = "usuario")
+    public String usuario;
+
     @PrePersist
     @PreUpdate
     public void preUpdate() {
         if (this.dataCriacao == null) {
             this.dataCriacao = new Date();
+            this.ativo = true;
         }      
         this.dataAtualizacao = new Date();
         this.cnpjContabilidade = this.cnpjContabilidade.replaceAll("\\D*", "");

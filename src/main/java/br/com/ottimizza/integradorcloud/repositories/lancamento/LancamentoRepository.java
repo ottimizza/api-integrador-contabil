@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.repositories.lancamento;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import br.com.ottimizza.integradorcloud.domain.commands.lancamento.TotalLanvamentosArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.models.KPILancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 
@@ -29,6 +31,16 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
             + "   (select count(_l0.id) from _lancamentos _l0 where _l0.tipo_conta = 3) as pular                "
             + " from _lancamentos l limit 1                                                                     ", nativeQuery = true)
     KPILancamento buscaStatusLancementosPorCNPJEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa);
+    
+    @Query(value = "select new br.com.ottimizza.integradorcloud.domain.commands.lancamento.TotalLanvamentosArquivoRequest(count(*), l.nomeArquivo) "
+    		+ "     from Lancamento l "
+    		+ "     where l.cnpjEmpresa = :cnpjEmpresa       and "
+    		+ "     l.tipoMovimento = :tipoMovimento         and "
+    		+ "     l.cnpjContabilidade = :cnpjContabilidade and"
+    		+ "     l.ativo = true group by l.nomeArquivo       ")
+    List<TotalLanvamentosArquivoRequest> lancamentosPorArquivo(@Param("cnpjEmpresa") String cnpjEmpresa,
+    														   @Param("cnpjContabilidade") String cnpjContabilidade,
+    														   @Param("tipoMovimento") String tipoMovimento);
     
     @Modifying
     @Transactional
@@ -82,5 +94,13 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
     			 + " WHERE ativo = false				", nativeQuery = true)
     Integer deleteLancamentosInativos();
 
+    @Modifying
+    @Transactional
+    @Query(value = " UPDATE lancamentos l            "
+                 + " SET conta_movimento = null,     "
+                 + " tipo_conta = 0,                 "
+                 + " fk_regras_id = null             "
+                 + " WHERE l.fk_regras_id = :regraId ", nativeQuery = true)
+    void restaurarPorRegraId(@Param("regraId") BigInteger regraId);
 
 }
