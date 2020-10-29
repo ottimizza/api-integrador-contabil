@@ -75,6 +75,7 @@ public class Historico implements Serializable {
     @PreUpdate
     public void preUpdate() {
         if (dataCriacao == null) {
+            this.ativo = true;
             this.dataCriacao = new Date();
         }
         this.dataAtualizacao = new Date();
