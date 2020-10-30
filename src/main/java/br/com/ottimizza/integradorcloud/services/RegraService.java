@@ -96,6 +96,7 @@ public class RegraService {
         grupoRegraDTO.setIdRoteiro(existente.getIdRoteiro());
         grupoRegraDTO.setCnpjEmpresa(existente.getCnpjEmpresa());
         grupoRegraDTO.setCnpjContabilidade(existente.getCnpjContabilidade());
+        grupoRegraDTO.setAtivo(existente.getAtivo());
         
         validaGrupoRegra(grupoRegraDTO);
 
