@@ -59,11 +59,12 @@ public class RoteiroRepositoryImpl implements RoteiroRepositoryCustom{
 		
 		if(filtro.getId() != null)
 			query.setParameter("roteiroId", filtro.getId());
-		
+
+		long totalElements = query.getResultList().size();
 		query.setFirstResult(criteria.getPageIndex() * criteria.getPageSize());
 		query.setMaxResults(criteria.getPageSize());
 			
-		return new PageImpl<Roteiro>(query.getResultList(), PageCriteria.getPageRequest(criteria), query.getResultList().size());
+		return new PageImpl<Roteiro>(query.getResultList(), PageCriteria.getPageRequest(criteria), totalElements);
 	}
 
 }
