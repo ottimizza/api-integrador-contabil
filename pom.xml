@@ -74,12 +74,8 @@
 			<version>1</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.json/json 
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20190722</version>
-		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/org.json/json <dependency> <groupId>org.json</groupId> 
+			<artifactId>json</artifactId>w <version>20190722</version> </dependency> -->
 
 		<!-- QueryDSL -->
 		<dependency>
@@ -92,27 +88,21 @@
 			<artifactId>querydsl-jpa</artifactId>
 			<version>4.1.4</version>
 		</dependency>
-<!--
-		<dependency>
-	         Required to use PATCH 
-	        <groupId>io.github.openfeign</groupId>
-	        <artifactId>feign-httpclient</artifactId>
-	        <version>10.4.0</version>
-	    </dependency>
-	    -->
+		<!-- <dependency> Required to use PATCH <groupId>io.github.openfeign</groupId> 
+		<artifactId>feign-httpclient</artifactId> <version>10.4.0</version> </dependency> -->
 		<!-- Apache HTTP Components -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 			<version>4.4.9</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.5.11</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
@@ -126,7 +116,6 @@
 			<version>2.9.7</version>
 		</dependency>
 		
-
 	</dependencies>
 
 	<dependencyManagement>
