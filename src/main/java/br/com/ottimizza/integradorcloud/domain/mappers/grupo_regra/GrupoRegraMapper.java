@@ -31,7 +31,8 @@ public class GrupoRegraMapper {
                 .cnpjContabilidade(grupoRegraDTO.getCnpjContabilidade())
 				.ativo(grupoRegraDTO.getAtivo())
 				.usuario(grupoRegraDTO.getUsuario())
-            .build();    
+				.camposRegras(grupoRegraDTO.getCamposRegras())
+            .build();
     }
 
     public static GrupoRegraDTO fromEntity(GrupoRegra grupoRegra) {
@@ -48,6 +49,7 @@ public class GrupoRegraMapper {
                 .dataAtualizacao(DateUtils.toLocalDateTime(grupoRegra.getDataAtualizacao()))
 				.ativo(grupoRegra.getAtivo())
 				.usuario(grupoRegra.getUsuario())
+				.camposRegras(grupoRegra.getCamposRegras())
             .build();   
     }
     

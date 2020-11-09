@@ -26,6 +26,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.vladmihalcea.hibernate.type.array.ListArrayType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+
+@TypeDef(
+        name = "list-array",
+        typeClass = ListArrayType.class
+)
 @Data
 @Entity
 @Table(name = "grupo_regras")
@@ -77,6 +85,10 @@ public class GrupoRegra implements Serializable {
 
     @Column(name = "usuario")
     public String usuario;
+
+    @Type(type = "list-array")
+    @Column(name = "campos", columnDefinition = "varchar[]")
+    private List<String> camposRegras;
 
     @PrePersist
     @PreUpdate
