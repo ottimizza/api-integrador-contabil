@@ -111,12 +111,6 @@ public class CheckListService {
 		}
 	}
 	
-	private String getAuthorizationHeader(OAuth2Authentication authentication) {
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
-        return MessageFormat.format("Bearer {0}", accessToken);
-    }
-	
 	private String defaultPatch(String url, String body, String authentication) {
     	RestTemplate template = new RestTemplate();
     	
