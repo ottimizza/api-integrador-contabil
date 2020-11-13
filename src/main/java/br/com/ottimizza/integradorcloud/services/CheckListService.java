@@ -3,6 +3,7 @@ package br.com.ottimizza.integradorcloud.services;
 
 
 import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -17,6 +18,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -96,7 +99,7 @@ public class CheckListService {
 					.Nome_de_quem_faz_o_fechamento(respostaDTO.getResposta())
 					.build();
 			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
-			defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString, authorization);
+			defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString,authorization);
 		}
 		if(respostaDTO.getPerguntaId() == BigInteger.valueOf(37)) {
 			String nomeResumido = perguntasRepository.getNomeEmpresaPorRoteiroId(respostaDTO.getRoteiroId());
@@ -107,6 +110,12 @@ public class CheckListService {
 			defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString, authorization);
 		}
 	}
+	
+	private String getAuthorizationHeader(OAuth2Authentication authentication) {
+        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+        String accessToken = details.getTokenValue();
+        return MessageFormat.format("Bearer {0}", accessToken);
+    }
 	
 	private String defaultPatch(String url, String body, String authentication) {
     	RestTemplate template = new RestTemplate();
