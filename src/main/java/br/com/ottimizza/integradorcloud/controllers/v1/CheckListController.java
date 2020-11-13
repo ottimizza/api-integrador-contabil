@@ -45,9 +45,10 @@ public class CheckListController {
 	// RESPOSTAS 
 	
 	@PostMapping("/resposta")
-	public ResponseEntity<?> salvaCheckListResposta(@RequestBody CheckListRespostasDTO resposta) throws Exception {
+	public ResponseEntity<?> salvaCheckListResposta(@RequestBody CheckListRespostasDTO resposta,
+													String authorization) throws Exception {
 		return ResponseEntity.ok(new GenericResponse<CheckListRespostasDTO>(
-				checklistService.salvaResposta(resposta)
+				checklistService.salvaResposta(resposta,authorization)
 			));
 	}
 	
