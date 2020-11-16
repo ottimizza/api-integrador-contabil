@@ -105,5 +105,15 @@ public class RegrasController {
             regraService.moverRegraParaFinal(id, authentication)
         ));                                  
     }
+    
+    @GetMapping("/sugerir/{lancamentoId}")
+    public ResponseEntity<?> sugerirRegra(@Valid String cnpjContabilidade,
+    									  @Valid Short busca,
+    									  @PathVariable("lancamentoId") BigInteger lancamentoId) throws Exception {
+    	return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
+    		regraService.sugerirRegra(cnpjContabilidade, busca, lancamentoId)
+    	));
+    }
+    
 
 }

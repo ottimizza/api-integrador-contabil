@@ -237,6 +237,10 @@ public class RegraService {
         
         return grupoRegraRepository.findAll(example);
     }
+    
+    public GrupoRegraDTO sugerirRegra(String cnpjContabilidade, Short busca, BigInteger lancamentoId) throws Exception {
+    	return GrupoRegraMapper.fromEntity(grupoRegraRepository.sugerirRegra(busca, lancamentoId, cnpjContabilidade));
+    }
 
 
 }

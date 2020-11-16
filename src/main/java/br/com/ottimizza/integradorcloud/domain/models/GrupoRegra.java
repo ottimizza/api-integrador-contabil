@@ -106,5 +106,7 @@ public class GrupoRegra implements Serializable {
         public static final Short PAGAMENTO = 1;
         public static final Short RECEBIMENTO = 2;
     }
+    
+    
 
 }

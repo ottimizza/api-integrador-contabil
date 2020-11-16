@@ -14,7 +14,7 @@ import org.springframework.data.repository.query.Param;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 
 @Repository
-public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteger> { // @formatter:off
+public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteger>, GrupoRegraRepositoryCustom { // @formatter:off
 
     @Modifying
     @Transactional
