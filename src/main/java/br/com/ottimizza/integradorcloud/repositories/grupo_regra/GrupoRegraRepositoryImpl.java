@@ -23,6 +23,7 @@ public class GrupoRegraRepositoryImpl implements GrupoRegraRepositoryCustom {
 		sb.append("FROM grupo_regras  	");
 		sb.append("INNER JOIN lancamentos ON lancamentos.campos @>  grupo_regras.campos ");
 		sb.append("WHERE lancamentos.id = :lancamentoId ");
+		sb.append("AND NOT EXISTS(SELECT 1 FROM regras r2 WHERE r2.fk_grupo_regras_id = grupo_regras.id AND r2.condicao = 2) ");
 		if(busca == 1) {
 			sb.append("AND grupo_regras.cnpj_contabilidade = :cnpjContabilidade ");
 		}
