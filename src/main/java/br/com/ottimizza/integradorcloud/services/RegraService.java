@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -65,6 +66,7 @@ public class RegraService {
     }
 
     public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
+    	List<String> campos = new ArrayList();
         validaGrupoRegra(grupoRegraDTO);
         grupoRegraDTO.setUsuario(authentication.getName());
 
@@ -73,6 +75,11 @@ public class RegraService {
         ));
         grupoRegraDTO.setPosicao(grupoRegraDTO.getPosicao() == null ? 1 : grupoRegraDTO.getPosicao() + 1);
         grupoRegraDTO.setContagemRegras(grupoRegraDTO.getRegras().size());
+        for(Regra r : grupoRegraDTO.getRegras()) {
+        	if(!r.getCampo().equals("tipoPlanilha"))
+        		campos.add(r.getValor());
+        }
+        grupoRegraDTO.setCamposRegras(campos);
         
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
         List<Regra> regrasSalvas = salvarRegras(grupoRegra, grupoRegraDTO.getRegras());
@@ -88,6 +95,7 @@ public class RegraService {
     }
 
     public GrupoRegraDTO atualizar(BigInteger id, GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
+    	List<String> campos = new ArrayList();
         GrupoRegra existente = grupoRegraRepository.findById(id).orElseThrow(() -> new NoResultException("Regra não encontrada!"));
         grupoRegraDTO.setUsuario(authentication.getName());
 
@@ -107,7 +115,12 @@ public class RegraService {
         }
 
         grupoRegraDTO.setId(id);
-        grupoRegraDTO.setContagemRegras(grupoRegraDTO.getRegras().size()); 
+        grupoRegraDTO.setContagemRegras(grupoRegraDTO.getRegras().size());
+        for(Regra r : grupoRegraDTO.getRegras()) {
+        	if(!r.getCampo().equals("tipoPlanilha"))
+        		campos.add(r.getValor());
+        }
+        grupoRegraDTO.setCamposRegras(campos);
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
 
         regraRepository.apagarPorGrupoRegra(id);
@@ -123,6 +136,7 @@ public class RegraService {
     }
     
     public GrupoRegraDTO clonar(BigInteger id, OAuth2Authentication authentication) throws Exception {
+    	List<String> campos = new ArrayList();
     	GrupoRegra existente = grupoRegraRepository.findById(id).orElseThrow(() -> new NoResultException("Regra não encontrada!"));
     	List<Regra> regrasExistentes = regraRepository.buscarPorGrupoRegra(id);
     	
@@ -135,6 +149,7 @@ public class RegraService {
     			.cnpjContabilidade(existente.getCnpjContabilidade())
     			.contagemRegras(existente.getContagemRegras())
                 .usuario(authentication.getName())
+                .camposRegras(existente.getCamposRegras())
     		.build();
     	GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDto));
     	List<Regra> regras = regrasExistentes.stream().map((Regra r) -> {
