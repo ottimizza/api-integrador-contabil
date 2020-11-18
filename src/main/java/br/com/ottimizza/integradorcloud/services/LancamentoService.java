@@ -383,7 +383,7 @@ public class LancamentoService {
 
 	public PorcentagemLancamentosRequest buscaPorcentagem(String cnpjEmpresa, String tipoMovimento, PageCriteria criteria) {
 		
-		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
+		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.EXACT);
 		
 		Lancamento filtroRestante = Lancamento.builder()
 					.cnpjEmpresa(cnpjEmpresa)
