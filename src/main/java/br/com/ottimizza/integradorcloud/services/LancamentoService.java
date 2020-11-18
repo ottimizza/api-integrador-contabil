@@ -94,7 +94,7 @@ public class LancamentoService {
 	            Sort.Order.asc("dataCriacao"),
 	            Sort.Order.asc("descricao")
 	        );
-		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
+		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.EXACT);
 		Example<Lancamento> example = Example.of(LancamentoMapper.fromDto(filter), matcher);
 		return lancamentoRepository.findAll(example, PageRequest.of(criteria.getPageIndex(), criteria.getPageSize(), sort))
 				.map(LancamentoMapper::fromEntity);
@@ -383,7 +383,7 @@ public class LancamentoService {
 
 	public PorcentagemLancamentosRequest buscaPorcentagem(String cnpjEmpresa, String tipoMovimento, PageCriteria criteria) {
 		
-		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
+		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.EXACT);
 		
 		Lancamento filtroRestante = Lancamento.builder()
 					.cnpjEmpresa(cnpjEmpresa)
