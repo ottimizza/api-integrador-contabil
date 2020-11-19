@@ -424,7 +424,8 @@ public class LancamentoService {
 	}
 	
 	public String inativarLancamentos(BigInteger arquivoId) throws Exception {
-		lancamentoRepository.atualizaStatus(arquivoId);
+		Arquivo arquivo = arquivoRepository.findById(arquivoId).orElse(null);
+		lancamentoRepository.atualizaStatus(arquivoId, arquivo.getCnpjEmpresa());
 		return "Lancamentos inativados com sucesso!";
 	}
 
