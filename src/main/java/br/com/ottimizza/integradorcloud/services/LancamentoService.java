@@ -371,7 +371,7 @@ public class LancamentoService {
 
 		}
 		else {
-			System.out.println("Achamos arquivo");
+			System.out.println("Achamos arquivo "+arquivo.getId().toString());
 			arquivo = arquivoRepository.save(Arquivo.builder().id(arquivo.getId()).nome(filter.getNome()).cnpjContabilidade(filter.getCnpjContabilidade())
 					.cnpjEmpresa(filter.getCnpjEmpresa()).labelComplemento01(filter.getLabelComplemento01())
 					.labelComplemento02(filter.getLabelComplemento02())
@@ -382,7 +382,7 @@ public class LancamentoService {
 					.build());
 		}
 
-		lancamentoRepository.atualizaStatus(arquivo.getId());
+		lancamentoRepository.atualizaStatus(arquivo.getId(), arquivo.getCnpjEmpresa());
 
 		return ArquivoMapper.fromEntity(arquivo);
 	}

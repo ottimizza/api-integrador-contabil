@@ -84,8 +84,9 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
     @Transactional
     @Query(value = " UPDATE lancamentos 				"
     			 + " SET ativo = false     				"
-			 	 + " WHERE fk_arquivos_id = :id_arquivo ", nativeQuery = true)
-    Integer atualizaStatus(@Param("id_arquivo") BigInteger id_arquivo);
+			 	 + " WHERE fk_arquivos_id = :id_arquivo "
+			 	 + " AND cnpj_empresa = :cnpjEmpresa    ", nativeQuery = true)
+    Integer atualizaStatus(@Param("id_arquivo") BigInteger id_arquivo, @Param("cnpjEmpresa") String cnpjEmpresa);
     
     @Modifying
     @Transactional
