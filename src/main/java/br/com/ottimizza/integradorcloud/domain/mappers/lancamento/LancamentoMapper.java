@@ -47,7 +47,7 @@ public class LancamentoMapper { // @formatter:off
             .ativo(lancamento.getAtivo())
             .accountingId(lancamento.getAccountingId())
             .regraId(lancamento.getRegraId())
-            .campos(Lists.newArrayList(lancamento.getCamposLancamento().split(";")))
+            .campos(lancamento.getCampos())
         .build();
     }
 

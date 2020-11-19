@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 
 import br.com.ottimizza.integradorcloud.client.DeParaClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
@@ -335,6 +336,7 @@ public class LancamentoService {
 		// Iteração e construção de lista de lançamentos
 		List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
 			return LancamentoMapper.fromDto(o).toBuilder().nomeArquivo(arquivo.getNome()).arquivo(arquivo)
+					.campos(Lists.newArrayList(o.getCamposLancamento().split(";")))
 					.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
 					.cnpjEmpresa(importaLancamentos.getCnpjEmpresa())
 					.idRoteiro(importaLancamentos.getIdRoteiro())
