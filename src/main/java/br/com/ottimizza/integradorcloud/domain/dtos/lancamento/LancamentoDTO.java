@@ -87,6 +87,8 @@ public class LancamentoDTO implements Serializable {
 
     private BigInteger regraId;
 
+    private String camposLancamento;
+    
     private List<String> campos;
 
     public Lancamento patch(Lancamento lancamento) {

@@ -1,7 +1,10 @@
 package br.com.ottimizza.integradorcloud.domain.mappers.lancamento;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.google.common.collect.Lists;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.ArquivoMapper;
@@ -44,7 +47,7 @@ public class LancamentoMapper { // @formatter:off
             .ativo(lancamento.getAtivo())
             .accountingId(lancamento.getAccountingId())
             .regraId(lancamento.getRegraId())
-            .campos(lancamento.getCampos())
+            .campos(Lists.newArrayList(lancamento.getCamposLancamento().split(";")))
         .build();
     }
 

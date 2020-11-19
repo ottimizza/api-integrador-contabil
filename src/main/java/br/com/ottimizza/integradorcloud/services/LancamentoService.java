@@ -336,7 +336,8 @@ public class LancamentoService {
 		List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
 			return LancamentoMapper.fromDto(o).toBuilder().nomeArquivo(arquivo.getNome()).arquivo(arquivo)
 					.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
-					.cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).idRoteiro(importaLancamentos.getIdRoteiro())
+					.cnpjEmpresa(importaLancamentos.getCnpjEmpresa())
+					.idRoteiro(importaLancamentos.getIdRoteiro())
 					.accountingId(contabilidade.getId())
 					.build();
 		}).collect(Collectors.toList());
