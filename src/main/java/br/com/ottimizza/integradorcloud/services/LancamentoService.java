@@ -335,11 +335,11 @@ public class LancamentoService {
 
 		// Iteração e construção de lista de lançamentos
 		List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
-			return LancamentoMapper.fromDto(o).toBuilder().nomeArquivo(arquivo.getNome()).arquivo(arquivo)
+			return LancamentoMapper.fromDto(o).toBuilder().nomeArquivo(arquivo.getNome())
+					.arquivo(arquivo)
 					.campos(Lists.newArrayList(o.getCamposLancamento().split(";")))
 					.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
-					.cnpjEmpresa(importaLancamentos.getCnpjEmpresa())
-					.idRoteiro(importaLancamentos.getIdRoteiro())
+					.cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).idRoteiro(importaLancamentos.getIdRoteiro())
 					.accountingId(contabilidade.getId())
 					.build();
 		}).collect(Collectors.toList());
@@ -353,10 +353,12 @@ public class LancamentoService {
 	}
 
 	public ArquivoDTO salvaArquivo(ArquivoDTO filter) {
+		System.out.println("buscando arquivo");
 		Arquivo arquivo = arquivoRepository.findArquivo(filter.getCnpjEmpresa(), filter.getCnpjContabilidade(),
 				filter.getNome());
-
+		System.out.println("depois de buscar arquivo");
 		if (arquivo == null) {
+			System.out.println("nao achamos arquivo");
 			arquivo = arquivoRepository
 					.save(Arquivo.builder().nome(filter.getNome()).cnpjContabilidade(filter.getCnpjContabilidade())
 							.cnpjEmpresa(filter.getCnpjEmpresa()).labelComplemento01(filter.getLabelComplemento01())
@@ -369,6 +371,7 @@ public class LancamentoService {
 
 		}
 		else {
+			System.out.println("Achamos arquivo");
 			arquivo = arquivoRepository.save(Arquivo.builder().id(arquivo.getId()).nome(filter.getNome()).cnpjContabilidade(filter.getCnpjContabilidade())
 					.cnpjEmpresa(filter.getCnpjEmpresa()).labelComplemento01(filter.getLabelComplemento01())
 					.labelComplemento02(filter.getLabelComplemento02())
