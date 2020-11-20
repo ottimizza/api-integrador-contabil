@@ -103,6 +103,6 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
                  + " fk_regras_id = null               "
                  + " WHERE l.fk_regras_id = :regraId   "
                  + " AND l.cnpj_empresa = :cnpjEmpresa ", nativeQuery = true)
-    void restaurarPorRegraId(@Param("regraId") BigInteger regraId, @Param(":cnpjEmpresa") String cnpjEmpresa);
+    void restaurarPorRegraId(@Param("regraId") BigInteger regraId, @Param("cnpjEmpresa") String cnpjEmpresa);
 
 }
