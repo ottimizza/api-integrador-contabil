@@ -167,7 +167,7 @@ public class RegraService {
         //regraRepository.apagarPorGrupoRegra(id);
         //grupoRegraRepository.deleteById(id);
         grupoRegraRepository.inativarGrupoRegra(id, authentication.getName());
-        lancamentoRepository.restaurarPorRegraId(id);
+        lancamentoRepository.restaurarPorRegraId(id, grupoRegra.getCnpjEmpresa());
 
         grupoRegraRepository.ajustePosicao(grupoRegra.getCnpjEmpresa(), grupoRegra.getCnpjContabilidade(), grupoRegra.getTipoLancamento());
         return "Grupo de Regra removido com sucesso!";

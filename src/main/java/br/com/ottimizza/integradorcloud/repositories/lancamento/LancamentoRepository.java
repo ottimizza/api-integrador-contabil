@@ -97,11 +97,12 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
 
     @Modifying
     @Transactional
-    @Query(value = " UPDATE lancamentos l            "
-                 + " SET conta_movimento = null,     "
-                 + " tipo_conta = 0,                 "
-                 + " fk_regras_id = null             "
-                 + " WHERE l.fk_regras_id = :regraId ", nativeQuery = true)
-    void restaurarPorRegraId(@Param("regraId") BigInteger regraId);
+    @Query(value = " UPDATE lancamentos l              "
+                 + " SET conta_movimento = null,       "
+                 + " tipo_conta = 0,                   "
+                 + " fk_regras_id = null               "
+                 + " WHERE l.fk_regras_id = :regraId   "
+                 + " AND l.cnpj_empresa = :cnpjEmpresa ", nativeQuery = true)
+    void restaurarPorRegraId(@Param("regraId") BigInteger regraId, @Param(":cnpjEmpresa") String cnpjEmpresa);
 
 }

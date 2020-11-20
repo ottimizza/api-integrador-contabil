@@ -353,12 +353,9 @@ public class LancamentoService {
 	}
 
 	public ArquivoDTO salvaArquivo(ArquivoDTO filter) {
-		System.out.println("buscando arquivo");
 		Arquivo arquivo = arquivoRepository.findArquivo(filter.getCnpjEmpresa(), filter.getCnpjContabilidade(),
 				filter.getNome());
-		System.out.println("depois de buscar arquivo");
 		if (arquivo == null) {
-			System.out.println("nao achamos arquivo");
 			arquivo = arquivoRepository
 					.save(Arquivo.builder().nome(filter.getNome()).cnpjContabilidade(filter.getCnpjContabilidade())
 							.cnpjEmpresa(filter.getCnpjEmpresa()).labelComplemento01(filter.getLabelComplemento01())
@@ -371,7 +368,6 @@ public class LancamentoService {
 
 		}
 		else {
-			System.out.println("Achamos arquivo "+arquivo.getId().toString());
 			arquivo = arquivoRepository.save(Arquivo.builder().id(arquivo.getId()).nome(filter.getNome()).cnpjContabilidade(filter.getCnpjContabilidade())
 					.cnpjEmpresa(filter.getCnpjEmpresa()).labelComplemento01(filter.getLabelComplemento01())
 					.labelComplemento02(filter.getLabelComplemento02())
