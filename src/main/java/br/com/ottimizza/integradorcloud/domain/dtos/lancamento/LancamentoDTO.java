@@ -101,6 +101,9 @@ public class LancamentoDTO implements Serializable {
         if (tipoConta != null) {
             lancamento.setTipoConta(tipoConta);
         }
+        if(ativo != null) {
+        	lancamento.setAtivo(ativo);
+        }
 
         return lancamento;
     }
