@@ -11,16 +11,24 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.ottimizza.integradorcloud.client.DeParaClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
@@ -70,6 +78,9 @@ public class LancamentoService {
 
 	@Inject
 	OAuthClient oauthClient;
+	
+	@Value("${oauth.service.url}")
+	private String OAUTH2_SERVER_URL;
 
 	public Lancamento buscarPorId(BigInteger id) throws LancamentoNaoEncontradoException {
 		return lancamentoRepository.findById(id).orElseThrow(() -> new LancamentoNaoEncontradoException(
@@ -269,6 +280,12 @@ public class LancamentoService {
 
 		if (response.getPageInfo().getTotalElements() == 1) {
 			OrganizationDTO organizationDTO = response.getRecords().get(0);
+			if(!importaLancamentos.getCodEmpresa().equals(organizationDTO.getCodigoERP())) {
+				ObjectMapper mapper = new ObjectMapper();
+				organizationDTO.setCodigoERP(importaLancamentos.getCodEmpresa());
+				String empresaOauthString = mapper.writeValueAsString(OrganizationDTO.builder().codigoERP(importaLancamentos.getCodEmpresa()).build());
+				defaultPatch(OAUTH2_SERVER_URL+"/api/v1/organizations/"+organizationDTO.getId(), empresaOauthString, getAuthorizationHeader(authentication));
+			}
 			Empresa empresa = Empresa.builder()
 					.razaoSocial(organizationDTO.getName())
 					.cnpj(organizationDTO.getCnpj()
@@ -442,5 +459,28 @@ public class LancamentoService {
 		}
 		return true;
 	}
+	
+	private String getAuthorizationHeader(OAuth2Authentication authentication) {
+	    final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+	    String accessToken = details.getTokenValue();
+	    return MessageFormat.format("Bearer {0}", accessToken);
+	}
+	    
+	
+	private String defaultPatch(String url, String body, String authentication) {
+    	RestTemplate template = new RestTemplate();
+    	
+    	HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+    	requestFactory.setConnectTimeout(15000);
+    	requestFactory.setReadTimeout(15000);
+    	
+    	template.setRequestFactory(requestFactory);
+    	
+    	HttpHeaders headers =  new HttpHeaders();
+    	headers.setContentType(MediaType.APPLICATION_JSON);
+    	headers.set("Authorization", authentication);
+    	
+    	return template.patchForObject(url, new HttpEntity<String>(body, headers), String.class);
+    }
 
 }
