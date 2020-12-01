@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
+import org.h2.util.json.JSONArray;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
@@ -83,7 +86,9 @@ public class RegraService {
         
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
         List<Regra> regrasSalvas = salvarRegras(grupoRegra, grupoRegraDTO.getRegras());
-
+        ajustarPesoRegra(grupoRegra.getId());
+        
+        
         grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
         grupoRegraDTO.setRegras(regrasSalvas);
 
@@ -125,6 +130,7 @@ public class RegraService {
 
         regraRepository.apagarPorGrupoRegra(id);
         List<Regra> regrasSalvas = salvarRegras(grupoRegra, grupoRegraDTO.getRegras());
+        ajustarPesoRegra(grupoRegra.getId());
 
         grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
         grupoRegraDTO.setRegras(regrasSalvas);
@@ -155,6 +161,7 @@ public class RegraService {
     	List<Regra> regras = regrasExistentes.stream().map((Regra r) -> {
     		return regraRepository.save(r.toBuilder().id(null).grupoRegra(grupoRegra).build());
     	}).collect(Collectors.toList()); 
+    	ajustarPesoRegra(grupoRegra.getId());
     	grupoRegraRepository.ajustePosicao(grupoRegra.getCnpjEmpresa(), grupoRegra.getCnpjContabilidade(), grupoRegra.getTipoLancamento());
     	
     	return GrupoRegraMapper.fromEntity(grupoRegra).toBuilder().regras(regras).build();
@@ -219,6 +226,11 @@ public class RegraService {
             // adiciona referencia ao grupo, cria regra no banco de dados e retorna o objeto atualizado.
             return regraRepository.save(regra.toBuilder().grupoRegra(grupo).build());
         }).collect(Collectors.toList());
+    }
+    
+    private void ajustarPesoRegra(BigInteger grupoRegraId) throws Exception {
+    	grupoRegraRepository.ajustarPesoRegraUnica(grupoRegraId);
+    	grupoRegraRepository.ajustarPesoRegras(grupoRegraId);
     }
 
     private boolean validaGrupoRegra(GrupoRegraDTO grupoRegraDTO) throws IllegalArgumentException {
