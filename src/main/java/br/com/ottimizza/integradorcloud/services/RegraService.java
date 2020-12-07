@@ -68,8 +68,9 @@ public class RegraService {
                             });
     }
 
-    public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
+    public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, Short sugerir, BigInteger regraSugerida, OAuth2Authentication authentication) throws Exception {
     	List<String> campos = new ArrayList();
+    	boolean naoContem = false;
         validaGrupoRegra(grupoRegraDTO);
         grupoRegraDTO.setUsuario(authentication.getName());
 
@@ -77,11 +78,14 @@ public class RegraService {
             grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getTipoLancamento()
         ));
         grupoRegraDTO.setPosicao(grupoRegraDTO.getPosicao() == null ? 1 : grupoRegraDTO.getPosicao() + 1);
-        grupoRegraDTO.setContagemRegras(grupoRegraDTO.getRegras().size());
+        int contagemRegras = grupoRegraDTO.getRegras().size();
         for(Regra r : grupoRegraDTO.getRegras()) {
         	if(!r.getCampo().equals("tipoPlanilha"))
         		campos.add(r.getValor());
+        	if(r.getCondicao() == 2)
+        		contagemRegras = 0;
         }
+        grupoRegraDTO.setContagemRegras(contagemRegras);
         grupoRegraDTO.setCamposRegras(campos);
         
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
@@ -92,8 +96,8 @@ public class RegraService {
         grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
         grupoRegraDTO.setRegras(regrasSalvas);
 
-        lancamentoRepository.atualizaLancamentosPorRegra(
-            regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getContaMovimento(), grupoRegra.getId());
+        lancamentoRepository.atualizaLancamentosPorRegraNative(
+            regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getContaMovimento(), grupoRegra.getId(), sugerir, regraSugerida);
 
         grupoRegraRepository.ajustePosicao(grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getTipoLancamento());
         return grupoRegraDTO;
@@ -120,11 +124,14 @@ public class RegraService {
         }
 
         grupoRegraDTO.setId(id);
-        grupoRegraDTO.setContagemRegras(grupoRegraDTO.getRegras().size());
+        int contagemRegras = grupoRegraDTO.getRegras().size();
         for(Regra r : grupoRegraDTO.getRegras()) {
         	if(!r.getCampo().equals("tipoPlanilha"))
         		campos.add(r.getValor());
+        	if(r.getCondicao() == 2)
+        		contagemRegras = 0;
         }
+        grupoRegraDTO.setContagemRegras(contagemRegras);
         grupoRegraDTO.setCamposRegras(campos);
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
 

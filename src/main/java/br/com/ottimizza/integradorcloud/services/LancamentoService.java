@@ -252,12 +252,10 @@ public class LancamentoService {
 	//
 	//
 	//
-	public Page<LancamentoDTO> buscarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa,
-			PageCriteria pageCriteria, Principal principal) throws Exception {
-		return lancamentoRepository
-				.buscarLancamentosPorRegra(regras, cnpjEmpresa,
-						PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize()), principal)
-				.map(LancamentoMapper::fromEntity);
+	public Page<LancamentoDTO> buscarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, PageCriteria pageCriteria, Principal principal) throws Exception {
+		return lancamentoRepository.buscarLancamentosPorRegra(regras, cnpjEmpresa,
+				PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize()), principal)
+		.map(LancamentoMapper::fromEntity);
 	}
 
 	//
