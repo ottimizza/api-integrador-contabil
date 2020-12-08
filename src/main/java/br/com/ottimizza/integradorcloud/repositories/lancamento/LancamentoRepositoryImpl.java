@@ -120,27 +120,29 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 			}
 		}
 		sb.append("AND l.fk_regras_id is null ");
-		if(sugerir == 0 || sugerir == 1 && regraSugerida != null) {
-			sb.append("AND (SELECT grupo_regras.id ");
-			sb.append("FROM grupo_regras  "); 
-			sb.append("WHERE l.campos @>  grupo_regras.campos ");
-			if(sugerir == 1)
-				sb.append("AND grupo_regras.cnpj_contabilidade = :cnpjContabilidade ");
-			sb.append("AND grupo_regras.ativo = true ");
-			sb.append("AND grupo_regras.contagem_regras > 2 ");
-			sb.append("AND NOT EXISTS(SELECT 1 FROM regras r2 WHERE r2.fk_grupo_regras_id = grupo_regras.id AND r2.condicao = 2) "); 
-			sb.append("ORDER BY grupo_regras.contagem_regras DESC, peso_regras DESC LIMIT 1) = :regraSugerida ");
-			
+		if(sugerir == 0 || sugerir == 1) {
+			if(regraSugerida != null) {
+				sb.append("AND (SELECT grupo_regras.id ");
+				sb.append("FROM grupo_regras  "); 
+				sb.append("WHERE l.campos @>  grupo_regras.campos ");
+				if(sugerir == 1)
+					sb.append("AND grupo_regras.cnpj_contabilidade = :cnpjContabilidade ");
+				sb.append("AND grupo_regras.ativo = true ");
+				sb.append("AND grupo_regras.contagem_regras > 2 ");
+				sb.append("AND NOT EXISTS(SELECT 1 FROM regras r2 WHERE r2.fk_grupo_regras_id = grupo_regras.id AND r2.condicao = 2) "); 
+				sb.append("ORDER BY grupo_regras.contagem_regras DESC, peso_regras DESC LIMIT 1) = :regraSugerida ");
+			}
 		}
-		System.out.println(sb.toString());
 		Query query = em.createNativeQuery(sb.toString());
 		query.setParameter("contaMovimento", contaMovimento);
 		query.setParameter("regraId", regraId);
 		query.setParameter("cnpjEmpresa", cnpjEmpresa);
-		if(sugerir == 0 || sugerir == 1) {
-			query.setParameter("regraSugerida", regraSugerida);
-			if(sugerir == 1)
-				query.setParameter("cnpjContabilidade", cnpjContabilidade);
+		if(sugerir == 0 || sugerir == 1 ) {
+			if(regraSugerida != null) {
+				query.setParameter("regraSugerida", regraSugerida);
+				if(sugerir == 1)
+					query.setParameter("cnpjContabilidade", cnpjContabilidade);
+				}
 		}
 		return query.executeUpdate();
 	}

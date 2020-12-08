@@ -42,7 +42,7 @@ public class RegrasController {
     @PostMapping
     public ResponseEntity<?> criarRegra(@RequestBody GrupoRegraDTO grupoRegraDTO,
     									@Valid Short sugerir,
-    									@Valid BigInteger regraSugerida,
+    									@Valid String regraSugerida,
                                         OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
             regraService.salvar(grupoRegraDTO, sugerir, regraSugerida,  authentication)

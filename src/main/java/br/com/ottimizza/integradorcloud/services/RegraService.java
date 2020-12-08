@@ -68,9 +68,10 @@ public class RegraService {
                             });
     }
 
-    public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, Short sugerir, BigInteger regraSugerida, OAuth2Authentication authentication) throws Exception {
+    public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, Short sugerir, String regraSugerida, OAuth2Authentication authentication) throws Exception {
     	List<String> campos = new ArrayList();
     	boolean naoContem = false;
+    	BigInteger regraId = null;
         validaGrupoRegra(grupoRegraDTO);
         grupoRegraDTO.setUsuario(authentication.getName());
 
@@ -95,9 +96,12 @@ public class RegraService {
         
         grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
         grupoRegraDTO.setRegras(regrasSalvas);
-
+        
+        if(!regraSugerida.equals("") && !regraSugerida.equals("null"))
+        	regraId = BigInteger.valueOf(Integer.parseInt(regraSugerida));
+        
         lancamentoRepository.atualizaLancamentosPorRegraNative(
-            regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getContaMovimento(), grupoRegra.getId(), sugerir, regraSugerida);
+            regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getContaMovimento(), grupoRegra.getId(), sugerir, regraId);
 
         grupoRegraRepository.ajustePosicao(grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getTipoLancamento());
         return grupoRegraDTO;
