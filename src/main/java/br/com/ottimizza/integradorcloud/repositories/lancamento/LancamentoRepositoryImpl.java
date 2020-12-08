@@ -120,7 +120,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 			}
 		}
 		sb.append("AND l.fk_regras_id is null ");
-		if(sugerir == 0 || sugerir == 1) {
+		if(sugerir == 0 || sugerir == 1 && regraSugerida != null) {
 			sb.append("AND (SELECT grupo_regras.id ");
 			sb.append("FROM grupo_regras  "); 
 			sb.append("WHERE l.campos @>  grupo_regras.campos ");
