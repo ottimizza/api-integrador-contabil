@@ -148,10 +148,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 	}
     
     private String getCampo(String campo) {
-    	if (campo.contains("complemento")) {
-			campo = campo.replace("o0", "o_0");
-		}
-		else if (campo.contains("tipoPlanilha")) {
+		if (campo.contains("tipoPlanilha")) {
 			campo = "tipo_planilha";
 		}
 		else if (campo.contains("portador")) {
