@@ -94,12 +94,12 @@ public interface GrupoRegraRepository extends JpaRepository<GrupoRegra, BigInteg
     
     @Modifying
     @Transactional
-    @Query(value = "UPDATE grupo_regras set peso_regras = (select count(*) from grupo_regras gr where gr.campos = grupo_regras.campos) where grupo_regras.id = :grupoRegraId", nativeQuery = true)
+    @Query(value = "UPDATE grupo_regras set peso_regras = (select count(*) from grupo_regras gr where gr.campos = grupo_regras.campos and gr.ativo = true) where grupo_regras.id = :grupoRegraId", nativeQuery = true)
     void ajustarPesoRegraUnica(@Param("grupoRegraId") BigInteger grupoRegraId);
     
     @Modifying
     @Transactional
-    @Query(value = "UPDATE grupo_regras set peso_regras = (select peso_regras from grupo_regras gr where gr.id = :grupoRegraId) where grupo_regras.campos = (select campos from grupo_regras gr2 where gr2.id = :grupoRegraId)", nativeQuery = true)
+    @Query(value = "UPDATE grupo_regras set peso_regras = (select peso_regras from grupo_regras gr where gr.id = :grupoRegraId) where grupo_regras.campos = (select campos from grupo_regras gr2 where gr2.id = :grupoRegraId) and grupo_regras.ativo = true", nativeQuery = true)
     void ajustarPesoRegras(@Param("grupoRegraId") BigInteger grupoRegraId);
     
 }
