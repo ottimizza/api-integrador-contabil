@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
+import org.h2.util.json.JSONArray;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
@@ -64,7 +68,10 @@ public class RegraService {
                             });
     }
 
-    public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
+    public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, Short sugerir, String regraSugerida, OAuth2Authentication authentication) throws Exception {
+    	List<String> campos = new ArrayList();
+    	boolean naoContem = false;
+    	BigInteger regraId = null;
         validaGrupoRegra(grupoRegraDTO);
         grupoRegraDTO.setUsuario(authentication.getName());
 
@@ -72,22 +79,36 @@ public class RegraService {
             grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getTipoLancamento()
         ));
         grupoRegraDTO.setPosicao(grupoRegraDTO.getPosicao() == null ? 1 : grupoRegraDTO.getPosicao() + 1);
-        grupoRegraDTO.setContagemRegras(grupoRegraDTO.getRegras().size());
+        int contagemRegras = grupoRegraDTO.getRegras().size();
+        for(Regra r : grupoRegraDTO.getRegras()) {
+        	if(!r.getCampo().equals("tipoPlanilha"))
+        		campos.add(r.getValor());
+        	if(r.getCondicao() == 2)
+        		contagemRegras = 0;
+        }
+        grupoRegraDTO.setContagemRegras(contagemRegras);
+        grupoRegraDTO.setCamposRegras(campos);
         
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
         List<Regra> regrasSalvas = salvarRegras(grupoRegra, grupoRegraDTO.getRegras());
-
+        ajustarPesoRegra(grupoRegra.getId());
+        
+        
         grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
         grupoRegraDTO.setRegras(regrasSalvas);
-
-        lancamentoRepository.atualizaLancamentosPorRegra(
-            regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getContaMovimento(), grupoRegra.getId());
+        
+        if(!regraSugerida.equals("") && !regraSugerida.equals("null"))
+        	regraId = BigInteger.valueOf(Integer.parseInt(regraSugerida));
+        
+        lancamentoRepository.atualizaLancamentosPorRegraNative(
+            regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getContaMovimento(), grupoRegra.getId(), sugerir, regraId);
 
         grupoRegraRepository.ajustePosicao(grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getTipoLancamento());
         return grupoRegraDTO;
     }
 
     public GrupoRegraDTO atualizar(BigInteger id, GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
+    	List<String> campos = new ArrayList();
         GrupoRegra existente = grupoRegraRepository.findById(id).orElseThrow(() -> new NoResultException("Regra não encontrada!"));
         grupoRegraDTO.setUsuario(authentication.getName());
 
@@ -107,11 +128,20 @@ public class RegraService {
         }
 
         grupoRegraDTO.setId(id);
-        grupoRegraDTO.setContagemRegras(grupoRegraDTO.getRegras().size()); 
+        int contagemRegras = grupoRegraDTO.getRegras().size();
+        for(Regra r : grupoRegraDTO.getRegras()) {
+        	if(!r.getCampo().equals("tipoPlanilha"))
+        		campos.add(r.getValor());
+        	if(r.getCondicao() == 2)
+        		contagemRegras = 0;
+        }
+        grupoRegraDTO.setContagemRegras(contagemRegras);
+        grupoRegraDTO.setCamposRegras(campos);
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
 
         regraRepository.apagarPorGrupoRegra(id);
         List<Regra> regrasSalvas = salvarRegras(grupoRegra, grupoRegraDTO.getRegras());
+        ajustarPesoRegra(grupoRegra.getId());
 
         grupoRegraDTO = GrupoRegraMapper.fromEntity(grupoRegra);
         grupoRegraDTO.setRegras(regrasSalvas);
@@ -123,6 +153,7 @@ public class RegraService {
     }
     
     public GrupoRegraDTO clonar(BigInteger id, OAuth2Authentication authentication) throws Exception {
+    	List<String> campos = new ArrayList();
     	GrupoRegra existente = grupoRegraRepository.findById(id).orElseThrow(() -> new NoResultException("Regra não encontrada!"));
     	List<Regra> regrasExistentes = regraRepository.buscarPorGrupoRegra(id);
     	
@@ -135,11 +166,13 @@ public class RegraService {
     			.cnpjContabilidade(existente.getCnpjContabilidade())
     			.contagemRegras(existente.getContagemRegras())
                 .usuario(authentication.getName())
+                .camposRegras(existente.getCamposRegras())
     		.build();
     	GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDto));
     	List<Regra> regras = regrasExistentes.stream().map((Regra r) -> {
     		return regraRepository.save(r.toBuilder().id(null).grupoRegra(grupoRegra).build());
     	}).collect(Collectors.toList()); 
+    	ajustarPesoRegra(grupoRegra.getId());
     	grupoRegraRepository.ajustePosicao(grupoRegra.getCnpjEmpresa(), grupoRegra.getCnpjContabilidade(), grupoRegra.getTipoLancamento());
     	
     	return GrupoRegraMapper.fromEntity(grupoRegra).toBuilder().regras(regras).build();
@@ -152,7 +185,7 @@ public class RegraService {
         //regraRepository.apagarPorGrupoRegra(id);
         //grupoRegraRepository.deleteById(id);
         grupoRegraRepository.inativarGrupoRegra(id, authentication.getName());
-        lancamentoRepository.restaurarPorRegraId(id);
+        lancamentoRepository.restaurarPorRegraId(id, grupoRegra.getCnpjEmpresa());
 
         grupoRegraRepository.ajustePosicao(grupoRegra.getCnpjEmpresa(), grupoRegra.getCnpjContabilidade(), grupoRegra.getTipoLancamento());
         return "Grupo de Regra removido com sucesso!";
@@ -204,6 +237,11 @@ public class RegraService {
             // adiciona referencia ao grupo, cria regra no banco de dados e retorna o objeto atualizado.
             return regraRepository.save(regra.toBuilder().grupoRegra(grupo).build());
         }).collect(Collectors.toList());
+    }
+    
+    private void ajustarPesoRegra(BigInteger grupoRegraId) throws Exception {
+    	grupoRegraRepository.ajustarPesoRegraUnica(grupoRegraId);
+    	grupoRegraRepository.ajustarPesoRegras(grupoRegraId);
     }
 
     private boolean validaGrupoRegra(GrupoRegraDTO grupoRegraDTO) throws IllegalArgumentException {

@@ -5,9 +5,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://ec2-52-6-127-178.compute-1.amazonaws.com:5432/damb6283prkq9p
-    username: uepk2rsledmshj
-    password: p711450fa9e084d1126dc642c5f0401b69133a6ecbe9029702a4f546f74b1132c
+    url: jdbc:postgresql://ec2-54-81-107-25.compute-1.amazonaws.com:5432/d4qq8hl49hi7hr
+    username: u2ek3sojqjmutl
+    password: pbe732d63e9863961de97ad2f9ec31ff8e4492e49d6b04bcf49a34508a22a043b
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -15,7 +15,7 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
-    show-sql: ${HIBERNATE_SHOW_SQL:false}
+    show-sql: ${HIBERNATE_SHOW_SQL:true}
     properties:
       hibernate:
         generate_statistics: ${HIBERNATE_STATISTICS:false}
