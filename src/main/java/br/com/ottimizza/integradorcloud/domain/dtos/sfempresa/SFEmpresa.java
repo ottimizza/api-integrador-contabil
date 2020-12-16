@@ -68,4 +68,13 @@ public class SFEmpresa implements Serializable {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty(value = "Arquivo_Portal__c")
 	private String Arquivo_Portal;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Email_de_quem_faz_o_fechamento__c")
+	private String Email_de_quem_faz_o_fechamento;
+	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Quem__c")
+	private String Nome_de_quem_faz_o_fechamento;
+	
 }

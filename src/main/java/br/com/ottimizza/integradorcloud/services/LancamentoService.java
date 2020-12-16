@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 
 import br.com.ottimizza.integradorcloud.client.DeParaClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
@@ -251,12 +252,10 @@ public class LancamentoService {
 	//
 	//
 	//
-	public Page<LancamentoDTO> buscarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa,
-			PageCriteria pageCriteria, Principal principal) throws Exception {
-		return lancamentoRepository
-				.buscarLancamentosPorRegra(regras, cnpjEmpresa,
-						PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize()), principal)
-				.map(LancamentoMapper::fromEntity);
+	public Page<LancamentoDTO> buscarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, PageCriteria pageCriteria, Principal principal) throws Exception {
+		return lancamentoRepository.buscarLancamentosPorRegra(regras, cnpjEmpresa,
+				PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize()), principal)
+		.map(LancamentoMapper::fromEntity);
 	}
 
 	//
@@ -334,7 +333,9 @@ public class LancamentoService {
 
 		// Iteração e construção de lista de lançamentos
 		List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
-			return LancamentoMapper.fromDto(o).toBuilder().nomeArquivo(arquivo.getNome()).arquivo(arquivo)
+			return LancamentoMapper.fromDto(o).toBuilder().nomeArquivo(arquivo.getNome())
+					.arquivo(arquivo)
+					.campos(Lists.newArrayList(o.getCamposLancamento().split(";")))
 					.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
 					.cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).idRoteiro(importaLancamentos.getIdRoteiro())
 					.accountingId(contabilidade.getId())
@@ -352,7 +353,6 @@ public class LancamentoService {
 	public ArquivoDTO salvaArquivo(ArquivoDTO filter) {
 		Arquivo arquivo = arquivoRepository.findArquivo(filter.getCnpjEmpresa(), filter.getCnpjContabilidade(),
 				filter.getNome());
-
 		if (arquivo == null) {
 			arquivo = arquivoRepository
 					.save(Arquivo.builder().nome(filter.getNome()).cnpjContabilidade(filter.getCnpjContabilidade())
@@ -376,7 +376,7 @@ public class LancamentoService {
 					.build());
 		}
 
-		lancamentoRepository.atualizaStatus(arquivo.getId());
+		lancamentoRepository.atualizaStatus(arquivo.getId(), arquivo.getCnpjEmpresa());
 
 		return ArquivoMapper.fromEntity(arquivo);
 	}
@@ -418,7 +418,8 @@ public class LancamentoService {
 	}
 	
 	public String inativarLancamentos(BigInteger arquivoId) throws Exception {
-		lancamentoRepository.atualizaStatus(arquivoId);
+		Arquivo arquivo = arquivoRepository.findById(arquivoId).orElse(null);
+		lancamentoRepository.atualizaStatus(arquivoId, arquivo.getCnpjEmpresa());
 		return "Lancamentos inativados com sucesso!";
 	}
 
