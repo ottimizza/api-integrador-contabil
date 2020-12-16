@@ -6,8 +6,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra_ignorada.GrupoRegraIgnoradaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.sfparticularidade.SFParticularidade;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
+import br.com.ottimizza.integradorcloud.domain.models.GrupoRegraIgnorada;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
 import br.com.ottimizza.integradorcloud.utils.DateUtils;
@@ -176,5 +178,43 @@ public class GrupoRegraMapper {
     	if(comIdExterno) s.setID_Externo__c(grupoRegra.getId().toString());
     	
     	return s;
+    }
+    
+    public static GrupoRegraIgnorada ignoradaFromDto(GrupoRegraIgnoradaDTO grupoRegraDTO) {
+        return GrupoRegraIgnorada.builder()
+                .id(grupoRegraDTO.getId())
+                .posicao(grupoRegraDTO.getPosicao())
+                .contaMovimento(grupoRegraDTO.getContaMovimento())
+                .tipoLancamento(grupoRegraDTO.getTipoLancamento())
+                .idRoteiro(grupoRegraDTO.getIdRoteiro())
+                .cnpjEmpresa(grupoRegraDTO.getCnpjEmpresa())
+                .contagemRegras(grupoRegraDTO.getContagemRegras())
+                .pesoRegras(grupoRegraDTO.getPesoRegras())
+                .dataCriacao(DateUtils.toDate(grupoRegraDTO.getDataCriacao()))
+                .dataAtualizacao(DateUtils.toDate(grupoRegraDTO.getDataAtualizacao()))
+                .cnpjContabilidade(grupoRegraDTO.getCnpjContabilidade())
+				.ativo(grupoRegraDTO.getAtivo())
+				.usuario(grupoRegraDTO.getUsuario())
+				.camposRegras(grupoRegraDTO.getCamposRegras())
+            .build();
+    }
+
+    public static GrupoRegraIgnoradaDTO ignoradaFromEntity(GrupoRegraIgnorada grupoRegra) {
+        return GrupoRegraIgnoradaDTO.builder()
+                .id(grupoRegra.getId())
+                .posicao(grupoRegra.getPosicao())
+                .contaMovimento(grupoRegra.getContaMovimento())
+                .tipoLancamento(grupoRegra.getTipoLancamento())
+                .idRoteiro(grupoRegra.getIdRoteiro())
+                .cnpjEmpresa(grupoRegra.getCnpjEmpresa())
+                .cnpjContabilidade(grupoRegra.getCnpjContabilidade())
+                .contagemRegras(grupoRegra.getContagemRegras())
+                .pesoRegras(grupoRegra.getPesoRegras())
+                .dataCriacao(DateUtils.toLocalDateTime(grupoRegra.getDataCriacao()))
+                .dataAtualizacao(DateUtils.toLocalDateTime(grupoRegra.getDataAtualizacao()))
+				.ativo(grupoRegra.getAtivo())
+				.usuario(grupoRegra.getUsuario())
+				.camposRegras(grupoRegra.getCamposRegras())
+            .build();   
     }
 }

@@ -25,11 +25,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra_ignorada.GrupoRegraIgnoradaDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.grupo_regra.GrupoRegraMapper;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
+import br.com.ottimizza.integradorcloud.domain.models.GrupoRegraIgnorada;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
+import br.com.ottimizza.integradorcloud.repositories.grupo_regra_ignorada.GrupoRegraIgnoradaRepository;
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
 import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
 import br.com.ottimizza.integradorcloud.utils.DateUtils;
@@ -43,6 +46,9 @@ public class RegraService {
     @Inject
     GrupoRegraRepository grupoRegraRepository;
 
+    @Inject
+    GrupoRegraIgnoradaRepository grupoRegraIgnoradaRepository;
+    
     @Inject
     RegraRepository regraRepository;
 
@@ -289,6 +295,11 @@ public class RegraService {
     		return null;
     	}
     	
+    }
+    
+    public GrupoRegraIgnoradaDTO ignorarSugestaoRegra(GrupoRegraIgnoradaDTO grupoRegra) throws Exception {
+    	GrupoRegraIgnorada regraIgnorada = grupoRegraIgnoradaRepository.save(GrupoRegraMapper.ignoradaFromDto(grupoRegra));
+    	return GrupoRegraMapper.ignoradaFromEntity(regraIgnorada);
     }
 
 
