@@ -130,7 +130,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 				sb.append("AND grupo_regras.ativo = true ");
 				sb.append("AND grupo_regras.contagem_regras > 2 ");
 				sb.append("AND NOT EXISTS(SELECT 1 FROM regras r2 WHERE r2.fk_grupo_regras_id = grupo_regras.id AND r2.condicao = 2) "); 
-				sb.append("ORDER BY grupo_regras.contagem_regras DESC, peso_regras DESC LIMIT 1) = :regraSugerida ");
+				sb.append("ORDER BY grupo_regras.contagem_regras DESC, peso_regras DESC LIMIT 1) IN ( :regraSugerida , :regraCriada ) ");
 			}
 		}
 		Query query = em.createNativeQuery(sb.toString());
@@ -139,7 +139,8 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 		query.setParameter("cnpjEmpresa", cnpjEmpresa);
 		if(sugerir == 0 || sugerir == 1 ) {
 			if(regraSugerida != null) {
-				query.setParameter("regraSugerida", regraId);
+				query.setParameter("regraSugerida", regraSugerida);
+				query.setParameter("regraCriada", regraId);
 				if(sugerir == 1)
 					query.setParameter("cnpjContabilidade", cnpjContabilidade);
 				}
