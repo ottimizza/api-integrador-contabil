@@ -13,6 +13,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+
+
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
@@ -46,5 +49,7 @@ public class GrupoRegraDTO implements Serializable {
     private Boolean ativo;
 
     private String usuario;
+
+    private List<String> camposRegras;
     
 }

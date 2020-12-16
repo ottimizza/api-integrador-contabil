@@ -20,6 +20,11 @@ public interface CheckListPerguntasRepository  extends JpaRepository<CheckListPe
 	@Query(value = "SELECT new br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListObservacoes(co.id, co.descricao, co.importante) FROM CheckListObservacoes co")
 	List<CheckListObservacoes> buscaObservacoes();
 	
+	@Query(value = "SELECT cp.id FROM checklist_perguntas cp WHERE cp.descricao like('%analista%')", nativeQuery = true)
+	List<BigInteger> getIdsPerguntasContanto();
+	
+	@Query(value = "SELECT e.nome_resumido FROM roteiros r INNER JOIN empresas e on (e.id = r.fk_empresa_id ) WHERE r.id = :roteiroId", nativeQuery = true)
+	String getNomeEmpresaPorRoteiroId(@Param("roteiroId") BigInteger roteiroId);
 	
 	/*@Query(value = "SELECT new br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListObservacoes(co.id, co.descricao, co.importante) FROM CheckListObservacoes co")
 	CheckListObservacoes[] buscaObservacoes();*/
