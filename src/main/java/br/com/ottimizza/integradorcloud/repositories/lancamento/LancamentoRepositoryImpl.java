@@ -139,7 +139,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 		query.setParameter("cnpjEmpresa", cnpjEmpresa);
 		if(sugerir == 0 || sugerir == 1 ) {
 			if(regraSugerida != null) {
-				query.setParameter("regraSugerida", regraSugerida);
+				query.setParameter("regraSugerida", regraId);
 				if(sugerir == 1)
 					query.setParameter("cnpjContabilidade", cnpjContabilidade);
 				}

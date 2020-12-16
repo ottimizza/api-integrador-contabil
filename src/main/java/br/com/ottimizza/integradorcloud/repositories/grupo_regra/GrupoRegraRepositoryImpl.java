@@ -30,7 +30,8 @@ public class GrupoRegraRepositoryImpl implements GrupoRegraRepositoryCustom {
 		}
 		//sb.append("AND grupo_regras.id = 2014 ");
 		sb.append("ORDER BY grupo_regras.contagem_regras DESC, ");
-		sb.append("         grupo_regras.peso_regras DESC ");
+		sb.append("         grupo_regras.peso_regras DESC, ");
+		sb.append("			grupo_regras.id DESC");
 		sb.append("LIMIT 1");
 		
 		Query query = em.createNativeQuery(sb.toString(), GrupoRegra.class);
