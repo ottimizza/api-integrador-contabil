@@ -7,10 +7,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -22,6 +19,7 @@ import org.hibernate.annotations.TypeDef;
 import com.vladmihalcea.hibernate.type.array.ListArrayType;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -34,6 +32,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "grupo_regras_ignoradas")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 public class GrupoRegraIgnorada implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -42,43 +41,47 @@ public class GrupoRegraIgnorada implements Serializable{
 	@Column(name = "id", nullable = false)
 	private BigInteger id;
 
-	@Column(name = "posicao")
-	private Integer posicao;
+    @Column(name = "posicao")
+    private Integer posicao;
+    
+    @Column(name = "conta_movimento")
+    private String contaMovimento;
 
-	@Column(name = "conta_movimento")
-	private String contaMovimento;
+    @Column(name = "tipo_lancamento")
+    private Short tipoLancamento;
 
-	@Column(name = "tipo_lancamento")
-	private Short tipoLancamento;
+    @Column(name = "id_roteiro")
+    private String idRoteiro;
 
-	@Column(name = "id_roteiro")
-	private String idRoteiro;
+    @Column(name = "cnpj_empresa")
+    private String cnpjEmpresa;
 
-	@Column(name = "cnpj_empresa")
-	private String cnpjEmpresa;
+    @Column(name = "cnpj_contabilidade")
+    private String cnpjContabilidade;
+    
+    @Column(name = "contagem_regras")
+    private Integer contagemRegras;
+    
+    @Column(name = "peso_regras")
+    private Integer pesoRegras;
 
-	@Column(name = "cnpj_contabilidade")
-	private String cnpjContabilidade;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataCriacao;
 
-	@Column(name = "contagem_regras")
-	private Integer contagemRegras;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataAtualizacao;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dataCriacao;
+    @Transient
+    private List<Regra> regras;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dataAtualizacao;
+    @Column(columnDefinition = "boolean default true")
+    private Boolean ativo;
 
-	@Transient
-	private List<Regra> regras;
+    @Column(name = "usuario")
+    public String usuario;
 
-	@Column(columnDefinition = "boolean default true")
-	private Boolean ativo;
+    @Type(type = "list-array")
+    @Column(name = "campos", columnDefinition = "varchar[]")
+    private List<String> camposRegras;
 
-	@Column(name = "usuario")
-	public String usuario;
-
-	@Type(type = "list-array")
-	@Column(name = "campos", columnDefinition = "varchar[]")
-	private List<String> camposRegras;
 }
