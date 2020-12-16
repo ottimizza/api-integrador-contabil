@@ -40,10 +40,12 @@ public class RegrasController {
     }
 
     @PostMapping
-    public ResponseEntity<?> criarRegra(@RequestBody GrupoRegraDTO grupoRegraDTO, 
+    public ResponseEntity<?> criarRegra(@RequestBody GrupoRegraDTO grupoRegraDTO,
+    									@Valid Short sugerir,
+    									@Valid String regraSugerida,
                                         OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
-            regraService.salvar(grupoRegraDTO, authentication)
+            regraService.salvar(grupoRegraDTO, sugerir, regraSugerida,  authentication)
         ));
     }
     
@@ -105,5 +107,15 @@ public class RegrasController {
             regraService.moverRegraParaFinal(id, authentication)
         ));                                  
     }
+    
+    @GetMapping("/sugerir/{lancamentoId}")
+    public ResponseEntity<?> sugerirRegra(@Valid String cnpjContabilidade,
+    									  @Valid Short busca,
+    									  @PathVariable("lancamentoId") BigInteger lancamentoId) throws Exception {
+    	return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
+    		regraService.sugerirRegra(cnpjContabilidade, busca, lancamentoId)
+    	));
+    }
+    
 
 }

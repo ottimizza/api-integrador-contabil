@@ -87,6 +87,8 @@ public class LancamentoDTO implements Serializable {
 
     private BigInteger regraId;
 
+    private String camposLancamento;
+    
     private List<String> campos;
 
     public Lancamento patch(Lancamento lancamento) {
@@ -98,6 +100,9 @@ public class LancamentoDTO implements Serializable {
         }
         if (tipoConta != null) {
             lancamento.setTipoConta(tipoConta);
+        }
+        if(ativo != null) {
+        	lancamento.setAtivo(ativo);
         }
 
         return lancamento;

@@ -70,6 +70,9 @@ public class GrupoRegra implements Serializable {
     
     @Column(name = "contagem_regras")
     private Integer contagemRegras;
+    
+    @Column(name = "peso_regras")
+    private Integer pesoRegras;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataCriacao;
@@ -106,5 +109,7 @@ public class GrupoRegra implements Serializable {
         public static final Short PAGAMENTO = 1;
         public static final Short RECEBIMENTO = 2;
     }
+    
+    
 
 }
