@@ -25,7 +25,7 @@ public class GrupoRegraRepositoryImpl implements GrupoRegraRepositoryCustom {
 		sb.append("AND grupo_regras.contagem_regras > 2 ");
 		sb.append("AND grupo_regras.ativo = true ");
 		sb.append("AND NOT EXISTS(SELECT 1 FROM regras r2 WHERE r2.fk_grupo_regras_id = grupo_regras.id AND r2.condicao = 2) ");
-		sb.append("AND grupo_regras.id NOT IN (SELECT gr.id FROM grupo_regras_ignoradas gr WHERE gr.cnpj_contabilidade = :cnpjContabilidade)");
+		sb.append("AND NOT EXISTS(SELECT gr.id FROM grupo_regras_ignoradas gr WHERE gr.cnpj_contabilidade = :cnpjContabilidade)");
 		if(busca == 1) {
 			sb.append("AND grupo_regras.cnpj_contabilidade = :cnpjContabilidade ");
 		}
