@@ -98,6 +98,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
     @Override
 	public int atualizaLancamentosPorRegraNative(List<Regra> regras, String cnpjEmpresa, String cnpjContabilidade,  String contaMovimento, BigInteger regraId, Short sugerir, BigInteger regraSugerida) {
 		StringBuilder sb = new StringBuilder();
+		System.out.println("cnpj: "+cnpjContabilidade+" sugerir: "+sugerir+ " regraSugerida "+regraSugerida+" regraCriada "+ regraId);
 		sb.append("UPDATE lancamentos l "); 
 		sb.append("SET conta_movimento = :contaMovimento, "); 
 		sb.append("	   tipo_conta = 2, "); 
