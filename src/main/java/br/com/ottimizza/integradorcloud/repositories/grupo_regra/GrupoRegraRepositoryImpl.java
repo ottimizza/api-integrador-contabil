@@ -51,8 +51,8 @@ public class GrupoRegraRepositoryImpl implements GrupoRegraRepositoryCustom {
 		
 		sb.append("SELECT grupo_regras.* 									");
 		sb.append("FROM grupo_regras  										");
-		sb.append("WHERE grupo_regras.campos @> (select gr.campos from 	grupo_regras gr where gr.id = :id) as camposRegra				");
-		sb.append("AND camposRegra @> grupo_regras.campos 						");
+		sb.append("WHERE grupo_regras.campos @> (select gr.campos from 	grupo_regras gr where gr.id = :id) 			");
+		sb.append("AND (select gr.campos from 	grupo_regras gr where gr.id = :id) @> grupo_regras.campos 						");
 		sb.append("AND grupo_regras.cnpj_contabilidade = :cnpjContabilidade ");
 		sb.append("AND grupo_regras.ativo = true 							");
 		sb.append("ORDER BY grupo_regras.contagem_regras DESC, 				");
