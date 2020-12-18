@@ -302,6 +302,11 @@ public class RegraService {
     	return GrupoRegraMapper.ignoradaFromEntity(regraIgnorada);
     }
 
+    public GrupoRegraIgnoradaDTO validarGrupoRegra(GrupoRegraIgnoradaDTO grupoRegra) throws Exception {
+    	
+    	
+    	return null;
+    }
 
 }
 
