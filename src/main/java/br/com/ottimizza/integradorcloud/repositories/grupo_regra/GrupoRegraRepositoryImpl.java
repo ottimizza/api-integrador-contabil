@@ -46,7 +46,7 @@ public class GrupoRegraRepositoryImpl implements GrupoRegraRepositoryCustom {
 	}
 
 	@Override
-	public GrupoRegra buscarPorCamposContabilidade(String cnpjContabilidade, List<String> campos) {
+	public GrupoRegra buscarPorCamposContabilidade(String cnpjContabilidade, BigInteger id) {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("SELECT grupo_regras.* 									");
@@ -61,7 +61,7 @@ public class GrupoRegraRepositoryImpl implements GrupoRegraRepositoryCustom {
 		sb.append("LIMIT 1");
 		
 		Query query = em.createNativeQuery(sb.toString(), GrupoRegra.class);
-		query.setParameter("campos", campos);
+		query.setParameter("id", id);
 		query.setParameter("cnpjContabilidade", cnpjContabilidade);
 		
 		return (GrupoRegra) query.getSingleResult();

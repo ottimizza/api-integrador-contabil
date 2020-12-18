@@ -9,6 +9,6 @@ public interface GrupoRegraRepositoryCustom {
 	
 	GrupoRegra sugerirRegra(Short busca, BigInteger lancamentoId, String cnpjContabilidade);
 
-	GrupoRegra buscarPorCamposContabilidade(String cnpjContabilidade, List<String> campos);
+	GrupoRegra buscarPorCamposContabilidade(String cnpjContabilidade, BigInteger id);
 	
 }
