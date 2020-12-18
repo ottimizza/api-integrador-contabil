@@ -288,8 +288,14 @@ public class RegraService {
     	GrupoRegra grupoRegra = new GrupoRegra();
     	try {
     		grupoRegra = grupoRegraRepository.sugerirRegra(busca, lancamentoId, cnpjContabilidade);
+    		GrupoRegra grupoRegraContabilidade = grupoRegraRepository.buscarPorCamposContabilidade(cnpjContabilidade, grupoRegra.getCamposRegras());
+    		
+    		if(grupoRegraContabilidade != null)
+    			return GrupoRegraMapper.fromEntity(grupoRegraContabilidade);
+    		
     		if(!grupoRegra.getCnpjContabilidade().equals(cnpjContabilidade))
     			grupoRegra.setContaMovimento(null);
+    		
     		return GrupoRegraMapper.fromEntity(grupoRegra);
     	}catch(Exception ex) {
     		return null;

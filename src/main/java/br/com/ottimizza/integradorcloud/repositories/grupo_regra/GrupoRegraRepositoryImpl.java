@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.repositories.grupo_regra;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -43,6 +44,30 @@ public class GrupoRegraRepositoryImpl implements GrupoRegraRepositoryCustom {
 		
 		return (GrupoRegra) query.getSingleResult();
 	}
+
+	@Override
+	public GrupoRegra buscarPorCamposContabilidade(String cnpjContabilidade, List<String> campos) {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("SELECT grupo_regras.* 									");
+		sb.append("FROM grupo_regras  										");
+		sb.append("WHERE grupo_regras.campos @> :campos 					");
+		sb.append("AND :campos @> grupo_regras.campos 						");
+		sb.append("AND grupo_regras.cnpj_contabilidade = :cnpjContabilidade ");
+		sb.append("AND grupo_regras.ativo = true 							");
+		sb.append("ORDER BY grupo_regras.contagem_regras DESC, 				");
+		sb.append("         grupo_regras.peso_regras DESC, 					");
+		sb.append("			grupo_regras.id DESC							");
+		sb.append("LIMIT 1");
+		
+		Query query = em.createNativeQuery(sb.toString(), GrupoRegra.class);
+		query.setParameter("campos", campos);
+		query.setParameter("cnpjContabilidade", cnpjContabilidade);
+		
+		return (GrupoRegra) query.getSingleResult();
+	}
+	
+	
 
 
 }
