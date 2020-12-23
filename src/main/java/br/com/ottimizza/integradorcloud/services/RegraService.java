@@ -76,7 +76,6 @@ public class RegraService {
 
     public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, Short sugerir, String regraSugerida, OAuth2Authentication authentication) throws Exception {
     	List<String> campos = new ArrayList();
-    	boolean naoContem = false;
     	BigInteger regraId = null;
         validaGrupoRegra(grupoRegraDTO);
         grupoRegraDTO.setUsuario(authentication.getName());
@@ -85,15 +84,7 @@ public class RegraService {
             grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getTipoLancamento()
         ));
         grupoRegraDTO.setPosicao(grupoRegraDTO.getPosicao() == null ? 1 : grupoRegraDTO.getPosicao() + 1);
-        int contagemRegras = grupoRegraDTO.getRegras().size();
-        for(Regra r : grupoRegraDTO.getRegras()) {
-        	if(!r.getCampo().equals("tipoPlanilha"))
-        		campos.add(r.getValor());
-        	if(r.getCondicao() == 2)
-        		contagemRegras = 0;
-        }
-        grupoRegraDTO.setContagemRegras(contagemRegras);
-        grupoRegraDTO.setCamposRegras(campos);
+        grupoRegraDTO = validarGrupoRegra(grupoRegraDTO);
         
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
         List<Regra> regrasSalvas = salvarRegras(grupoRegra, grupoRegraDTO.getRegras());
@@ -298,6 +289,7 @@ public class RegraService {
     		
     		return GrupoRegraMapper.fromEntity(grupoRegra);
     	}catch(Exception ex) {
+    		System.out.println("");
     		return null;
     	}
     	
@@ -308,10 +300,55 @@ public class RegraService {
     	return GrupoRegraMapper.ignoradaFromEntity(regraIgnorada);
     }
 
-    public GrupoRegraIgnoradaDTO validarGrupoRegra(GrupoRegraIgnoradaDTO grupoRegra) throws Exception {
-    	
-    	
-    	return null;
+    public GrupoRegraDTO validarGrupoRegra(GrupoRegraDTO grupoRegra) throws Exception {
+    	List<String> campos = new ArrayList<>();
+    	Boolean portador = false;
+    	Boolean naoContem = false;
+    	Boolean emBranco = false;
+    	int contagemRegras = grupoRegra.getRegras().size();
+        for(Regra r : grupoRegra.getRegras()) {
+        	if(!r.getCampo().equals("tipoPlanilha"))
+        		campos.add(r.getValor());
+        	
+        	if(r.getCampo().equals("portador"))
+        		portador = true;
+        	
+        	if(r.getCondicao() == 2)
+        		naoContem = true;
+        	
+        	if(r.getValor().equals("EM BRANCO"))
+        		emBranco = true;
+        }
+        
+        
+        if(naoContem) {
+        	campos = new ArrayList<>();
+        	campos.add("NULL");
+        }
+        else if(emBranco) {
+        	campos = new ArrayList<>();
+        	campos.add("NULL");
+        	//grupoRegra.setCamposRegras(new ArrayList<>());
+        }
+        else if(portador) {
+        	campos = new ArrayList<>();
+        	campos.add("NULL");
+        	//grupoRegra.setCamposRegras(new ArrayList<>());
+        }
+        else if(contagemRegras < 3) {
+        	campos = new ArrayList<>();
+        	campos.add("NULL");
+    		//grupoRegra.setCamposRegras(new ArrayList<String>().add("NULL"));
+        }
+        else if(grupoRegra.getContaMovimento().equals("IGNORAR")) {
+        	campos = new ArrayList<>();
+        	campos.add("NULL");
+    		//grupoRegra.setCamposRegras(new ArrayList<>());
+        }
+        grupoRegra.setContagemRegras(contagemRegras);
+        grupoRegra.setCamposRegras(campos);
+        
+    	return grupoRegra;
     }
 
 }

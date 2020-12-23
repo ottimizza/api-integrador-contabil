@@ -14,10 +14,10 @@ import feign.Param;
 @Repository
 public interface CheckListPerguntasRepository  extends JpaRepository<CheckListPerguntas, BigInteger>{
 
-	@Query(value = "SELECT cp.* FROM checklist_perguntas cp WHERE cp.tipo LIKE %:tipo% ORDER BY cp.id ASC", nativeQuery = true)
+	@Query(value = "SELECT cp.* FROM checklist_perguntas cp WHERE cp.tipo LIKE %:tipo% ORDER BY cp.descricao ASC", nativeQuery = true)
 	CheckListPerguntas[] buscaPorTipo(@Param("tipo") String tipo);
 	
-	@Query(value = "SELECT new br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListObservacoes(co.id, co.descricao, co.importante) FROM CheckListObservacoes co")
+	@Query(value = "SELECT new br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListObservacoes(co.id, co.descricao, co.posicao, co.importante) FROM CheckListObservacoes co ORDER BY co.posicao")
 	List<CheckListObservacoes> buscaObservacoes();
 	
 	@Query(value = "SELECT cp.id FROM checklist_perguntas cp WHERE cp.descricao like('%analista%')", nativeQuery = true)
