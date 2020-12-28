@@ -119,9 +119,10 @@ public class RegrasController {
     }
     
     @PostMapping("/sugerir/ignorar")
-    public ResponseEntity<?> ignorarRegraSugerida(@RequestBody GrupoRegraIgnoradaDTO grupoRegra) throws Exception {
+    public ResponseEntity<?> ignorarRegraSugerida(@RequestBody GrupoRegraIgnoradaDTO grupoRegra,
+    											  OAuth2Authentication authentication) throws Exception {
     	return ResponseEntity.ok(new GenericResponse<GrupoRegraIgnoradaDTO>(
-    			regraService.ignorarSugestaoRegra(grupoRegra)
+    			regraService.ignorarSugestaoRegra(grupoRegra, authentication)
     		));
     }
 

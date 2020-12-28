@@ -19,13 +19,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra_ignorada.GrupoRegraIgnoradaDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.grupo_regra.GrupoRegraMapper;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegraIgnorada;
@@ -52,6 +55,9 @@ public class RegraService {
     @Inject
     RegraRepository regraRepository;
 
+    @Inject 
+    OAuthClient oauthClient;
+    
     public Page<GrupoRegraDTO> buscarRegras(GrupoRegraDTO filtro, PageCriteria pageCriteria, OAuth2Authentication authentication) 
             throws Exception {
         filtro.setAtivo(true);
@@ -295,7 +301,9 @@ public class RegraService {
     	
     }
     
-    public GrupoRegraIgnoradaDTO ignorarSugestaoRegra(GrupoRegraIgnoradaDTO grupoRegra) throws Exception {
+    public GrupoRegraIgnoradaDTO ignorarSugestaoRegra(GrupoRegraIgnoradaDTO grupoRegra, OAuth2Authentication authentication) throws Exception {
+    	UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+    	grupoRegra.setCnpjContabilidade(userInfo.getOrganization().getCnpj());
     	GrupoRegraIgnorada regraIgnorada = grupoRegraIgnoradaRepository.save(GrupoRegraMapper.ignoradaFromDto(grupoRegra));
     	return GrupoRegraMapper.ignoradaFromEntity(regraIgnorada);
     }
@@ -349,6 +357,12 @@ public class RegraService {
         grupoRegra.setCamposRegras(campos);
         
     	return grupoRegra;
+    }
+    
+    private String getAuthorizationHeader(OAuth2Authentication authentication) {
+        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+        String accessToken = details.getTokenValue();
+        return MessageFormat.format("Bearer {0}", accessToken);
     }
 
 }
