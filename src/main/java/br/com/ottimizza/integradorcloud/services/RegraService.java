@@ -318,7 +318,7 @@ public class RegraService {
         	if(!r.getCampo().equals("tipoPlanilha")) {
         		campos.add(r.getValor().trim());
         		String[] array = r.getValor().trim().split(" ");
-        		contagemRegras = contagemRegras + contarValoresComPeso(array);
+        		contagemRegras = contagemRegras + contarValoresComPeso(array, r.getCampo());
         	}
         	
         	if(r.getCampo().equals("portador"))
@@ -362,14 +362,12 @@ public class RegraService {
     	return grupoRegra;
     }
     
-    public int contarValoresComPeso(String[] campos) throws Exception {
+    public int contarValoresComPeso(String[] campos, String campo) throws Exception {
     	int contagemRegras = 0;
-    	for(String campo : campos) {
-    		if(campo.contains("FGTS"))
+    	if(campo.contains("FGTS"))
     			contagemRegras = contagemRegras + 5;
-    		if(campo.contains("RESCISORIO"))
+    	if(campo.contains("RESCISORIO"))
     			contagemRegras = contagemRegras + 5;
-    	}
 		contagemRegras = contagemRegras + campos.length;
     	return contagemRegras;
     }
