@@ -313,10 +313,13 @@ public class RegraService {
     	Boolean portador = false;
     	Boolean naoContem = false;
     	Boolean emBranco = false;
-    	int contagemRegras = grupoRegra.getRegras().size();
+    	int contagemRegras = 0;
         for(Regra r : grupoRegra.getRegras()) {
-        	if(!r.getCampo().equals("tipoPlanilha"))
-        		campos.add(r.getValor());
+        	if(!r.getCampo().equals("tipoPlanilha")) {
+        		campos.add(r.getValor().trim());
+        		String[] array = r.getValor().trim().split(" ");
+        		contagemRegras = contagemRegras + contarValoresComPeso(array);
+        	}
         	
         	if(r.getCampo().equals("portador"))
         		portador = true;
@@ -357,6 +360,18 @@ public class RegraService {
         grupoRegra.setCamposRegras(campos);
         
     	return grupoRegra;
+    }
+    
+    public int contarValoresComPeso(String[] campos) throws Exception {
+    	int contagemRegras = 0;
+    	for(String campo : campos) {
+    		if(campo.contains("FGTS"))
+    			contagemRegras = contagemRegras + 5;
+    		if(campo.contains("RESCISORIO"))
+    			contagemRegras = contagemRegras + 5;
+    	}
+		contagemRegras = contagemRegras + campos.length;
+    	return contagemRegras;
     }
     
     private String getAuthorizationHeader(OAuth2Authentication authentication) {
