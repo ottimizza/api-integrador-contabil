@@ -131,15 +131,7 @@ public class RegraService {
         }
 
         grupoRegraDTO.setId(id);
-        int contagemRegras = grupoRegraDTO.getRegras().size();
-        for(Regra r : grupoRegraDTO.getRegras()) {
-        	if(!r.getCampo().equals("tipoPlanilha"))
-        		campos.add(r.getValor());
-        	if(r.getCondicao() == 2)
-        		contagemRegras = 0;
-        }
-        grupoRegraDTO.setContagemRegras(contagemRegras);
-        grupoRegraDTO.setCamposRegras(campos);
+        grupoRegraDTO = validarGrupoRegra(grupoRegraDTO);
         GrupoRegra grupoRegra = grupoRegraRepository.save(GrupoRegraMapper.fromDto(grupoRegraDTO));
 
         regraRepository.apagarPorGrupoRegra(id);
