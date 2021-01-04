@@ -360,7 +360,156 @@ public class RegraService {
     			contagemRegras = contagemRegras + 5;
     	if(campo.contains("RESCISORIO"))
     			contagemRegras = contagemRegras + 5;
-		contagemRegras = contagemRegras + campos.length;
+    	if(campo.contains("13"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("0561"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("5952"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("ABATIMENTO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("ALIMENTACAO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("ALUGUEL"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("APLICACAO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("CARTORIO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("CELULAR"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("CHEQUE"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("COFINS"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("CORREIOS"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("CSLL"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("CSRF"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("DECIMO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("DESCONTO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("EMPRESTIMO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("ENERGIA"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("FERIAS"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("GPS"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("INSS"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("IOF"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("IPTU"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("IPVA"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("IRPJ"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("IRRF"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("ISS"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("JUROS"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("LABORE"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("LUCRO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("MULTA"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("PIS"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("PRO-LABORE"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("PROLABORE"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("RESCISAO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("SALARIO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("SANEAMENTO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("SAUDE"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("SEGURO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("TARIFA"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("TAXA"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("TELEFONE"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("TERCEIRO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("VALE"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("FOLHA"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("RPA"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("ADIANTAMENTO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("REEMBOLSO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("VIAGEM"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("VIAGENS"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("FUNAJURIS"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("COMPENSADO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("DEVOLVIDO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("ESTORNO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("DIFAL"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("5952"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("2208"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("6956"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("0507"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("4308"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("1708"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("2985"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("2100"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("1317"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("DPVAT"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("LICENCIAMENTO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("HONORARIO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("LUCRO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("DISTRIBUIÇÃO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("ESGOTO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("AGUA"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("ICMS"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("PLANO"))
+			contagemRegras = contagemRegras + 5;
+    	if(campo.contains("RESGATE"))
+			contagemRegras = contagemRegras + 5;
+    	
+    	contagemRegras = contagemRegras + campos.length;
     	return contagemRegras;
     }
     
