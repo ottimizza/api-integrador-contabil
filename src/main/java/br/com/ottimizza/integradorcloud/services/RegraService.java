@@ -310,7 +310,7 @@ public class RegraService {
         	if(!r.getCampo().equals("tipoPlanilha")) {
         		campos.add(r.getValor().trim());
         		String[] array = r.getValor().trim().split(" ");
-        		contagemRegras = contagemRegras + contarValoresComPeso(array, r.getCampo());
+        		contagemRegras = contagemRegras + contarValoresComPeso(array,r.getValor());
         	}
         	
         	if(r.getCampo().equals("portador"))
