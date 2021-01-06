@@ -47,6 +47,11 @@ storage-s3:
     name: storages3-service
     url: ${STORAGE_URL:https://stage-s3-storage.herokuapp.com}
 
+email-sender:
+  service:
+    name: email-sender-service
+    url: ${EMAIL_SENDER_URL:https://api-emaiil-sender.herokuapp.com}
+
 security:
   oauth2:
     client:

@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
 import br.com.ottimizza.integradorcloud.client.DeParaClient;
+import br.com.ottimizza.integradorcloud.client.EmailSenderClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.PorcentagemLancamentosRequest;
@@ -39,8 +40,10 @@ import br.com.ottimizza.integradorcloud.domain.commands.lancamento.TotalLanvamen
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.depara.DeParaContaDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.email.EmailDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.organization.OrganizationDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
 import br.com.ottimizza.integradorcloud.domain.mappers.ArquivoMapper;
 import br.com.ottimizza.integradorcloud.domain.mappers.lancamento.LancamentoMapper;
@@ -79,6 +82,9 @@ public class LancamentoService {
 
 	@Inject
 	OAuthClient oauthClient;
+	
+	@Inject
+	EmailSenderClient emailSenderClient;
 	
 	@Value("${oauth.service.url}")
 	private String OAUTH2_SERVER_URL;
@@ -381,12 +387,14 @@ public class LancamentoService {
 		return ArquivoMapper.fromEntity(arquivo);
 	}
 
-	public PorcentagemLancamentosRequest buscaPorcentagem(String cnpjEmpresa, String tipoMovimento, PageCriteria criteria) {
-		
+	public PorcentagemLancamentosRequest buscaPorcentagem(String cnpjEmpresa, String tipoMovimento, PageCriteria criteria, OAuth2Authentication authentication) {
+		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+		Empresa empresa = empresaRepository.buscarPorCNPJ(cnpjEmpresa).orElse(null);
 		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.EXACT);
 		
 		Lancamento filtroRestante = Lancamento.builder()
 					.cnpjEmpresa(cnpjEmpresa)
+					.cnpjContabilidade(userInfo.getOrganization().getCnpj())
 					.tipoMovimento(tipoMovimento)
 					.tipoConta((short) 0)
 					.ativo(true)
@@ -398,6 +406,7 @@ public class LancamentoService {
 		
 		Lancamento filtroTotal = Lancamento.builder()
 					.cnpjEmpresa(cnpjEmpresa)
+					.cnpjContabilidade(userInfo.getOrganization().getCnpj())
 					.tipoMovimento(tipoMovimento)
 					.ativo(true)
 				.build();
@@ -409,6 +418,15 @@ public class LancamentoService {
 					.numeroLancamentosRestantes(restantes.getTotalElements())
 					.totalLancamentos(total.getTotalElements())
 				.build();
+		
+		if(restantes.getTotalElements() == 0 && total.getTotalElements() != 0) {
+			EmailDTO email = EmailDTO.builder()
+					.to("dani.steil@hotmail.com")
+					.subject("Empresa "+empresa.getNomeResumido()+" com OUD finalizado.")
+					.body("finalizar empresa la")
+				.build();
+			emailSenderClient.sendMail(email);
+		}
 		
 		return retorno;
 	}
