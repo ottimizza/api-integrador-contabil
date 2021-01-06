@@ -27,11 +27,12 @@ public class GrupoRegraRepositoryImpl implements GrupoRegraRepositoryCustom {
 		sb.append("AND grupo_regras.ativo = true ");
 		sb.append("AND NOT EXISTS(SELECT 1 FROM regras r2 WHERE r2.fk_grupo_regras_id = grupo_regras.id AND r2.condicao = 2) ");
 		sb.append("AND grupo_regras.campos not in (SELECT gr.campos FROM grupo_regras_ignoradas gr WHERE gr.cnpj_contabilidade = :cnpjContabilidade)");
-		//sb.append("and grupo_regras.id not in (select gr3.id from grupo_regras_ignoradas gr3 where grupo_regras.campos @> gr3.campos and gr3.campos @> grupo_regras.campos and gr3.cnpj_contabilidade = :cnpjContabilidade))");
 		if(busca == 1) {
 			sb.append("AND grupo_regras.cnpj_contabilidade = :cnpjContabilidade ");
 		}
-		//sb.append("AND grupo_regras.id = 2014 ");
+		if(busca == 0) {
+			sb.append("AND grupo_regras.peso_regras > 1 ");
+		}
 		sb.append("ORDER BY grupo_regras.contagem_regras DESC, ");
 		sb.append("         grupo_regras.peso_regras DESC, ");
 		sb.append("			grupo_regras.id DESC ");

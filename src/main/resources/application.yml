@@ -52,7 +52,7 @@ email-sender:
     name: email-sender-service
     url: ${EMAIL_SENDER_URL:https://api-emaiil-sender.herokuapp.com}
 
-email_oud_finalizado: ${EMAIL_OUD_FINALIZADO:projetooic@ottimizza.com.br.com}
+email_oud_finalizado: ${EMAIL_OUD_FINALIZADO:projetooic@ottimizza.com.br}
 
 security:
   oauth2:
