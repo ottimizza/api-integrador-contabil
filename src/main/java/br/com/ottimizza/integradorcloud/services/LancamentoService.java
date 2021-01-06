@@ -421,12 +421,12 @@ public class LancamentoService {
 		
 		if(restantes.getTotalElements() == 0 && total.getTotalElements() != 0) {
 			String quebraLinha = System.lineSeparator();
-			System.out.println(quebraLinha);
 			StringBuilder sb = new StringBuilder();
-			sb.append("Contabilidade: "+userInfo.getOrganization().getName()+quebraLinha);
-			sb.append("Empresa: "+empresa.getRazaoSocial()+quebraLinha);
-			sb.append("Processo: "+tipoMovimento+quebraLinha);
+			sb.append("Contabilidade: "+userInfo.getOrganization().getName()+"\r\n");
+			sb.append("Empresa: "+empresa.getRazaoSocial()+"\r\n");
+			sb.append("Processo: "+tipoMovimento+"\r\n");
 			sb.append("Finalizado por: "+userInfo.getFirstName()+" "+userInfo.getLastName());
+			System.out.println(sb.toString());
 			EmailDTO email = EmailDTO.builder()
 					.to("dani.steil@hotmail.com")
 					.subject("Empresa "+empresa.getRazaoSocial()+" com OUD finalizado.")
