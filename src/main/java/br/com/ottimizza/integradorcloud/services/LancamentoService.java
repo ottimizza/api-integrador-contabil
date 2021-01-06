@@ -420,7 +420,8 @@ public class LancamentoService {
 				.build();
 		
 		if(restantes.getTotalElements() == 0 && total.getTotalElements() != 0) {
-			String quebraLinha = System.getProperty("line.separator");
+			String quebraLinha = System.lineSeparator();
+			System.out.println(quebraLinha);
 			StringBuilder sb = new StringBuilder();
 			sb.append("Contabilidade: "+userInfo.getOrganization().getName()+quebraLinha);
 			sb.append("Empresa: "+empresa.getRazaoSocial()+quebraLinha);
