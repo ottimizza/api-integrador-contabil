@@ -88,6 +88,10 @@ public class LancamentoService {
 	
 	@Value("${oauth.service.url}")
 	private String OAUTH2_SERVER_URL;
+	
+	@Value("${email_oud_finalizado}")
+	private String EMAIL_OUD_FINALIZADO;
+	
 
 	public Lancamento buscarPorId(BigInteger id) throws LancamentoNaoEncontradoException {
 		return lancamentoRepository.findById(id).orElseThrow(() -> new LancamentoNaoEncontradoException(
@@ -424,11 +428,13 @@ public class LancamentoService {
 			sb.append("Contabilidade: "+userInfo.getOrganization().getName()+"<br>");
 			sb.append("Empresa: "+empresa.getRazaoSocial()+"<br>");
 			sb.append("Processo: "+tipoMovimento+"<br>");
-			sb.append("Finalizado por: "+userInfo.getFirstName()+" "+userInfo.getLastName());
-			System.out.println(sb.toString());
+			sb.append("Finalizado por: "+userInfo.getFirstName()+" "+userInfo.getLastName()+" ("+userInfo.getUsername()+")");
+			sb.append("<br>");
+			sb.append("<br>");
+			sb.append("Enviado Automaticamente por Otimizza Última Digitação");
 			EmailDTO email = EmailDTO.builder()
-					.to("dani.steil@hotmail.com")
-					.subject("Empresa "+empresa.getRazaoSocial()+" com OUD finalizado.")
+					.to(EMAIL_OUD_FINALIZADO)
+					.subject("Empresa "+empresa.getRazaoSocial()+"/"+userInfo.getOrganization().getName()+" com OUD finalizado.")
 					.body(sb.toString())
 				.build();
 			emailSenderClient.sendMail(email);
