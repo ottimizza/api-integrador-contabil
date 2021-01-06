@@ -420,11 +420,10 @@ public class LancamentoService {
 				.build();
 		
 		if(restantes.getTotalElements() == 0 && total.getTotalElements() != 0) {
-			String quebraLinha = System.lineSeparator();
 			StringBuilder sb = new StringBuilder();
-			sb.append("Contabilidade: "+userInfo.getOrganization().getName()+"\r\n");
-			sb.append("Empresa: "+empresa.getRazaoSocial()+"\r\n");
-			sb.append("Processo: "+tipoMovimento+"\r\n");
+			sb.append("Contabilidade: "+userInfo.getOrganization().getName()+"<br>");
+			sb.append("Empresa: "+empresa.getRazaoSocial()+"<br>");
+			sb.append("Processo: "+tipoMovimento+"<br>");
 			sb.append("Finalizado por: "+userInfo.getFirstName()+" "+userInfo.getLastName());
 			System.out.println(sb.toString());
 			EmailDTO email = EmailDTO.builder()
