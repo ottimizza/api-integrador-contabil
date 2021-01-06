@@ -420,10 +420,15 @@ public class LancamentoService {
 				.build();
 		
 		if(restantes.getTotalElements() == 0 && total.getTotalElements() != 0) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Contabilidade: "+userInfo.getOrganization().getName()+"\n");
+			sb.append("Empresa: "+empresa.getRazaoSocial()+"\n");
+			sb.append("Processo: "+tipoMovimento+"\n");
+			sb.append("Finalizado por: "+userInfo.getFirstName()+" "+userInfo.getLastName());
 			EmailDTO email = EmailDTO.builder()
 					.to("dani.steil@hotmail.com")
-					.subject("Empresa "+empresa.getNomeResumido()+" com OUD finalizado.")
-					.body("finalizar empresa la")
+					.subject("Empresa "+empresa.getRazaoSocial()+" com OUD finalizado.")
+					.body(sb.toString())
 				.build();
 			emailSenderClient.sendMail(email);
 		}
