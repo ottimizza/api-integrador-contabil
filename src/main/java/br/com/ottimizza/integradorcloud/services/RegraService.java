@@ -338,7 +338,7 @@ public class RegraService {
         	campos.add("NULL");
         	//grupoRegra.setCamposRegras(new ArrayList<>());
         }
-        else if(contagemRegras < 3) {
+        else if(contagemRegras < 2) {
         	campos = new ArrayList<>();
         	campos.add("NULL");
     		//grupoRegra.setCamposRegras(new ArrayList<String>().add("NULL"));
