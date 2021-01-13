@@ -28,11 +28,11 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		
 		if(filtro.getId() != null)
 			sql.append("AND lc.id = :id ");
-		if(!filtro.getComplemento().equals(""))
+		if(filtro.getComplemento() != null && !filtro.getComplemento().equals(""))
 			sql.append("AND lc.complemento ILIKE(%:complemento%) ");
-		if(!filtro.getFornecerdor().equals(""))
+		if(filtro.getFornecerdor() != null && !filtro.getFornecerdor().equals(""))
 			sql.append("AND lc.fornecedor ILIKE(%:fornecedor%) ");
-		if(!filtro.getBanco().equals(""))
+		if(filtro.getBanco() != null && !filtro.getBanco().equals(""))
 			sql.append("AND lc.banco ILIKE(%:banco%) ");
 		if(filtro.getValorEntrada() != null)
 			sql.append("AND lc.valor_entrada = :valorEntrada  ");
@@ -46,11 +46,11 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		
 		if(filtro.getId() != null)
 			query.setParameter("id", filtro.getId());
-		if(!filtro.getComplemento().equals(""))
+		if(filtro.getComplemento() != null && !filtro.getComplemento().equals(""))
 			query.setParameter("complemento", filtro.getComplemento());
-		if(!filtro.getFornecerdor().equals(""))
+		if(filtro.getFornecerdor() != null && !filtro.getFornecerdor().equals(""))
 			query.setParameter("fornecedor", filtro.getFornecerdor());
-		if(!filtro.getBanco().equals(""))
+		if(filtro.getBanco() != null && !filtro.getBanco().equals(""))
 			query.setParameter("banco", filtro.getBanco());
 		if(filtro.getValorEntrada() != null)
 			query.setParameter("valorEntrada", filtro.getValorEntrada());

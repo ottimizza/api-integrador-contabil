@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.domain.dtos.livro_caixa;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
 
@@ -13,7 +14,9 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor @AllArgsConstructor
-public class LivroCaixaDTO {
+public class LivroCaixaDTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private BigInteger id;
 	
@@ -41,13 +44,13 @@ public class LivroCaixaDTO {
 		if(valorSaida != null)
 			livroCaixa.setValorSaida(valorSaida);
 		
-		if(!fornecerdor.equals(""))
+		if(fornecerdor != null && !fornecerdor.equals(""))
 			livroCaixa.setFornecerdor(fornecerdor);
 		
-		if(!complemento.equals(""))
+		if(complemento != null && !complemento.equals(""))
 			livroCaixa.setComplemento(complemento);
 		
-		if(!banco.equals(""))
+		if( banco != null && !banco.equals(""))
 			livroCaixa.setBanco(banco);
 		
 		if(dataMovimento != null)

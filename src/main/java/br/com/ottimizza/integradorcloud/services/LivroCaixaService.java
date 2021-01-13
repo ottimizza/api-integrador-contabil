@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.livro_caixa.LivroCaixaDTO;
@@ -13,6 +14,7 @@ import br.com.ottimizza.integradorcloud.domain.mappers.livro_caixa.LivroCaixaMap
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import br.com.ottimizza.integradorcloud.repositories.livro_caixa.LivroCaixaRepository;
 
+@Service
 public class LivroCaixaService {
 	
 	@Inject
