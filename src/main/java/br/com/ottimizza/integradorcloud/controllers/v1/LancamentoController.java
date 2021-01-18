@@ -116,9 +116,8 @@ public class LancamentoController {
     }
     
     @GetMapping("/porcentagem")
-    public ResponseEntity<?> buscaLancamentosPorcentagem(@RequestParam String cnpjEmpresa, @RequestParam String tipoMovimento,
-    													 @Valid PageCriteria pageCriteria) throws Exception {
-    	return ResponseEntity.ok(lancamentoService.buscaPorcentagem(cnpjEmpresa, tipoMovimento, pageCriteria));
+    public ResponseEntity<?> buscaLancamentosPorcentagem(@RequestParam String cnpjEmpresa, @RequestParam String tipoMovimento) throws Exception {
+    	return ResponseEntity.ok(lancamentoService.buscaPorcentagemNative(cnpjEmpresa, tipoMovimento));
     }
     
     @GetMapping("/total_arquivos")

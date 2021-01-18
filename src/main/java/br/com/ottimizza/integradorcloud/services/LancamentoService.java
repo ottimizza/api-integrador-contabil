@@ -418,6 +418,19 @@ public class LancamentoService {
 		return retorno;
 	}
 	
+	public PorcentagemLancamentosRequest buscaPorcentagemNative(String cnpjEmpresa, String tipoMovimento) {
+
+		Long lancamentosRestantes = lancamentoRepository.contarLancamentosRestantesEmpresa(cnpjEmpresa, tipoMovimento);
+		Long totalLancamentos = lancamentoRepository.contarTotalLancamentosEmpresa(cnpjEmpresa, tipoMovimento);
+		
+		PorcentagemLancamentosRequest retorno = PorcentagemLancamentosRequest.builder()
+					.numeroLancamentosRestantes(lancamentosRestantes)
+					.totalLancamentos(totalLancamentos)
+				.build();
+
+		return retorno;
+	}
+	
 	public List<TotalLanvamentosArquivoRequest> lancamentosPorArquivo(String cnpjEmpresa, String cnpjContabilidade, String tipoMovimento) throws Exception {
 		return lancamentoRepository.lancamentosPorArquivo(cnpjEmpresa, cnpjContabilidade, tipoMovimento);
 	}

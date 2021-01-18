@@ -102,5 +102,20 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
                  + " fk_regras_id = null             "
                  + " WHERE l.fk_regras_id = :regraId ", nativeQuery = true)
     void restaurarPorRegraId(@Param("regraId") BigInteger regraId);
+    
+    @Query(value = "SELECT COUNT(*) FROM Lancamento l	 "
+    			 + "WHERE l.cnpjEmpresa = :cnpjEmpresa   "
+    			 + "AND l.tipoMovimento = :tipoMovimento "
+    			 + "AND l.tipoConta = 0 				 "
+    			 + "AND l.ativo = true  				 ")
+    Long contarLancamentosRestantesEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa, 
+    								   	   	  @Param("tipoMovimento") String tipoMovimento);
 
+    @Query(value = "SELECT COUNT(*) FROM Lancamento l	 "
+			 	 + "WHERE l.cnpjEmpresa = :cnpjEmpresa   "
+			 	 + "AND l.tipoMovimento = :tipoMovimento "
+			 	 + "AND l.ativo = true  				 ")
+    Long contarTotalLancamentosEmpresa(@Param("cnpjEmpresa") String cnpjEmpresa, 
+    									  @Param("tipoMovimento") String tipoMovimento);
+    
 }
