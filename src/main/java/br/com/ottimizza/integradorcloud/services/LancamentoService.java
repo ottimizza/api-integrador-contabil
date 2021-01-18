@@ -40,6 +40,7 @@ import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.depara.DeParaContaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.organization.OrganizationDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
 import br.com.ottimizza.integradorcloud.domain.mappers.ArquivoMapper;
 import br.com.ottimizza.integradorcloud.domain.mappers.lancamento.LancamentoMapper;
@@ -413,10 +414,11 @@ public class LancamentoService {
 		return retorno;
 	}*/
 	
-	public PorcentagemLancamentosRequest buscaPorcentagemNative(String cnpjEmpresa, String tipoMovimento) {
-
-		Long lancamentosRestantes = lancamentoRepository.contarLancamentosRestantesEmpresa(cnpjEmpresa, tipoMovimento);
-		Long totalLancamentos = lancamentoRepository.contarTotalLancamentosEmpresa(cnpjEmpresa, tipoMovimento);
+	public PorcentagemLancamentosRequest buscaPorcentagemNative(String cnpjEmpresa, String tipoMovimento, OAuth2Authentication authentication) {
+		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+		
+		Long lancamentosRestantes = lancamentoRepository.contarLancamentosRestantesEmpresa(cnpjEmpresa,userInfo.getOrganization().getCnpj(), tipoMovimento);
+		Long totalLancamentos = lancamentoRepository.contarTotalLancamentosEmpresa(cnpjEmpresa,userInfo.getOrganization().getCnpj(), tipoMovimento);
 		
 		PorcentagemLancamentosRequest retorno = PorcentagemLancamentosRequest.builder()
 					.numeroLancamentosRestantes(lancamentosRestantes)
