@@ -395,6 +395,7 @@ public class LancamentoService {
 		Example<Lancamento> exampleRestante = Example.of(filtroRestante, matcher);
 		Page<Lancamento> restantes = lancamentoRepository.findAll(exampleRestante, LancamentoDTO.getPageRequest(criteria));
 
+		System.out.println("Depois de buscar lancamentos restantes");
 		
 		Lancamento filtroTotal = Lancamento.builder()
 					.cnpjEmpresa(cnpjEmpresa)
@@ -405,10 +406,14 @@ public class LancamentoService {
 		Example<Lancamento> exampleTotal = Example.of(filtroTotal, matcher);
 		Page<Lancamento> total = lancamentoRepository.findAll(exampleTotal, LancamentoDTO.getPageRequest(criteria));
 		
+		System.out.println("Depois de buscar total de lancamentos");
+		
 		PorcentagemLancamentosRequest retorno = PorcentagemLancamentosRequest.builder()
 					.numeroLancamentosRestantes(restantes.getTotalElements())
 					.totalLancamentos(total.getTotalElements())
 				.build();
+		
+		System.out.println("Buildando retorno");
 		
 		return retorno;
 	}
