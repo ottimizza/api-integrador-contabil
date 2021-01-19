@@ -34,7 +34,7 @@ public class Empresa implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "empresas_sequence")
     private BigInteger id;
 
-    @Column(name = "cnpj", nullable = false, unique = true)
+    @Column(name = "cnpj", nullable = false)
     private String cnpj;
 
 	@Column(name = "nome_resumido")

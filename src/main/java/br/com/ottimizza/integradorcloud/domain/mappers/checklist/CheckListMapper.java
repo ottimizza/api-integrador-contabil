@@ -40,6 +40,7 @@ public class CheckListMapper {
 				.sugestao(pergunta.getSugestao())
 				.tipo(pergunta.getTipo())
 				.tipoInput(pergunta.getTipoInput())
+				//.perguntasRelacionadas(pergunta.getPerguntasRelacionadas())
 			.build();
 	}
 	
@@ -52,6 +53,7 @@ public class CheckListMapper {
 				.sugestao(pergunta.getSugestao())
 				.tipo(pergunta.getTipo())
 				.tipoInput(pergunta.getTipoInput())
+				//.perguntasRelacionadas(pergunta.getPerguntasRelacionadas())
 			.build();
 	}
 }

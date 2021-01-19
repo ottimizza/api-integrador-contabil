@@ -29,8 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 
 import br.com.ottimizza.integradorcloud.client.DeParaClient;
+import br.com.ottimizza.integradorcloud.client.EmailSenderClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.PorcentagemLancamentosRequest;
@@ -38,8 +40,10 @@ import br.com.ottimizza.integradorcloud.domain.commands.lancamento.TotalLanvamen
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.depara.DeParaContaDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.email.EmailDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.organization.OrganizationDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
 import br.com.ottimizza.integradorcloud.domain.mappers.ArquivoMapper;
 import br.com.ottimizza.integradorcloud.domain.mappers.lancamento.LancamentoMapper;
@@ -79,8 +83,15 @@ public class LancamentoService {
 	@Inject
 	OAuthClient oauthClient;
 	
+	@Inject
+	EmailSenderClient emailSenderClient;
+	
 	@Value("${oauth.service.url}")
 	private String OAUTH2_SERVER_URL;
+	
+	@Value("${email_oud_finalizado}")
+	private String EMAIL_OUD_FINALIZADO;
+	
 
 	public Lancamento buscarPorId(BigInteger id) throws LancamentoNaoEncontradoException {
 		return lancamentoRepository.findById(id).orElseThrow(() -> new LancamentoNaoEncontradoException(
@@ -94,7 +105,7 @@ public class LancamentoService {
 	            Sort.Order.asc("dataCriacao"),
 	            Sort.Order.asc("descricao")
 	        );
-		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
+		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.EXACT);
 		Example<Lancamento> example = Example.of(LancamentoMapper.fromDto(filter), matcher);
 		return lancamentoRepository.findAll(example, PageRequest.of(criteria.getPageIndex(), criteria.getPageSize(), sort))
 				.map(LancamentoMapper::fromEntity);
@@ -251,12 +262,10 @@ public class LancamentoService {
 	//
 	//
 	//
-	public Page<LancamentoDTO> buscarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa,
-			PageCriteria pageCriteria, Principal principal) throws Exception {
-		return lancamentoRepository
-				.buscarLancamentosPorRegra(regras, cnpjEmpresa,
-						PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize()), principal)
-				.map(LancamentoMapper::fromEntity);
+	public Page<LancamentoDTO> buscarLancamentosPorRegra(List<Regra> regras, String cnpjEmpresa, PageCriteria pageCriteria, Principal principal) throws Exception {
+		return lancamentoRepository.buscarLancamentosPorRegra(regras, cnpjEmpresa,
+				PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize()), principal)
+		.map(LancamentoMapper::fromEntity);
 	}
 
 	//
@@ -334,7 +343,9 @@ public class LancamentoService {
 
 		// Iteração e construção de lista de lançamentos
 		List<Lancamento> lancamentos = importaLancamentos.getLancamentos().stream().map((o) -> {
-			return LancamentoMapper.fromDto(o).toBuilder().nomeArquivo(arquivo.getNome()).arquivo(arquivo)
+			return LancamentoMapper.fromDto(o).toBuilder().nomeArquivo(arquivo.getNome())
+					.arquivo(arquivo)
+					.campos(Lists.newArrayList(o.getCamposLancamento().split(";")))
 					.cnpjContabilidade(importaLancamentos.getCnpjContabilidade())
 					.cnpjEmpresa(importaLancamentos.getCnpjEmpresa()).idRoteiro(importaLancamentos.getIdRoteiro())
 					.accountingId(contabilidade.getId())
@@ -352,7 +363,6 @@ public class LancamentoService {
 	public ArquivoDTO salvaArquivo(ArquivoDTO filter) {
 		Arquivo arquivo = arquivoRepository.findArquivo(filter.getCnpjEmpresa(), filter.getCnpjContabilidade(),
 				filter.getNome());
-
 		if (arquivo == null) {
 			arquivo = arquivoRepository
 					.save(Arquivo.builder().nome(filter.getNome()).cnpjContabilidade(filter.getCnpjContabilidade())
@@ -376,17 +386,19 @@ public class LancamentoService {
 					.build());
 		}
 
-		lancamentoRepository.atualizaStatus(arquivo.getId());
+		lancamentoRepository.atualizaStatus(arquivo.getId(), arquivo.getCnpjEmpresa());
 
 		return ArquivoMapper.fromEntity(arquivo);
 	}
 
-	public PorcentagemLancamentosRequest buscaPorcentagem(String cnpjEmpresa, String tipoMovimento, PageCriteria criteria) {
-		
-		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
+	public PorcentagemLancamentosRequest buscaPorcentagem(String cnpjEmpresa, String tipoMovimento, PageCriteria criteria, OAuth2Authentication authentication) {
+		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+		Empresa empresa = empresaRepository.buscarPorCNPJ(cnpjEmpresa).orElse(null);
+		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.EXACT);
 		
 		Lancamento filtroRestante = Lancamento.builder()
 					.cnpjEmpresa(cnpjEmpresa)
+					.cnpjContabilidade(userInfo.getOrganization().getCnpj())
 					.tipoMovimento(tipoMovimento)
 					.tipoConta((short) 0)
 					.ativo(true)
@@ -398,6 +410,7 @@ public class LancamentoService {
 		
 		Lancamento filtroTotal = Lancamento.builder()
 					.cnpjEmpresa(cnpjEmpresa)
+					.cnpjContabilidade(userInfo.getOrganization().getCnpj())
 					.tipoMovimento(tipoMovimento)
 					.ativo(true)
 				.build();
@@ -410,6 +423,23 @@ public class LancamentoService {
 					.totalLancamentos(total.getTotalElements())
 				.build();
 		
+		if(restantes.getTotalElements() == 0 && total.getTotalElements() != 0) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Contabilidade: "+userInfo.getOrganization().getName()+"<br>");
+			sb.append("Empresa: "+empresa.getRazaoSocial()+"<br>");
+			sb.append("Processo: "+tipoMovimento+"<br>");
+			sb.append("Finalizado por: "+userInfo.getFirstName()+" "+userInfo.getLastName()+" ("+userInfo.getUsername()+")");
+			sb.append("<br>");
+			sb.append("<br>");
+			sb.append("Enviado Automaticamente por Otimizza Última Digitação");
+			EmailDTO email = EmailDTO.builder()
+					.to(EMAIL_OUD_FINALIZADO)
+					.subject("Empresa "+empresa.getRazaoSocial()+"/"+userInfo.getOrganization().getName()+" com OUD finalizado.")
+					.body(sb.toString())
+				.build();
+			emailSenderClient.sendMail(email);
+		}
+		
 		return retorno;
 	}
 	
@@ -418,7 +448,8 @@ public class LancamentoService {
 	}
 	
 	public String inativarLancamentos(BigInteger arquivoId) throws Exception {
-		lancamentoRepository.atualizaStatus(arquivoId);
+		Arquivo arquivo = arquivoRepository.findById(arquivoId).orElse(null);
+		lancamentoRepository.atualizaStatus(arquivoId, arquivo.getCnpjEmpresa());
 		return "Lancamentos inativados com sucesso!";
 	}
 

@@ -84,8 +84,9 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
     @Transactional
     @Query(value = " UPDATE lancamentos 				"
     			 + " SET ativo = false     				"
-			 	 + " WHERE fk_arquivos_id = :id_arquivo ", nativeQuery = true)
-    Integer atualizaStatus(@Param("id_arquivo") BigInteger id_arquivo);
+			 	 + " WHERE fk_arquivos_id = :id_arquivo "
+			 	 + " AND cnpj_empresa = :cnpjEmpresa    ", nativeQuery = true)
+    Integer atualizaStatus(@Param("id_arquivo") BigInteger id_arquivo, @Param("cnpjEmpresa") String cnpjEmpresa);
     
     @Modifying
     @Transactional
@@ -96,11 +97,12 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
 
     @Modifying
     @Transactional
-    @Query(value = " UPDATE lancamentos l            "
-                 + " SET conta_movimento = null,     "
-                 + " tipo_conta = 0,                 "
-                 + " fk_regras_id = null             "
-                 + " WHERE l.fk_regras_id = :regraId ", nativeQuery = true)
-    void restaurarPorRegraId(@Param("regraId") BigInteger regraId);
+    @Query(value = " UPDATE lancamentos l              "
+                 + " SET conta_movimento = null,       "
+                 + " tipo_conta = 0,                   "
+                 + " fk_regras_id = null               "
+                 + " WHERE l.fk_regras_id = :regraId   "
+                 + " AND l.cnpj_empresa = :cnpjEmpresa ", nativeQuery = true)
+    void restaurarPorRegraId(@Param("regraId") BigInteger regraId, @Param("cnpjEmpresa") String cnpjEmpresa);
 
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra_ignorada.GrupoRegraIgnoradaDTO;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.RegraService;
@@ -40,10 +41,12 @@ public class RegrasController {
     }
 
     @PostMapping
-    public ResponseEntity<?> criarRegra(@RequestBody GrupoRegraDTO grupoRegraDTO, 
+    public ResponseEntity<?> criarRegra(@RequestBody GrupoRegraDTO grupoRegraDTO,
+    									@Valid Short sugerir,
+    									@Valid String regraSugerida,
                                         OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
-            regraService.salvar(grupoRegraDTO, authentication)
+            regraService.salvar(grupoRegraDTO, sugerir, regraSugerida,  authentication)
         ));
     }
     
@@ -104,6 +107,23 @@ public class RegrasController {
         return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
             regraService.moverRegraParaFinal(id, authentication)
         ));                                  
+    }
+    
+    @GetMapping("/sugerir/{lancamentoId}")
+    public ResponseEntity<?> sugerirRegra(@Valid String cnpjContabilidade,
+    									  @Valid Short busca,
+    									  @PathVariable("lancamentoId") BigInteger lancamentoId) throws Exception {
+    	return ResponseEntity.ok(new GenericResponse<GrupoRegraDTO>(
+    		regraService.sugerirRegra(cnpjContabilidade, busca, lancamentoId)
+    	));
+    }
+    
+    @PostMapping("/sugerir/ignorar")
+    public ResponseEntity<?> ignorarRegraSugerida(@RequestBody GrupoRegraIgnoradaDTO grupoRegra,
+    											  OAuth2Authentication authentication) throws Exception {
+    	return ResponseEntity.ok(new GenericResponse<GrupoRegraIgnoradaDTO>(
+    			regraService.ignorarSugestaoRegra(grupoRegra, authentication)
+    		));
     }
 
 }

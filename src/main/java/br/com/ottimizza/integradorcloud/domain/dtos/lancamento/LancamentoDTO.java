@@ -3,6 +3,7 @@ package br.com.ottimizza.integradorcloud.domain.dtos.lancamento;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
@@ -86,6 +87,10 @@ public class LancamentoDTO implements Serializable {
 
     private BigInteger regraId;
 
+    private String camposLancamento;
+    
+    private List<String> campos;
+
     public Lancamento patch(Lancamento lancamento) {
         if (contaMovimento != null && !contaMovimento.equals("")) {
             lancamento.setContaMovimento(contaMovimento);
@@ -95,6 +100,9 @@ public class LancamentoDTO implements Serializable {
         }
         if (tipoConta != null) {
             lancamento.setTipoConta(tipoConta);
+        }
+        if(ativo != null) {
+        	lancamento.setAtivo(ativo);
         }
 
         return lancamento;
