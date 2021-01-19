@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,7 +24,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import com.vladmihalcea.hibernate.type.array.ListArrayType;
 
+@TypeDef(
+        name = "list-array",
+        typeClass = ListArrayType.class
+)
 @Data
 @Entity
 @Table(name = "lancamentos")
@@ -134,6 +142,10 @@ public class Lancamento implements Serializable {
 
     @Column(name = "fk_regras_id")
     private BigInteger regraId;
+
+    @Type(type = "list-array")
+    @Column(name = "campos", columnDefinition = "varchar[]")
+    private List<String> campos;
 
     @PrePersist
     public void prePersist() {

@@ -2,6 +2,8 @@ package br.com.ottimizza.integradorcloud.domain.dtos.checklist;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 
 import br.com.ottimizza.integradorcloud.domain.models.checklist.PerguntasOpcoesResposta;
@@ -30,4 +32,6 @@ public class CheckListPerguntasDTO implements Serializable{
 	private String sugestao;
 	
 	private String grupo;
+
+	private List<Long> perguntasRelacionadas;
 }

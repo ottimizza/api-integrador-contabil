@@ -38,6 +38,9 @@ public class RoteiroRepositoryImpl implements RoteiroRepositoryCustom{
 		if(filtro.getId() != null)
 			sb.append("AND r.id = :roteiroId ");
 		
+		if(filtro.getCnpjEmpresa() != null && !filtro.getCnpjEmpresa().equals(""))
+			sb.append("AND r.cnpj_empresa = :cnpjEmpresa ");
+		
 		sb.append("ORDER BY e.razao_social ASC");
 		
 		// ---------------------------------------------------------------------------- //
@@ -59,7 +62,10 @@ public class RoteiroRepositoryImpl implements RoteiroRepositoryCustom{
 		
 		if(filtro.getId() != null)
 			query.setParameter("roteiroId", filtro.getId());
-
+		
+		if(filtro.getCnpjEmpresa() != null && !filtro.getCnpjEmpresa().equals(""))
+			query.setParameter("cnpjEmpresa", filtro.getCnpjEmpresa());
+			
 		long totalElements = query.getResultList().size();
 		query.setFirstResult(criteria.getPageIndex() * criteria.getPageSize());
 		query.setMaxResults(criteria.getPageSize());

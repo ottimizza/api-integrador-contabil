@@ -4,10 +4,12 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,9 +47,10 @@ public class CheckListController {
 	// RESPOSTAS 
 	
 	@PostMapping("/resposta")
-	public ResponseEntity<?> salvaCheckListResposta(@RequestBody CheckListRespostasDTO resposta) throws Exception {
+	public ResponseEntity<?> salvaCheckListResposta(@RequestBody CheckListRespostasDTO resposta,
+													@RequestHeader("Authorization") String authorization) throws Exception {
 		return ResponseEntity.ok(new GenericResponse<CheckListRespostasDTO>(
-				checklistService.salvaResposta(resposta)
+				checklistService.salvaResposta(resposta,authorization)
 			));
 	}
 	

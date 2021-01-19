@@ -34,13 +34,17 @@ public class CheckListObservacoes implements Serializable{
 	@Column(name = "descricao")
 	private String descricao;
 	
+	@Column(name = "posicao")
+    private Integer posicao; 
+	
 	@Column(name = "importante")
 	private Boolean importante;
 
-	public CheckListObservacoes(BigInteger id, String descricao, Boolean importante) {
+	public CheckListObservacoes(BigInteger id, String descricao, Integer posicao, Boolean importante) {
 		super();
 		this.id = id;
 		this.descricao = descricao;
+		this.posicao = posicao;
 		this.importante = importante;
 	}
 	
