@@ -393,7 +393,7 @@ public class LancamentoService {
 
 	public PorcentagemLancamentosRequest buscaPorcentagem(String cnpjEmpresa, String tipoMovimento, OAuth2Authentication authentication) {
 		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
-		Empresa empresa = empresaRepository.buscarPorCNPJ(cnpjEmpresa).orElse(null);
+		Empresa empresa = empresaRepository.buscaEmpresa(cnpjEmpresa, userInfo.getOrganization().getId()).orElse(null);
 		
 		Long lancamentosRestantes = lancamentoRepository.contarLancamentosRestantesEmpresa(cnpjEmpresa,userInfo.getOrganization().getCnpj(), tipoMovimento);
 		Long totalLancamentos = lancamentoRepository.contarTotalLancamentosEmpresa(cnpjEmpresa,userInfo.getOrganization().getCnpj(), tipoMovimento);
