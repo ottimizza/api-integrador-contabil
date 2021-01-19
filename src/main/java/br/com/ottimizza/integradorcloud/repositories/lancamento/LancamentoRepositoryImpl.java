@@ -130,7 +130,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 					sb.append("AND grupo_regras.cnpj_contabilidade = :cnpjContabilidade ");
 				}
 				sb.append("AND grupo_regras.ativo = true ");
-				sb.append("AND grupo_regras.contagem_regras > 2 ");
+				sb.append("AND grupo_regras.contagem_regras >= 2 ");
 				sb.append("AND NOT EXISTS(SELECT 1 FROM regras r2 WHERE r2.fk_grupo_regras_id = grupo_regras.id AND r2.condicao = 2) "); 
 				sb.append("ORDER BY grupo_regras.contagem_regras DESC, peso_regras DESC, grupo_regras.id DESC LIMIT 1) IN ( :regraSugerida , :regraCriada ) ");
 			}
