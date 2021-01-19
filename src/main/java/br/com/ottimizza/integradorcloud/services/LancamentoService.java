@@ -391,39 +391,19 @@ public class LancamentoService {
 		return ArquivoMapper.fromEntity(arquivo);
 	}
 
-	public PorcentagemLancamentosRequest buscaPorcentagem(String cnpjEmpresa, String tipoMovimento, PageCriteria criteria, OAuth2Authentication authentication) {
+	public PorcentagemLancamentosRequest buscaPorcentagem(String cnpjEmpresa, String tipoMovimento, OAuth2Authentication authentication) {
 		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
 		Empresa empresa = empresaRepository.buscarPorCNPJ(cnpjEmpresa).orElse(null);
-		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.EXACT);
 		
-		Lancamento filtroRestante = Lancamento.builder()
-					.cnpjEmpresa(cnpjEmpresa)
-					.cnpjContabilidade(userInfo.getOrganization().getCnpj())
-					.tipoMovimento(tipoMovimento)
-					.tipoConta((short) 0)
-					.ativo(true)
-				.build();
-		
-		Example<Lancamento> exampleRestante = Example.of(filtroRestante, matcher);
-		Page<Lancamento> restantes = lancamentoRepository.findAll(exampleRestante, LancamentoDTO.getPageRequest(criteria));
+		Long lancamentosRestantes = lancamentoRepository.contarLancamentosRestantesEmpresa(cnpjEmpresa,userInfo.getOrganization().getCnpj(), tipoMovimento);
+		Long totalLancamentos = lancamentoRepository.contarTotalLancamentosEmpresa(cnpjEmpresa,userInfo.getOrganization().getCnpj(), tipoMovimento);
 
-		
-		Lancamento filtroTotal = Lancamento.builder()
-					.cnpjEmpresa(cnpjEmpresa)
-					.cnpjContabilidade(userInfo.getOrganization().getCnpj())
-					.tipoMovimento(tipoMovimento)
-					.ativo(true)
-				.build();
-		
-		Example<Lancamento> exampleTotal = Example.of(filtroTotal, matcher);
-		Page<Lancamento> total = lancamentoRepository.findAll(exampleTotal, LancamentoDTO.getPageRequest(criteria));
-		
 		PorcentagemLancamentosRequest retorno = PorcentagemLancamentosRequest.builder()
-					.numeroLancamentosRestantes(restantes.getTotalElements())
-					.totalLancamentos(total.getTotalElements())
-				.build();
+					.numeroLancamentosRestantes(lancamentosRestantes)
+					.totalLancamentos(totalLancamentos)
+					.build();
 		
-		if(restantes.getTotalElements() == 0 && total.getTotalElements() != 0) {
+		if(lancamentosRestantes == 0 && totalLancamentos != 0) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Contabilidade: "+userInfo.getOrganization().getName()+"<br>");
 			sb.append("Empresa: "+empresa.getRazaoSocial()+"<br>");
