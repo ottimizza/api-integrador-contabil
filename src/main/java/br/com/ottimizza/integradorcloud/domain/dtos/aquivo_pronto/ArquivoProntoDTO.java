@@ -31,6 +31,8 @@ public class ArquivoProntoDTO {
 	private String tipoMovimento;
 
 	private String codigoHistorico;
+	
+	private String historico;
 
 	private String erpContabil;
 
@@ -49,6 +51,9 @@ public class ArquivoProntoDTO {
 		
 		if(tipoMovimento != null && !tipoMovimento.equals(""))
 			arquivo.setTipoMovimento(tipoMovimento);
+		
+		if(historico != null && !historico.equals(""))
+			arquivo.setHistorico(historico);
 		
 		if(codigoHistorico != null && !codigoHistorico.equals(""))
 			arquivo.setCodigoHistorico(codigoHistorico);

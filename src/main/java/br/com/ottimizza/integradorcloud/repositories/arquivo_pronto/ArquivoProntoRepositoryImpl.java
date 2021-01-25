@@ -23,6 +23,9 @@ public class ArquivoProntoRepositoryImpl implements ArquivoProntoRepositoryCusto
 		sql.append("WHERE ap.cnpj_contabilidade = :cnpjContabilidade ");
 		sql.append("AND ap.cnpj_empresa = :cnpjEmpresa");
 		
+		if(filtro.getHistorico() != null && !filtro.getHistorico().equals(""))
+			sql.append("AND ap.historico ILIKE('&:historico%') ");
+		
 		if(filtro.getCodigoHistorico() != null && !filtro.getCodigoHistorico().equals(""))
 			sql.append("AND ap.codigo_historico ILIKE('%:codigoHistorico%') ");
 		
@@ -47,6 +50,9 @@ public class ArquivoProntoRepositoryImpl implements ArquivoProntoRepositoryCusto
 		Query query = em.createNativeQuery(sql.toString(), ArquivoPronto.class);
 		query.setParameter("cnpjContabilidade", filtro.getCnpjContabilidade());
 		query.setParameter("cnpjEmpresa", filtro.getCnpjEmpresa());
+		
+		if(filtro.getHistorico() != null && !filtro.getHistorico().equals(""))
+			query.setParameter("historico", filtro.getHistorico());
 		
 		if(filtro.getCodigoHistorico() != null && !filtro.getCodigoHistorico().equals(""))
 			query.setParameter("codigoHistorico", filtro.getCodigoHistorico());
