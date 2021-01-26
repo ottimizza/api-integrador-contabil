@@ -402,7 +402,7 @@ public class LancamentoService {
 					.numeroLancamentosRestantes(lancamentosRestantes)
 					.totalLancamentos(totalLancamentos)
 					.build();
-		
+		/*
 		if(lancamentosRestantes == 0 && totalLancamentos != 0) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Contabilidade: "+userInfo.getOrganization().getName()+"<br>");
@@ -418,7 +418,7 @@ public class LancamentoService {
 					.body(sb.toString())
 				.build();
 			emailSenderClient.sendMail(email);
-		}
+		}*/
 		
 		return retorno;
 	}
