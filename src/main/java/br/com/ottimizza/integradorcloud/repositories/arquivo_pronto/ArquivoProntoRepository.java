@@ -17,6 +17,6 @@ public interface ArquivoProntoRepository extends JpaRepository<ArquivoPronto, Bi
 				 + "FROM arquivo_pronto ap "
 				 + "WHERE ap.cnpj_empresa = :cnpjEmpresa "
 				 + "AND   ap.cnpj_contabilidade = :cnpjContabilidade "
-				 + "AND   ap.lote = :lote")
+				 + "AND   ap.lote = :lote", nativeQuery = true)
 	void deletaPorLoteECnpjs(@Param("lote") String lote, @Param("cnpjEmpresa") String cnpjEmpresa, @Param("cnpjContabilidade") String cnpjContabilidade);
 }
