@@ -32,6 +32,7 @@ public class ArquivoProntoService {
 	
 	public List<ArquivoPronto> importarArquivos(ImportacaoArquivoPronto importacaoArquivos) throws Exception {
 		List<ArquivoPronto> retorno = new ArrayList<ArquivoPronto>();
+		repository.deletaPorLoteECnpjs(importacaoArquivos.getArquivos().get(0).getLote(), importacaoArquivos.getCnpjEmpresa(), importacaoArquivos.getCnpjContabilidade());
 		List<ArquivoPronto> arquivos = importacaoArquivos.getArquivos().stream().map((arquivo) -> {
 			return ArquivoProntoMapper.fromDTO(arquivo).toBuilder()
 					.cnpjContabilidade(importacaoArquivos.getCnpjContabilidade())
