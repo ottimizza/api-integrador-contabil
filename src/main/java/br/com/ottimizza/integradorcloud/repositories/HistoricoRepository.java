@@ -38,4 +38,4 @@ public interface HistoricoRepository extends JpaRepository<Historico, BigInteger
     @Transactional
     @Query(value = "UPDATE historicos SET ativo = false, usuario = :usuario WHERE id = :historicoId", nativeQuery = true)
     void inativarHistorico(@Param("historicoId") BigInteger historicoId, @Param("usuario") String usuario);
-}w
+}
