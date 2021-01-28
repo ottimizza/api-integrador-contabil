@@ -155,11 +155,12 @@ public class RegraService {
         	Historico historico = historicoRepository.buscaPorContaMovimentoContabilidade(grupoRegraDTO.getContaMovimento(), grupoRegraDTO.getCnpjContabilidade());
         	
         	if(historico != null) {
-        		historicoRepository.save(historico.toBuilder()
+        		Historico historicoNovo = historicoRepository.save(historico.toBuilder()
         				.cnpjEmpresa(grupoRegraDTO.getCnpjEmpresa())
         				.tipoLancamento(grupoRegraDTO.getTipoLancamento())
         				.idRoteiro(grupoRegraDTO.getIdRoteiro())
         			.build());
+        		System.out.println("Historico criado "+ historicoNovo.getId());
         	}
         	
         }
