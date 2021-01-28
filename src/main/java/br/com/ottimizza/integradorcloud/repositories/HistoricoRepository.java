@@ -26,13 +26,13 @@ public interface HistoricoRepository extends JpaRepository<Historico, BigInteger
     											  @Param("cnpjEmpresa")       String cnpjEmpresa,
     											  @Param("tipoLancamento")    Short tipoLancamento);
     
-    @Query(value = "SELECT h "
-    		     + "FROM Historico h "
-    		     + "WHERE h.cnpjContabilidae = :cnpjContabilidade "
-    		     + "AND h.contaMovimento = :contaMovimento "
-    		     + "LIMIT 1")
-    Historico buscaPorContaMovimentoContabilidade(@Param("contaMovimento") String contaMovimento,
-			  									  @Param("cnpjContabilidade")    String cnpjContabilidade);
+    @Query(value = "SELECT h.* "
+    		     + "FROM historico h "
+    		     + "WHERE h.cnpj_contabilidae = :cnpjContabilidade "
+    		     + "AND h.conta_movimento = :contaMovimento "
+    		     + "LIMIT 1", nativeQuery = true)
+    Historico buscaPorContaMovimentoContabilidade(@Param("contaMovimento")    String contaMovimento,
+			  									  @Param("cnpjContabilidade") String cnpjContabilidade);
 
     @Modifying
     @Transactional
