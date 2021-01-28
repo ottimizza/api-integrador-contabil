@@ -28,7 +28,7 @@ public interface HistoricoRepository extends JpaRepository<Historico, BigInteger
     
     @Query(value = "SELECT h.* "
     		     + "FROM historicos h "
-    		     + "WHERE h.cnpj_contabilidae = :cnpjContabilidade "
+    		     + "WHERE h.cnpj_contabilidade = :cnpjContabilidade "
     		     + "AND h.conta_movimento = :contaMovimento "
     		     + "LIMIT 1", nativeQuery = true)
     Historico buscaPorContaMovimentoContabilidade(@Param("contaMovimento")    String contaMovimento,
