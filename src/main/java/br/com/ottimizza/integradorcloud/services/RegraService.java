@@ -150,8 +150,9 @@ public class RegraService {
 				.build();
 			emailSenderClient.sendMail(email);
         }
-        
+        System.out.println("tipoMovimento = "+tipoMovimento);
         if(tipoMovimento.equals("EXDEB") || tipoMovimento.equals("EXCRED")) {
+        	System.out.println("entrou no if");
         	Historico historico = historicoRepository.buscaPorContaMovimentoContabilidade(grupoRegraDTO.getContaMovimento(), grupoRegraDTO.getCnpjContabilidade());
         	
         	if(historico != null) {
