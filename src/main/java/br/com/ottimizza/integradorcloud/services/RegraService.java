@@ -36,8 +36,10 @@ import br.com.ottimizza.integradorcloud.domain.mappers.grupo_regra.GrupoRegraMap
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegraIgnorada;
+import br.com.ottimizza.integradorcloud.domain.models.Historico;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
+import br.com.ottimizza.integradorcloud.repositories.HistoricoRepository;
 import br.com.ottimizza.integradorcloud.repositories.empresa.EmpresaRepository;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra_ignorada.GrupoRegraIgnoradaRepository;
@@ -62,6 +64,9 @@ public class RegraService {
     
     @Inject
 	EmpresaRepository empresaRepository;
+    
+    @Inject
+    HistoricoRepository historicoRepository;
 
     @Inject 
     OAuthClient oauthClient;
@@ -145,7 +150,20 @@ public class RegraService {
 				.build();
 			emailSenderClient.sendMail(email);
         }
+        
+        if(tipoMovimento.equals("EXDEB") || tipoMovimento.equals("EXCRED")) {
+        	Historico historico = historicoRepository.buscaPorContaMovimentoContabilidade(grupoRegraDTO.getContaMovimento(), grupoRegraDTO.getCnpjContabilidade());
         	
+        	if(historico != null) {
+        		historicoRepository.save(historico.toBuilder()
+        				.cnpjEmpresa(grupoRegraDTO.getCnpjEmpresa())
+        				.tipoLancamento(grupoRegraDTO.getTipoLancamento())
+        				.idRoteiro(grupoRegraDTO.getIdRoteiro())
+        			.build());
+        	}
+        	
+        }
+        
         return grupoRegraDTO;
     }
 

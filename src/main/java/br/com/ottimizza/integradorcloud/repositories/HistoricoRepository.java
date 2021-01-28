@@ -25,6 +25,14 @@ public interface HistoricoRepository extends JpaRepository<Historico, BigInteger
     List<Historico> buscaHistoricosParaSalesForce(@Param("cnpjContabilidade") String cnpjContabilidade,
     											  @Param("cnpjEmpresa")       String cnpjEmpresa,
     											  @Param("tipoLancamento")    Short tipoLancamento);
+    
+    @Query(value = "SELECT h "
+    		     + "FROM Historico h "
+    		     + "WHERE h.cnpjContabilidae = :cnpjContabilidade "
+    		     + "AND h.contaMovimento = :contaMovimento "
+    		     + "LIMIT 1")
+    Historico buscaPorContaMovimentoContabilidade(@Param("contaMovimento") String contaMovimento,
+			  									  @Param("cnpjContabilidade")    String cnpjContabilidade);
 
     @Modifying
     @Transactional
