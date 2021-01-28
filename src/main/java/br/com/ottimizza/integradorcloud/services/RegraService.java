@@ -157,6 +157,7 @@ public class RegraService {
         	
         	if(historico != null) {
         		Historico historicoNovo = historicoRepository.save(historico.toBuilder()
+        				.id(null)
         				.cnpjEmpresa(grupoRegraDTO.getCnpjEmpresa())
         				.tipoLancamento(grupoRegraDTO.getTipoLancamento())
         				.idRoteiro(grupoRegraDTO.getIdRoteiro())
