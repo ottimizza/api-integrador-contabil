@@ -150,9 +150,8 @@ public class RegraService {
 				.build();
 			emailSenderClient.sendMail(email);
         }
-        System.out.println("tipoMovimento = "+tipoMovimento);
+        
         if(tipoMovimento.equals("EXDEB") || tipoMovimento.equals("EXCRE")) {
-        	System.out.println("entrou no if");
         	Historico historico = historicoRepository.buscaPorContaMovimentoContabilidade(grupoRegraDTO.getContaMovimento(), grupoRegraDTO.getCnpjContabilidade());
         	
         	if(historico != null) {
@@ -162,7 +161,6 @@ public class RegraService {
         				.tipoLancamento(grupoRegraDTO.getTipoLancamento())
         				.idRoteiro(grupoRegraDTO.getIdRoteiro())
         			.build());
-        		System.out.println("Historico criado "+ historicoNovo.getId());
         	}
         	
         }
