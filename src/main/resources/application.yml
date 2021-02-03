@@ -54,6 +54,16 @@ email-sender:
 
 email_oud_finalizado: ${EMAIL_OUD_FINALIZADO:projetooic@ottimizza.com.br}
 
+s1:
+  service:
+    name: s1-service
+    url: ${S1_SERVER_URL:http://s1.ottimizzacontabil.com:8475}
+
+s5:
+  service: 
+    name: s5-service
+    url: ${S5_SERVER_URL:http://s5.ottimizza.com.br:8475}
+
 security:
   oauth2:
     client:

@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.HistoricoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
+import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.SalesForceService;
 
 @RestController
@@ -41,6 +43,14 @@ public class SalesForceApiController {
 											@RequestBody HistoricoDTO historico, 
 											@RequestHeader("Authorization") String authorization) throws Exception {
 		return ResponseEntity.ok(salesForceService.upsertHistorico(id, historico, authorization));
+	}
+	
+	@GetMapping("/regras/exportar")
+	public ResponseEntity<?> exportarRegras(@RequestBody GrupoRegraDTO grupoRegra,
+										    OAuth2Authentication authentication) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<>(
+				salesForceService.exportarRegras(grupoRegra, authentication)
+			));
 	}
 
 }
