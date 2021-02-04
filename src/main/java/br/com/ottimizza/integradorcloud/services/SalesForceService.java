@@ -11,8 +11,6 @@ import org.springframework.security.oauth2.provider.authentication.OAuth2Authent
 import org.springframework.stereotype.Service;
 
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
-import br.com.ottimizza.integradorcloud.client.OttimizzaS1Client;
-import br.com.ottimizza.integradorcloud.client.OttimizzaS5Client;
 import br.com.ottimizza.integradorcloud.client.SalesForceClient;
 import br.com.ottimizza.integradorcloud.domain.dtos.HistoricoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
@@ -41,14 +39,6 @@ public class SalesForceService {
 	@Inject
 	RegraRepository regraRepository;
 	
-	@Inject
-	EmpresaRepository empresaRepository;
-	
-	@Inject
-	OttimizzaS1Client s1Client;
-	
-	@Inject
-	OttimizzaS5Client s5Client;
 	
 	@Inject 
     OAuthClient oauthClient;
@@ -83,26 +73,5 @@ public class SalesForceService {
 		return salesForceClient.upsertHistorico(historicoId, SFhistorico, authorization).getBody();
 	}
 	
-	public String exportarRegras(GrupoRegraDTO grupoRegra, OAuth2Authentication authorization) throws Exception {
-		String tipoConta = "";
-		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authorization)).getBody().getRecord();
-    	Empresa empresa = empresaRepository.buscaEmpresa(grupoRegra.getCnpjEmpresa(), userInfo.getOrganization().getId()).orElse(null);
-    	
-    	if(grupoRegra.getTipoLancamento() == 1)
-    		tipoConta = "Contas PAGAS";
-    	else
-    		tipoConta = "Contas RECEBIDAS";
-    	
-		s1Client.exportarRegras(grupoRegra.getIdRoteiro(), "ROTEIRO-EXPORTACAO", empresa.getRazaoSocial().toUpperCase(), tipoConta);
-		s5Client.exportarRegras(grupoRegra.getIdRoteiro(), "ROTEIRO-EXPORTACAO", empresa.getRazaoSocial().toUpperCase(), tipoConta);
-		
-		return "Regras exportadas com sucesso!";
-	}
-	
-	private String getAuthorizationHeader(OAuth2Authentication authentication) {
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
-        return MessageFormat.format("Bearer {0}", accessToken);
-    }
 	
 }

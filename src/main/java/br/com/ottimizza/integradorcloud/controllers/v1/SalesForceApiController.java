@@ -44,13 +44,5 @@ public class SalesForceApiController {
 											@RequestHeader("Authorization") String authorization) throws Exception {
 		return ResponseEntity.ok(salesForceService.upsertHistorico(id, historico, authorization));
 	}
-	
-	@GetMapping("/regras/exportar")
-	public ResponseEntity<?> exportarRegras(@RequestBody GrupoRegraDTO grupoRegra,
-										    OAuth2Authentication authentication) throws Exception {
-		return ResponseEntity.ok(new GenericResponse<>(
-				salesForceService.exportarRegras(grupoRegra, authentication)
-			));
-	}
 
 }
