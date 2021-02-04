@@ -35,6 +35,8 @@ public class ArquivoProntoDTO {
 	private String historico;
 
 	private String erpContabil;
+	
+	private String codigoErp;
 
 	private String lote;
 	

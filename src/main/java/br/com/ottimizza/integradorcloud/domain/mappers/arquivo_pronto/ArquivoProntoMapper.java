@@ -20,6 +20,7 @@ public class ArquivoProntoMapper {
 				.dataMovimento(arquivo.getDataMovimento())
 				.lote(arquivo.getLote())
 				.erpContabil(arquivo.getErpContabil())
+				.codigoErp(arquivo.getCodigoErp())
 				.tipoLancamento(arquivo.getTipoLancamento())
 				.tipoMovimento(arquivo.getTipoMovimento())
 			.build();
@@ -37,6 +38,7 @@ public class ArquivoProntoMapper {
 				.dataMovimento(arquivo.getDataMovimento())
 				.lote(arquivo.getLote())
 				.erpContabil(arquivo.getErpContabil())
+				.codigoErp(arquivo.getCodigoErp())
 				.tipoLancamento(arquivo.getTipoLancamento())
 				.tipoMovimento(arquivo.getTipoMovimento())
 			.build();

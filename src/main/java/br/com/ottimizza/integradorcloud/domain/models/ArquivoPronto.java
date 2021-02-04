@@ -59,6 +59,9 @@ public class ArquivoPronto {
 	@Column(name = "erp_contabil")
 	private String erpContabil;
 	
+	@Column(name = "codigo_erp")
+	private String codigoErp;
+	
 	@Column(name = "lote")
 	private String lote;
 

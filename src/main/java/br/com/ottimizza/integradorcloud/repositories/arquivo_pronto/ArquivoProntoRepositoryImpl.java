@@ -42,7 +42,10 @@ public class ArquivoProntoRepositoryImpl implements ArquivoProntoRepositoryCusto
 			sql.append("AND ap.tipo_movimento ILIKE('%:tipoMovimento%') ");
 		
 		if(filtro.getErpContabil() != null && !filtro.getErpContabil().equals(""))
-			sql.append("AND ap.erp_contabil ILIKE('%:erpContabil%' ");
+			sql.append("AND ap.erp_contabil ILIKE('%:erpContabil%') ");
+		
+		if(filtro.getCodigoErp() != null && !filtro.getCodigoErp().equals(""))
+			sql.append("AND ap.codigo_erp ILIKE('%:codigoErp%') ");
 		
 		if(filtro.getLote() != null && !filtro.getLote().equals(""))
 			sql.append("AND ap.lote ILIKE('%:lote%') ");
@@ -71,6 +74,9 @@ public class ArquivoProntoRepositoryImpl implements ArquivoProntoRepositoryCusto
 		
 		if(filtro.getErpContabil() != null && !filtro.getErpContabil().equals(""))
 			query.setParameter("erpContabil", filtro.getErpContabil());
+		
+		if(filtro.getCodigoErp() != null && !filtro.getCodigoErp().equals(""))
+			query.setParameter("codigoErp", filtro.getCodigoErp());
 		
 		if(filtro.getLote() != null && !filtro.getLote().equals(""))
 			query.setParameter("lote", filtro.getLote());
