@@ -49,6 +49,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         List<Predicate> predicates = predicates(regras, cb, root);
         predicates.add(0, cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
         predicates.add(1, cb.equal(root.get("ativo"), true));
+        predicates.add(2, cb.isNull(root.get("regraId")));
 
         query.select(cb.count(root));
         query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
@@ -64,6 +65,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
         List<Predicate> predicates = predicates(regras, cb, root);
         predicates.add(0, cb.equal(root.get("cnpjEmpresa"), cnpjEmpresa));
         predicates.add(1, cb.equal(root.get("ativo"), true));
+        predicates.add(2, cb.isNull(root.get("regraId")));
 
         query.select(root);
         query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
