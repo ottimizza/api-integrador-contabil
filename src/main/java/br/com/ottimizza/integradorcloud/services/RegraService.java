@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,19 +10,15 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
-import org.h2.util.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.ottimizza.integradorcloud.client.EmailSenderClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
@@ -46,6 +41,7 @@ import br.com.ottimizza.integradorcloud.repositories.grupo_regra_ignorada.GrupoR
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
 import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
 import br.com.ottimizza.integradorcloud.utils.DateUtils;
+import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 
 @Service // @formatter:off
 public class RegraService {
@@ -100,7 +96,7 @@ public class RegraService {
     }
 
     public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, Short sugerir, String regraSugerida, OAuth2Authentication authentication) throws Exception {
-    	UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+    	UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
     	Empresa empresa = empresaRepository.buscaEmpresa(grupoRegraDTO.getCnpjEmpresa(), userInfo.getOrganization().getId()).orElse(null);
     	List<String> campos = new ArrayList();
     	BigInteger regraId = null;
@@ -352,7 +348,7 @@ public class RegraService {
     }
     
     public GrupoRegraIgnoradaDTO ignorarSugestaoRegra(GrupoRegraIgnoradaDTO grupoRegra, OAuth2Authentication authentication) throws Exception {
-    	UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+    	UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
     	grupoRegra.setCnpjContabilidade(userInfo.getOrganization().getCnpj());
     	GrupoRegraIgnorada regraIgnorada = grupoRegraIgnoradaRepository.save(GrupoRegraMapper.ignoradaFromDto(grupoRegra));
     	return GrupoRegraMapper.ignoradaFromEntity(regraIgnorada);
@@ -571,11 +567,5 @@ public class RegraService {
     	return contagemRegras;
     }
     
-    private String getAuthorizationHeader(OAuth2Authentication authentication) {
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
-        return MessageFormat.format("Bearer {0}", accessToken);
-    }
-
 }
 

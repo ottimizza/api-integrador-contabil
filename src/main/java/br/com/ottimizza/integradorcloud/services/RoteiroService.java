@@ -1,24 +1,14 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
-import java.security.Principal;
-import java.text.MessageFormat;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
-import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.ArquivoS3DTO;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,9 +18,9 @@ import br.com.ottimizza.integradorcloud.client.SalesForceClient;
 import br.com.ottimizza.integradorcloud.client.StorageS3Client;
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.ArquivoS3DTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.RoteiroDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.sfempresa.SFEmpresa;
-import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.roteiro.RoteiroMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
@@ -38,6 +28,7 @@ import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
 import br.com.ottimizza.integradorcloud.repositories.ContabilidadeRepository;
 import br.com.ottimizza.integradorcloud.repositories.empresa.EmpresaRepository;
 import br.com.ottimizza.integradorcloud.repositories.roteiro.RoteiroRepository;
+import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 
 @Service
 public class RoteiroService {
@@ -91,7 +82,7 @@ public class RoteiroService {
 				.Contabilidade_Id(contabilidade.getSalesForceId())
 			.build();
 		String empresaCrmString = mapper.writeValueAsString(empresaCrm);
-		defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, authorization);
+		ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, authorization);
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
 	
@@ -123,28 +114,6 @@ public class RoteiroService {
 		return "Roteiro removido com sucesso!";
 	}
 
-	private String getAuthorizationHeader(OAuth2Authentication authentication) {
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
-        return MessageFormat.format("Bearer {0}", accessToken);
-    }
-	
-	private String defaultPatch(String url, String body, String authentication) {
-    	RestTemplate template = new RestTemplate();
-    	
-    	HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-    	requestFactory.setConnectTimeout(15000);
-    	requestFactory.setReadTimeout(15000);
-    	
-    	template.setRequestFactory(requestFactory);
-    	
-    	HttpHeaders headers =  new HttpHeaders();
-    	headers.setContentType(MediaType.APPLICATION_JSON);
-    	headers.set("Authorization", authentication);
-    	
-    	return template.patchForObject(url, new HttpEntity<String>(body, headers), String.class);
-    }
-	
 	private boolean validaRoteiro(Roteiro roteiro) throws Exception {
 		if(roteiro.getStatus() == 1) {
 			if(roteiro.getCnpjContabilidade() == null || roteiro.getCnpjContabilidade().equals(""))

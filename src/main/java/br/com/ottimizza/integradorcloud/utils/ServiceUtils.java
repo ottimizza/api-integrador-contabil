@@ -17,7 +17,7 @@ public class ServiceUtils {
         return MessageFormat.format("Bearer {0}", accessToken);
     }
 	
-	private static String defaultPatch(String url, String body, String authentication) {
+	public static String defaultPatch(String url, String body, String authentication) {
     	RestTemplate template = new RestTemplate();
     	
     	HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
