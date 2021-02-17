@@ -12,6 +12,7 @@ import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.stereotype.Service;
 
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
@@ -20,6 +21,7 @@ import br.com.ottimizza.integradorcloud.domain.mappers.BancoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Banco;
 import br.com.ottimizza.integradorcloud.repositories.BancoRepository;
 
+@Service
 public class BancoService {
 
 	@Inject
