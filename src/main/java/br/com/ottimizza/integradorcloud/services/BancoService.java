@@ -1,8 +1,11 @@
 package br.com.ottimizza.integradorcloud.services;
 
+import java.math.BigInteger;
+
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.json.JSONObject;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
@@ -38,6 +41,19 @@ public class BancoService {
 		return bancoRepository.findAll(example, PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize())).map(BancoMapper::fromEntity);
 		
 	}
+
+	public JSONObject remover(BigInteger id) throws Exception {
+		JSONObject response = new JSONObject();
+		try {
+			bancoRepository.deleteById(id);
+			response.put("status", "Success");
+			response.put("message", "Excluído com sucesso!");
+		} catch (Exception e) {
+			response.put("status", "Error");
+			response.put("message", "Houve um problema ao excluir!");
+			return response;
+		}
+		return response;
+	}
 	
-    
 }
