@@ -5,6 +5,8 @@ import java.math.BigInteger;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,4 +60,14 @@ public class LivroCaixaController {
 				service.deletaPorId(id)
 			));
 	}
+	
+	@DeleteMapping("/nao_integrado/{id}")
+	public ResponseEntity<?> deletaNaoIntegradoLC(@PathVariable BigInteger id) throws Exception {
+		JSONObject response = service.deletaNaoIntegrado(id);
+		
+		if (response.get("status") == "Unauthorized") return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		return (response.get("status") == "Success") ? ResponseEntity.ok(response.toString()) : ResponseEntity.badRequest().build();
+	}
+	
 }
