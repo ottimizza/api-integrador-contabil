@@ -58,4 +58,14 @@ public class LivroCaixaController {
 				service.deletaPorId(id)
 			));
 	}
+	
+	@GetMapping("/sugerir/{id}")
+	public ResponseEntity<?> sugerirRegra(@PathVariable("id") BigInteger livroCaixaId,
+										  @Valid String cnpjContabilidade,
+										  @Valid String cnpjEmpresa ) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<>(
+				service.sugerirRegra(livroCaixaId, cnpjContabilidade, cnpjEmpresa)
+			));
+	}
+	
 }
