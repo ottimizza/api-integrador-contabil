@@ -4,11 +4,9 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
-import javax.print.attribute.standard.DateTimeAtCompleted;
 
 import org.json.JSONObject;
 import org.springframework.data.domain.Page;
