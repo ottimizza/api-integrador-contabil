@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.BuscaPorCnpjsDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.livro_caixa.LivroCaixaDTO;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
@@ -76,5 +77,10 @@ public class LivroCaixaController {
 		return (response != null) ? ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(response)) : ResponseEntity.badRequest().build();
 	}
 	
+	@GetMapping("/ultimo_lanc")
+	public ResponseEntity<LivroCaixaDTO> buscaUltimoLancamento(@Valid BuscaPorCnpjsDTO filtro) throws Exception {
+		return ResponseEntity.ok(service.buscaUltimoLancamentoContabilidadeEmpresa(filtro));
+		
+	}
 	
 }

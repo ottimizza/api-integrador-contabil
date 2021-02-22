@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.BuscaPorCnpjsDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.livro_caixa.LivroCaixaDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.livro_caixa.LivroCaixaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
@@ -76,6 +77,12 @@ public class LivroCaixaService {
 		dto.setIntegradoContabilidade(false);
 		return LivroCaixaMapper.fromEntity(repository.save(LivroCaixaMapper.fromDTO(dto)));
 	
+	}
+
+	public LivroCaixaDTO buscaUltimoLancamentoContabilidadeEmpresa(BuscaPorCnpjsDTO filtro) {
+		return LivroCaixaMapper.fromEntity(
+				repository.findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(filtro.getCnpjContabilidade(), filtro.getCnpjEmpresa())
+				);
 	}
 	
 	

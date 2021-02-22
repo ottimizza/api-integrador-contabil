@@ -10,4 +10,6 @@ import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 @Repository
 public interface LivroCaixaRepository extends JpaRepository<LivroCaixa, BigInteger>, LivroCaixaRepositoryCustom{
 
+	LivroCaixa findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(String cnpjContabilidade, String cnpjEmpresa);
+
 }
