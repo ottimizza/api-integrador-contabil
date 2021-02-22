@@ -70,4 +70,11 @@ public class LivroCaixaController {
 		return (response.get("status") == "Success") ? ResponseEntity.ok(response.toString()) : ResponseEntity.badRequest().build();
 	}
 	
+	@PostMapping("/clonar/{id}")
+	public ResponseEntity<?> clonarLivroCaixa(@PathVariable BigInteger id) throws Exception {
+		LivroCaixaDTO response = service.clonarLivroCaixa(id);
+		return (response != null) ? ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(response)) : ResponseEntity.badRequest().build();
+	}
+	
+	
 }

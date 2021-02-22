@@ -1,6 +1,9 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -61,6 +64,18 @@ public class LivroCaixaService {
 			return response;
 		}
 		return response;
+	}
+
+	public LivroCaixaDTO clonarLivroCaixa(BigInteger id) {
+		LivroCaixa livroCaixa = repository.findById(id).orElse(null);
+		if (livroCaixa == null) return null;
+		
+		LivroCaixaDTO dto = LivroCaixaMapper.fromEntity(livroCaixa);
+		dto.setDataCriacao(LocalDateTime.now(ZoneId.of("Brazil/East")));
+		dto.setDataMovimento(LocalDate.now(ZoneId.of("Brazil/East")));
+		dto.setIntegradoContabilidade(false);
+		return LivroCaixaMapper.fromEntity(repository.save(LivroCaixaMapper.fromDTO(dto)));
+	
 	}
 	
 	
