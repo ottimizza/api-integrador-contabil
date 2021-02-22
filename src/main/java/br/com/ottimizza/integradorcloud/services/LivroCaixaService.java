@@ -80,9 +80,10 @@ public class LivroCaixaService {
 	}
 
 	public LivroCaixaDTO buscaUltimoLancamentoContabilidadeEmpresa(BuscaPorCnpjsDTO filtro) {
-		return LivroCaixaMapper.fromEntity(
-				repository.findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(filtro.getCnpjContabilidade(), filtro.getCnpjEmpresa())
-				);
+//		return LivroCaixaMapper.fromEntity(
+//				repository.findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(filtro.getCnpjContabilidade(), filtro.getCnpjEmpresa())
+//				);
+		return null;
 	}
 	
 	
