@@ -71,11 +71,9 @@ public class LivroCaixaService {
 		LivroCaixa livroCaixa = repository.findById(id).orElse(null);
 		if (livroCaixa == null) return null;
 		
-		LivroCaixaDTO dto = LivroCaixaMapper.fromEntity(livroCaixa);
-		dto.setDataCriacao(LocalDateTime.now(ZoneId.of("Brazil/East")));
-		dto.setDataMovimento(LocalDate.now(ZoneId.of("Brazil/East")));
-		dto.setIntegradoContabilidade(false);
-		return LivroCaixaMapper.fromEntity(repository.save(LivroCaixaMapper.fromDTO(dto)));
+		LivroCaixa novo = new LivroCaixa(livroCaixa);
+		novo.setIntegradoContabilidade(false);
+		return LivroCaixaMapper.fromEntity(repository.save(novo));
 	
 	}
 
