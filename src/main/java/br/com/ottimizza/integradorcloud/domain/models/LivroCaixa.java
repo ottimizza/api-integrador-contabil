@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -110,7 +111,7 @@ public class LivroCaixa implements Serializable {
 	@PreUpdate
 	public void prePersist() {
 		if(this.dataCriacao == null)
-			this.dataCriacao = LocalDateTime.now();
+			this.dataCriacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
 		
 		if(this.status == 0)
 			this.valorFinal = this.valorOriginal;

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.persistence.*;
 
@@ -75,8 +76,8 @@ public class Roteiro implements Serializable {
 	public void prePersist() {
 		if(this.dataCriacao == null) {
 			this.checklist = false;
-			this.dataCriacao = LocalDateTime.now();
+			this.dataCriacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
 		}
-		this.dataAtualizacao = LocalDateTime.now();
+		this.dataAtualizacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
 	}
 }
