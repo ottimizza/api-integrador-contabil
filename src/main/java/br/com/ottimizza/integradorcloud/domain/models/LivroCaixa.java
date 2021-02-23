@@ -145,11 +145,12 @@ public class LivroCaixa implements Serializable {
 		this.complemento			= livroCaixa.getComplemento();
 		this.linkArquivo			= livroCaixa.getLinkArquivo();
 		this.origem					= livroCaixa.getOrigem();
-		this.integradoContabilidade	= livroCaixa.getIntegradoContabilidade();
 		this.status					= livroCaixa.getStatus();
 		this.textoDocumento			= livroCaixa.getTextoDocumento();
 		this.termos					= livroCaixa.getTermos();
+		
 		this.criadoPor				= livroCaixa.getCriadoPor();
+		this.integradoContabilidade	= false;
 		this.dataCriacao			= LocalDateTime.now(ZoneId.of("Brazil/East"));
 	}
 

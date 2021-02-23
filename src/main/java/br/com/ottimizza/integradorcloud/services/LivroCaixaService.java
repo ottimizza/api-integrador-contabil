@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -67,12 +68,12 @@ public class LivroCaixaService {
 		return response;
 	}
 
-	public LivroCaixaDTO clonarLivroCaixa(BigInteger id) {
+	public LivroCaixaDTO clonarLivroCaixa(BigInteger id, Principal principal) {
 		LivroCaixa livroCaixa = repository.findById(id).orElse(null);
 		if (livroCaixa == null) return null;
 		
 		LivroCaixa novo = new LivroCaixa(livroCaixa);
-		novo.setIntegradoContabilidade(false);
+		novo.setCriadoPor(principal.getName());
 		return LivroCaixaMapper.fromEntity(repository.save(novo));
 	
 	}
