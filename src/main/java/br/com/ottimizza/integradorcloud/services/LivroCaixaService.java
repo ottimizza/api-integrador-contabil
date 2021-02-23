@@ -19,6 +19,7 @@ import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.livro_caixa.LivroCaixaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import br.com.ottimizza.integradorcloud.repositories.livro_caixa.LivroCaixaRepository;
+import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 
 @Service
 public class LivroCaixaService {
@@ -73,11 +74,12 @@ public class LivroCaixaService {
 	public LivroCaixaDTO clonarLivroCaixa(BigInteger id, OAuth2Authentication authentication) {
 		LivroCaixa livroCaixa = repository.findById(id).orElse(null);
 		if (livroCaixa == null) return null;
-		
+
 		System.out.println(">>> A"+authentication.getName());
 		System.out.println(">>> B"+authentication.getDetails());
-//		UserDTO userDto = 
-		System.out.println(">>> C"+oAuthClient.getUserInfo(authentication.toString()).toString());
+
+		UserDTO userInfo = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+		System.out.println(">>> C"+userInfo);
 
 		LivroCaixa novo = new LivroCaixa(livroCaixa);
 		novo.setCriadoPor(null);
