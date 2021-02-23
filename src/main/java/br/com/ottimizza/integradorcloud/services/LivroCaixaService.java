@@ -1,10 +1,14 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
+import org.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +56,39 @@ public class LivroCaixaService {
 	public String deletaPorId(BigInteger id) throws Exception {
 		repository.deleteById(id);
 		return "Livro Caixa removido com sucesso!";
+	}
+
+	public JSONObject deletaNaoIntegrado(BigInteger id) {
+		JSONObject response = new JSONObject();
+		LivroCaixa livroCaixa = repository.findById(id).orElse(null);
+		if (!livroCaixa.getIntegradoContabilidade()) {
+			try {
+				repository.deleteById(id);
+				response.put("status", "Success");
+				response.put("message", "Excluído com sucesso!");
+			} catch (Exception e) {
+				response.put("status", "Error");
+				response.put("message", "Houve um problema ao excluir!");
+				return response;
+			}
+		} else {
+			response.put("status", "Unauthorized");
+			response.put("message", "Lançamento ja integrado não pode ser excluido!");
+			return response;
+		}
+		return response;
+	}
+
+	public LivroCaixaDTO clonarLivroCaixa(BigInteger id) {
+		LivroCaixa livroCaixa = repository.findById(id).orElse(null);
+		if (livroCaixa == null) return null;
+		
+		LivroCaixaDTO dto = LivroCaixaMapper.fromEntity(livroCaixa);
+		dto.setDataCriacao(LocalDateTime.now(ZoneId.of("Brazil/East")));
+		dto.setDataMovimento(LocalDate.now(ZoneId.of("Brazil/East")));
+		dto.setIntegradoContabilidade(false);
+		return LivroCaixaMapper.fromEntity(repository.save(LivroCaixaMapper.fromDTO(dto)));
+	
 	}
 	
 	

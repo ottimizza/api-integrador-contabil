@@ -113,10 +113,16 @@ public class LivroCaixa implements Serializable {
 		if(this.dataCriacao == null)
 			this.dataCriacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
 		
+		if(this.dataMovimento == null)
+			this.status = 0;
+		else 
+			this.status = 1;
+			
 		if(this.status == 0)
 			this.valorFinal = this.valorOriginal;
 		else
 			this.valorFinal = this.valorPago;
+				
 	}
 	
 	public static class Status  {
