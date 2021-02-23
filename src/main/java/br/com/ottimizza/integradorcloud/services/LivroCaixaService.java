@@ -2,9 +2,6 @@ package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
 import java.security.Principal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;

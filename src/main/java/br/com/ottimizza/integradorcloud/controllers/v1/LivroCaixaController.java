@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.controllers.v1;
 
 import java.math.BigInteger;
+import java.security.Principal;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -72,8 +73,8 @@ public class LivroCaixaController {
 	}
 	
 	@PostMapping("/clonar/{id}")
-	public ResponseEntity<?> clonarLivroCaixa(@PathVariable BigInteger id) throws Exception {
-		LivroCaixaDTO response = service.clonarLivroCaixa(id);
+	public ResponseEntity<?> clonarLivroCaixa(@PathVariable BigInteger id, Principal principal) {
+		LivroCaixaDTO response = service.clonarLivroCaixa(id, principal);
 		return (response != null) ? ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(response)) : ResponseEntity.badRequest().build();
 	}
 	
