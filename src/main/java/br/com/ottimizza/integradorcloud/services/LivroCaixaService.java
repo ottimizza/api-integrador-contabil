@@ -68,7 +68,7 @@ public class LivroCaixaService {
 	public LivroCaixaDTO clonarLivroCaixa(BigInteger id, Principal principal) {
 		LivroCaixa livroCaixa = repository.findById(id).orElse(null);
 		if (livroCaixa == null) return null;
-		
+		System.out.println(">>> X "+principal.toString());
 		LivroCaixa novo = new LivroCaixa(livroCaixa);
 		novo.setCriadoPor(principal.getName());
 		return LivroCaixaMapper.fromEntity(repository.save(novo));
