@@ -46,6 +46,7 @@ storage-s3:
   service:
     name: storages3-service
     url: ${STORAGE_URL:https://stage-s3-storage.herokuapp.com}
+    bucket: ${STORAGE_BUCKET:staging-imagens}
 
 email-sender:
   service:

@@ -63,6 +63,15 @@ public class LivroCaixaController {
 			));
 	}
 	
+	@GetMapping("/sugerir/{id}")
+	public ResponseEntity<?> sugerirRegra(@PathVariable("id") BigInteger livroCaixaId,
+										  @Valid String cnpjContabilidade,
+										  @Valid String cnpjEmpresa ) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<>(
+				service.sugerirRegra(livroCaixaId, cnpjContabilidade, cnpjEmpresa)
+			));
+	}
+	
 	@DeleteMapping("/nao_integrado/{id}")
 	public ResponseEntity<?> deletaNaoIntegradoLC(@PathVariable BigInteger id) throws Exception {
 		JSONObject response = service.deletaNaoIntegrado(id);

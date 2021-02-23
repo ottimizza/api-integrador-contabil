@@ -13,9 +13,12 @@ import org.springframework.stereotype.Service;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.BuscaPorCnpjsDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.livro_caixa.LivroCaixaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.livro_caixa.LivroCaixaDTO;
+import br.com.ottimizza.integradorcloud.domain.mappers.grupo_regra.GrupoRegraMapper;
 import br.com.ottimizza.integradorcloud.domain.mappers.livro_caixa.LivroCaixaMapper;
+import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import br.com.ottimizza.integradorcloud.repositories.livro_caixa.LivroCaixaRepository;
 import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
@@ -42,6 +45,16 @@ public class LivroCaixaService {
 	
 	public Page<LivroCaixa> buscaComFiltro(LivroCaixaDTO filtro, PageCriteria criteria) throws Exception {
 		return repository.buscaComFiltro(filtro, criteria);
+	}
+	
+	public GrupoRegraDTO sugerirRegra(BigInteger livroCaixaId, String cnpjContabilidade, String cnpjEmpresa) throws Exception {
+		try {
+			GrupoRegra regraSugerida = repository.sugerirRegra(livroCaixaId, cnpjContabilidade, cnpjEmpresa);
+			return GrupoRegraMapper.fromEntity(regraSugerida);
+		}
+		catch(Exception ex) {
+			return null;
+		}
 	}
 	
 	public String deletaPorId(BigInteger id) throws Exception {
