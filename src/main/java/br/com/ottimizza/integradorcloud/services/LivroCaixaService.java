@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
-import java.security.Principal;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -75,14 +74,9 @@ public class LivroCaixaService {
 		LivroCaixa livroCaixa = repository.findById(id).orElse(null);
 		if (livroCaixa == null) return null;
 
-		System.out.println(">>> A"+authentication.getName());
-		System.out.println(">>> B"+authentication.getDetails());
-
 		UserDTO userInfo = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
-		System.out.println(">>> C"+userInfo);
-
-		LivroCaixa novo = new LivroCaixa(livroCaixa);
-		novo.setCriadoPor(null);
+		LivroCaixa novo	 = new LivroCaixa(livroCaixa);
+		novo.setCriadoPor(userInfo.getFirstName());
 		return LivroCaixaMapper.fromEntity(repository.save(novo));
 	
 	}

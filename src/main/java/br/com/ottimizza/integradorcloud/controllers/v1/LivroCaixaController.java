@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.controllers.v1;
 
 import java.math.BigInteger;
-import java.security.Principal;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
