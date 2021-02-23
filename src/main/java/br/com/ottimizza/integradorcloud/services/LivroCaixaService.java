@@ -8,11 +8,14 @@ import javax.persistence.NoResultException;
 
 import org.json.JSONObject;
 import org.springframework.data.domain.Page;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 
+import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.BuscaPorCnpjsDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.livro_caixa.LivroCaixaDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.livro_caixa.LivroCaixaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import br.com.ottimizza.integradorcloud.repositories.livro_caixa.LivroCaixaRepository;
@@ -23,6 +26,8 @@ public class LivroCaixaService {
 	@Inject
 	LivroCaixaRepository repository;
 	
+	@Inject
+	OAuthClient oAuthClient; 
 	
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa) throws Exception {
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
@@ -65,12 +70,17 @@ public class LivroCaixaService {
 		return response;
 	}
 
-	public LivroCaixaDTO clonarLivroCaixa(BigInteger id, Principal principal) {
+	public LivroCaixaDTO clonarLivroCaixa(BigInteger id, OAuth2Authentication authentication) {
 		LivroCaixa livroCaixa = repository.findById(id).orElse(null);
 		if (livroCaixa == null) return null;
-		System.out.println(">>> X "+principal.toString());
+		
+		System.out.println(">>> A"+authentication.getName());
+		System.out.println(">>> B"+authentication.getDetails());
+//		UserDTO userDto = 
+		System.out.println(">>> C"+oAuthClient.getUserInfo(authentication.toString()).toString());
+
 		LivroCaixa novo = new LivroCaixa(livroCaixa);
-		novo.setCriadoPor(principal.getName());
+		novo.setCriadoPor(null);
 		return LivroCaixaMapper.fromEntity(repository.save(novo));
 	
 	}

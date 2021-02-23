@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,8 +74,8 @@ public class LivroCaixaController {
 	}
 	
 	@PostMapping("/clonar/{id}")
-	public ResponseEntity<?> clonarLivroCaixa(@PathVariable BigInteger id, Principal principal) {
-		LivroCaixaDTO response = service.clonarLivroCaixa(id, principal);
+	public ResponseEntity<?> clonarLivroCaixa(@PathVariable BigInteger id, OAuth2Authentication authentication) {
+		LivroCaixaDTO response = service.clonarLivroCaixa(id, authentication);
 		return (response != null) ? ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(response)) : ResponseEntity.badRequest().build();
 	}
 	
