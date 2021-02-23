@@ -1,18 +1,19 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
 import org.json.JSONObject;
 import org.springframework.data.domain.Page;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 
+import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.BuscaPorCnpjsDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.livro_caixa.LivroCaixaDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.grupo_regra.GrupoRegraMapper;
@@ -20,6 +21,7 @@ import br.com.ottimizza.integradorcloud.domain.mappers.livro_caixa.LivroCaixaMap
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import br.com.ottimizza.integradorcloud.repositories.livro_caixa.LivroCaixaRepository;
+import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 
 @Service
 public class LivroCaixaService {
@@ -27,6 +29,8 @@ public class LivroCaixaService {
 	@Inject
 	LivroCaixaRepository repository;
 	
+	@Inject
+	OAuthClient oAuthClient; 
 	
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa) throws Exception {
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
@@ -79,16 +83,21 @@ public class LivroCaixaService {
 		return response;
 	}
 
-	public LivroCaixaDTO clonarLivroCaixa(BigInteger id) {
+	public LivroCaixaDTO clonarLivroCaixa(BigInteger id, OAuth2Authentication authentication) {
 		LivroCaixa livroCaixa = repository.findById(id).orElse(null);
 		if (livroCaixa == null) return null;
-		
-		LivroCaixaDTO dto = LivroCaixaMapper.fromEntity(livroCaixa);
-		dto.setDataCriacao(LocalDateTime.now(ZoneId.of("Brazil/East")));
-		dto.setDataMovimento(LocalDate.now(ZoneId.of("Brazil/East")));
-		dto.setIntegradoContabilidade(false);
-		return LivroCaixaMapper.fromEntity(repository.save(LivroCaixaMapper.fromDTO(dto)));
+
+		UserDTO userInfo = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+		LivroCaixa novo	 = new LivroCaixa(livroCaixa);
+		novo.setCriadoPor(userInfo.getFirstName());
+		return LivroCaixaMapper.fromEntity(repository.save(novo));
 	
+	}
+
+	public LivroCaixaDTO buscaUltimoLancamentoContabilidadeEmpresa(BuscaPorCnpjsDTO filtro) {
+		return LivroCaixaMapper.fromEntity(
+				repository.findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(filtro.getCnpjContabilidade(), filtro.getCnpjEmpresa())
+				);
 	}
 	
 	

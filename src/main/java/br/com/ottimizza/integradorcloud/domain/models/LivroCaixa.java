@@ -128,7 +128,30 @@ public class LivroCaixa implements Serializable {
 	public static class Status  {
         public static final Short ABERTO = 0;
         public static final Short PAGO = 1;
-	}	
+	}
 
-	
+	public LivroCaixa(LivroCaixa livroCaixa) {
+		this.cnpjContabilidade		= livroCaixa.getCnpjContabilidade();
+		this.cnpjEmpresa			= livroCaixa.getCnpjEmpresa();
+		this.dataMovimento			= livroCaixa.getDataMovimento();
+		this.dataPrevisaoPagamento	= livroCaixa.getDataPrevisaoPagamento();
+		this.valorOriginal			= livroCaixa.getValorOriginal();
+		this.valorPago				= livroCaixa.getValorPago();
+		this.valorFinal				= livroCaixa.getValorFinal();
+		this.descricao				= livroCaixa.getDescricao();
+		this.bancoId				= livroCaixa.getBancoId();
+		this.categoriaId			= livroCaixa.getCategoriaId();
+		this.tipoMovimento			= livroCaixa.getTipoMovimento();
+		this.complemento			= livroCaixa.getComplemento();
+		this.linkArquivo			= livroCaixa.getLinkArquivo();
+		this.origem					= livroCaixa.getOrigem();
+		this.status					= livroCaixa.getStatus();
+		this.textoDocumento			= livroCaixa.getTextoDocumento();
+		this.termos					= livroCaixa.getTermos();
+		
+		this.criadoPor				= livroCaixa.getCriadoPor();
+		this.integradoContabilidade	= false;
+		this.dataCriacao			= LocalDateTime.now(ZoneId.of("Brazil/East"));
+	}
+
 }

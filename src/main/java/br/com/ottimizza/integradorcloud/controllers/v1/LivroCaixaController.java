@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.BuscaPorCnpjsDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.livro_caixa.LivroCaixaDTO;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
@@ -80,10 +82,15 @@ public class LivroCaixaController {
 	}
 	
 	@PostMapping("/clonar/{id}")
-	public ResponseEntity<?> clonarLivroCaixa(@PathVariable BigInteger id) throws Exception {
-		LivroCaixaDTO response = service.clonarLivroCaixa(id);
+	public ResponseEntity<?> clonarLivroCaixa(@PathVariable BigInteger id, OAuth2Authentication authentication) {
+		LivroCaixaDTO response = service.clonarLivroCaixa(id, authentication);
 		return (response != null) ? ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(response)) : ResponseEntity.badRequest().build();
 	}
 	
+	@GetMapping("/ultimo_lanc")
+	public ResponseEntity<LivroCaixaDTO> buscaUltimoLancamento(@Valid BuscaPorCnpjsDTO filtro) throws Exception {
+		return ResponseEntity.ok(service.buscaUltimoLancamentoContabilidadeEmpresa(filtro));
+		
+	}
 	
 }

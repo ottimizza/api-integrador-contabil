@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.client;
 
 import java.math.BigInteger;
-import java.security.Principal;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpEntity;
