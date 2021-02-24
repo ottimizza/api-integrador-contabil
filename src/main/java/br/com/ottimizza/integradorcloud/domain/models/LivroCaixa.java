@@ -107,6 +107,9 @@ public class LivroCaixa implements Serializable {
 	@Column(name = "data_criacao")
 	private LocalDateTime dataCriacao;
 	
+	@Column(name = "url_arquivo")
+	private String urlArquivo;
+
 	@PrePersist
 	@PreUpdate
 	public void prePersist() {

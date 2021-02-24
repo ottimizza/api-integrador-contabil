@@ -15,9 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.BuscaPorCnpjsDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.livro_caixa.LivroCaixaDTO;
@@ -91,6 +95,14 @@ public class LivroCaixaController {
 	public ResponseEntity<LivroCaixaDTO> buscaUltimoLancamento(@Valid BuscaPorCnpjsDTO filtro) throws Exception {
 		return ResponseEntity.ok(service.buscaUltimoLancamentoContabilidadeEmpresa(filtro));
 		
+	}
+	
+	@PostMapping("/{idLivroCaixa}")
+	ResponseEntity<?> uploadPlanilha(@PathVariable("idLivroCaixa") BigInteger idLivroCaixa,
+									 @Valid SalvaArquivoRequest salvaArquivo,
+									 @RequestParam("file") MultipartFile arquivo,
+									 @RequestHeader("Authorization") String authorization) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<>(service.uploadFile(idLivroCaixa, salvaArquivo, arquivo, authorization)));
 	}
 	
 }

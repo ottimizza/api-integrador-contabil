@@ -66,6 +66,8 @@ public class LivroCaixaDTO implements Serializable {
 	
 	private String dataString;
 	
+	private String urlArquivo;
+	
 	public LivroCaixa patch(LivroCaixa livroCaixa) {
 		
 		if(complemento != null && !complemento.equals(""))
