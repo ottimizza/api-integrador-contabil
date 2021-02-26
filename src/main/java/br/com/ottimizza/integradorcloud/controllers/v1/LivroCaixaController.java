@@ -98,7 +98,7 @@ public class LivroCaixaController {
 	}
 	
 	@PostMapping("/{idLivroCaixa}")
-	ResponseEntity<?> uploadPlanilha(@PathVariable("idLivroCaixa") BigInteger idLivroCaixa,
+	ResponseEntity<?> uploadImagem(@PathVariable("idLivroCaixa") BigInteger idLivroCaixa,
 									 @Valid SalvaArquivoRequest salvaArquivo,
 									 @RequestParam("file") MultipartFile arquivo,
 									 @RequestHeader("Authorization") String authorization) throws Exception {

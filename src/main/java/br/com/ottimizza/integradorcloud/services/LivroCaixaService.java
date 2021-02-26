@@ -124,6 +124,5 @@ public class LivroCaixaService {
 		return LivroCaixaMapper.fromEntity(repository.save(lc));
 	}
 	
-	
 
 }
