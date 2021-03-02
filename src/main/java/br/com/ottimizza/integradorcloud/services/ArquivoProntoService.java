@@ -4,8 +4,8 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import br.com.ottimizza.integradorcloud.domain.dtos.aquivo_pronto.ArquivoProntoDTO;
-import br.com.ottimizza.integradorcloud.domain.mappers.arquivo_pronto.ArquivoProntoMapper;
+import br.com.ottimizza.integradorcloud.domain.dtos.ArquivoProntoDTO;
+import br.com.ottimizza.integradorcloud.domain.mappers.ArquivoProntoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.ArquivoPronto;
 import br.com.ottimizza.integradorcloud.repositories.arquivo_pronto.ArquivoProntoRepository;
 

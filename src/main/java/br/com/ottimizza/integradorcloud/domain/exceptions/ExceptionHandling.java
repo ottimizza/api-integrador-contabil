@@ -1,22 +1,20 @@
 package br.com.ottimizza.integradorcloud.domain.exceptions;
 
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
-import br.com.ottimizza.integradorcloud.domain.responses.ErrorResponse;
-import feign.FeignException;
-
-import org.springframework.http.HttpStatus;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.util.Locale;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import br.com.ottimizza.integradorcloud.domain.responses.ErrorResponse;
+import feign.FeignException;
 
 @ControllerAdvice
 public class ExceptionHandling {

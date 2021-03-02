@@ -1,13 +1,11 @@
 package br.com.ottimizza.integradorcloud.domain.mappers;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import br.com.ottimizza.integradorcloud.domain.dtos.empresa.EmpresaDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.sfempresa.SFEmpresa;
-import br.com.ottimizza.integradorcloud.domain.dtos.sfempresa.SFEmpresa.SFEmpresaBuilder;
+import br.com.ottimizza.integradorcloud.domain.dtos.EmpresaDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 
 /** @formatter:off

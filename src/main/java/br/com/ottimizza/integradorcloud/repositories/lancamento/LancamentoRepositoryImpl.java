@@ -24,11 +24,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 
-import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
+import br.com.ottimizza.integradorcloud.repositories.RegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
-import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
 
 public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 

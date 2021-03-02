@@ -38,26 +38,26 @@ import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLan
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.PorcentagemLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.TotalLanvamentosArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.depara.DeParaContaDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.email.EmailDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.organization.OrganizationDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
-import br.com.ottimizza.integradorcloud.domain.exceptions.lancamento.LancamentoNaoEncontradoException;
+import br.com.ottimizza.integradorcloud.domain.dtos.ArquivoDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.DeParaContaDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.EmailDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.LancamentoDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.OrganizationDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
+import br.com.ottimizza.integradorcloud.domain.exceptions.LancamentoNaoEncontradoException;
 import br.com.ottimizza.integradorcloud.domain.mappers.ArquivoMapper;
-import br.com.ottimizza.integradorcloud.domain.mappers.lancamento.LancamentoMapper;
+import br.com.ottimizza.integradorcloud.domain.mappers.LancamentoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 import br.com.ottimizza.integradorcloud.domain.models.KPILancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
-import br.com.ottimizza.integradorcloud.repositories.arquivo.ArquivoRepository;
-import br.com.ottimizza.integradorcloud.repositories.empresa.EmpresaRepository;
+import br.com.ottimizza.integradorcloud.repositories.ArquivoRepository;
+import br.com.ottimizza.integradorcloud.repositories.EmpresaRepository;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
-import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
+import br.com.ottimizza.integradorcloud.repositories.RegraRepository;
 
 @Service // @formatter:off
 public class LancamentoService {

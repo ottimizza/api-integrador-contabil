@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.HistoricoDTO;
-import br.com.ottimizza.integradorcloud.domain.mappers.historico.HistoricoMapper;
+import br.com.ottimizza.integradorcloud.domain.mappers.HistoricoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Historico;
 import br.com.ottimizza.integradorcloud.repositories.HistoricoRepository;
 

@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.client;
 
 import java.math.BigInteger;
-import java.security.Principal;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpEntity;
@@ -14,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import br.com.ottimizza.integradorcloud.domain.dtos.organization.OrganizationDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.OrganizationDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 

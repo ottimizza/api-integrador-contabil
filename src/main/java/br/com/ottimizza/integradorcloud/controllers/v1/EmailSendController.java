@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.client.EmailSenderClient;
-import br.com.ottimizza.integradorcloud.domain.dtos.email.EmailDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.EmailDTO;
 
 @RestController
 @RequestMapping("/api/v1/email")

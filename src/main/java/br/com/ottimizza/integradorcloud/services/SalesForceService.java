@@ -9,15 +9,15 @@ import org.springframework.stereotype.Service;
 
 import br.com.ottimizza.integradorcloud.client.SalesForceClient;
 import br.com.ottimizza.integradorcloud.domain.dtos.HistoricoDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.sfhistorico.SFHistorico;
-import br.com.ottimizza.integradorcloud.domain.dtos.sfparticularidade.SFParticularidade;
-import br.com.ottimizza.integradorcloud.domain.mappers.grupo_regra.GrupoRegraMapper;
-import br.com.ottimizza.integradorcloud.domain.mappers.historico.HistoricoMapper;
+import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFHistorico;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFParticularidade;
+import br.com.ottimizza.integradorcloud.domain.mappers.GrupoRegraMapper;
+import br.com.ottimizza.integradorcloud.domain.mappers.HistoricoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
-import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
+import br.com.ottimizza.integradorcloud.repositories.RegraRepository;
 import br.com.ottimizza.integradorcloud.utils.StringUtils;
 
 @Service

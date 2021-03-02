@@ -1,7 +1,5 @@
 package br.com.ottimizza.integradorcloud.repositories.roteiro;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -10,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.RoteiroDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.RoteiroDTO;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
 
 public class RoteiroRepositoryImpl implements RoteiroRepositoryCustom{

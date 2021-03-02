@@ -3,7 +3,7 @@ package br.com.ottimizza.integradorcloud.domain.commands.lancamento;
 import java.io.Serializable;
 import java.util.List;
 
-import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
 import lombok.Data;
 
