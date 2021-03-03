@@ -3,7 +3,6 @@ package br.com.ottimizza.integradorcloud.services;
 import java.math.BigInteger;
 import java.security.Principal;
 import java.text.MessageFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,19 +13,14 @@ import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.ExampleMatcher.StringMatcher;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -55,9 +49,10 @@ import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.repositories.ArquivoRepository;
 import br.com.ottimizza.integradorcloud.repositories.EmpresaRepository;
+import br.com.ottimizza.integradorcloud.repositories.RegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
-import br.com.ottimizza.integradorcloud.repositories.RegraRepository;
+import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 
 @Service // @formatter:off
 public class LancamentoService {
@@ -293,7 +288,7 @@ public class LancamentoService {
 				ObjectMapper mapper = new ObjectMapper();
 				organizationDTO.setCodigoERP(importaLancamentos.getCodEmpresa());
 				String empresaOauthString = mapper.writeValueAsString(OrganizationDTO.builder().codigoERP(importaLancamentos.getCodEmpresa()).build());
-				defaultPatch(OAUTH2_SERVER_URL+"/api/v1/organizations/"+organizationDTO.getId(), empresaOauthString, getAuthorizationHeader(authentication));
+				ServiceUtils.defaultPatch(OAUTH2_SERVER_URL+"/api/v1/organizations/"+organizationDTO.getId(), empresaOauthString, ServiceUtils.getAuthorizationHeader(authentication));
 			}
 			Empresa empresa = Empresa.builder()
 					.razaoSocial(organizationDTO.getName())
@@ -392,7 +387,7 @@ public class LancamentoService {
 	}
 
 	public PorcentagemLancamentosRequest buscaPorcentagem(String cnpjEmpresa, String tipoMovimento, OAuth2Authentication authentication) {
-		UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+		UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
 		Empresa empresa = empresaRepository.buscaEmpresa(cnpjEmpresa, userInfo.getOrganization().getId()).orElse(null);
 		
 		Long lancamentosRestantes = lancamentoRepository.contarLancamentosRestantesEmpresa(cnpjEmpresa,userInfo.getOrganization().getCnpj(), tipoMovimento);
@@ -471,27 +466,4 @@ public class LancamentoService {
 		return true;
 	}
 	
-	private String getAuthorizationHeader(OAuth2Authentication authentication) {
-	    final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-	    String accessToken = details.getTokenValue();
-	    return MessageFormat.format("Bearer {0}", accessToken);
-	}
-	    
-	
-	private String defaultPatch(String url, String body, String authentication) {
-    	RestTemplate template = new RestTemplate();
-    	
-    	HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-    	requestFactory.setConnectTimeout(15000);
-    	requestFactory.setReadTimeout(15000);
-    	
-    	template.setRequestFactory(requestFactory);
-    	
-    	HttpHeaders headers =  new HttpHeaders();
-    	headers.setContentType(MediaType.APPLICATION_JSON);
-    	headers.set("Authorization", authentication);
-    	
-    	return template.patchForObject(url, new HttpEntity<String>(body, headers), String.class);
-    }
-
 }
