@@ -3,6 +3,8 @@ package br.com.ottimizza.integradorcloud.domain.dtos;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import lombok.AllArgsConstructor;
@@ -25,33 +27,47 @@ public class LivroCaixaDTO implements Serializable {
 	private String cnpjEmpresa;
 	
 	private LocalDate dataMovimento;
-	
-	private Double valorEntrada;
-	
-	private Double valorSaida;
-	
-	private String fornecerdor;
-	
+
+	private LocalDate dataPrevisaoPagamento;
+
+	private Double valorOriginal;
+
+	private Double valorPago;
+
+	private Double valorFinal;
+
+	private String descricao;
+
+	private BigInteger bancoId;
+
+	private BigInteger categoriaId;
+
+	private String tipoMovimento;
+
 	private String complemento;
-	
-	private String banco;
+
+	private String linkArquivo;
+
+	private Integer origem;
+
+	private Boolean integradoContabilidade;
+
+	private Short status;
+
+	private String textoDocumento;
+
+    private List<String> termos;
+
+	private String criadoPor;
+
+	private LocalDateTime dataCriacao;
+
+	private String dataString;
 	
 	public LivroCaixa patch(LivroCaixa livroCaixa) {
 		
-		if(valorEntrada != null)
-			livroCaixa.setValorEntrada(valorEntrada);
-		
-		if(valorSaida != null)
-			livroCaixa.setValorSaida(valorSaida);
-		
-		if(fornecerdor != null && !fornecerdor.equals(""))
-			livroCaixa.setFornecerdor(fornecerdor);
-		
 		if(complemento != null && !complemento.equals(""))
 			livroCaixa.setComplemento(complemento);
-		
-		if( banco != null && !banco.equals(""))
-			livroCaixa.setBanco(banco);
 		
 		if(dataMovimento != null)
 			livroCaixa.setDataMovimento(dataMovimento);
