@@ -398,23 +398,6 @@ public class LancamentoService {
 					.totalLancamentos(totalLancamentos)
 					.build();
 		
-		if(lancamentosRestantes == 0 && totalLancamentos != 0) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("Contabilidade: "+userInfo.getOrganization().getName()+"<br>");
-			sb.append("Empresa: "+empresa.getRazaoSocial()+"<br>");
-			sb.append("Processo: "+tipoMovimento+"<br>");
-			sb.append("Finalizado por: "+userInfo.getFirstName()+" "+userInfo.getLastName()+" ("+userInfo.getUsername()+")");
-			sb.append("<br>");
-			sb.append("<br>");
-			sb.append("Enviado Automaticamente por Otimizza Última Digitação");
-			EmailDTO email = EmailDTO.builder()
-					.to(EMAIL_OUD_FINALIZADO)
-					.subject("Empresa "+empresa.getRazaoSocial()+"/"+userInfo.getOrganization().getName()+" com OUD finalizado.")
-					.body(sb.toString())
-				.build();
-			emailSenderClient.sendMail(email);
-		}
-		
 		return retorno;
 	}
 	
