@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.controllers.v1;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -30,8 +31,13 @@ public class BancoController {
 
 	@PostMapping
 	public ResponseEntity<?> salvarBanco(BancoDTO bancoDto, OAuth2Authentication authentication) throws Exception {
+		System.out.println(">>> A "+bancoDto.toString());
+		BancoDTO dto = bancoService.salvar(bancoDto, authentication);
+		
+		System.out.println(">>> C "+dto.toString());
+		
 		return ResponseEntity.ok(new GenericResponse<BancoDTO> (
-				bancoService.salvar(bancoDto, authentication)
+				dto 
 			));
 	}
 

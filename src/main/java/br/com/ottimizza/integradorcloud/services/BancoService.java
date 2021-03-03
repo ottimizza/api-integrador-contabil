@@ -31,7 +31,11 @@ public class BancoService {
 	BancoRepository bancoRepository;
 	
 	public BancoDTO salvar(BancoDTO bancoDto, OAuth2Authentication authentication) {
-		return BancoMapper.fromEntity(bancoRepository.save(BancoMapper.fromDto(bancoDto)));
+
+		Banco banco = BancoMapper.fromDto(bancoDto);
+		System.out.println(">>> B "+banco.toString());
+
+		return BancoMapper.fromEntity(bancoRepository.save(banco));
 	}
 
 	public Page<BancoDTO> buscarBancos(@Valid BancoDTO filter, 
