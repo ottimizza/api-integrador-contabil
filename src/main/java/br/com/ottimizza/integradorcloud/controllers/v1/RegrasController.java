@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra_ignorada.GrupoRegraIgnoradaDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraIgnoradaDTO;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.RegraService;

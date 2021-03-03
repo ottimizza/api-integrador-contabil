@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import br.com.ottimizza.integradorcloud.domain.dtos.sfcontabilidade.SFContabilidade;
-import br.com.ottimizza.integradorcloud.domain.dtos.sfempresa.SFEmpresa;
-import br.com.ottimizza.integradorcloud.domain.dtos.sfhistorico.SFHistorico;
-import br.com.ottimizza.integradorcloud.domain.dtos.sfparticularidade.SFParticularidade;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFContabilidade;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFHistorico;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFParticularidade;
 
 @FeignClient(name = "${salesforce.service.name}", url = "${salesforce.service.url}" )
 public interface SalesForceClient {

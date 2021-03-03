@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.repositories.grupo_regra;
 
 import java.math.BigInteger;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

@@ -3,10 +3,10 @@ package br.com.ottimizza.integradorcloud.domain.mappers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.ArquivoDTO;
 import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
 
-public class ArquivoMapper { // @formatter:off
+public class ArquivoMapper {
 
     public static Arquivo fromDto(ArquivoDTO arquivo) {
         return Arquivo.builder()

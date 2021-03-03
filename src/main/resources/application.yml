@@ -1,7 +1,7 @@
 server:
   servlet:
     context-path: 
-  port: ${PORT:9000}
+  port: ${PORT:9004}
 
 spring:
   datasource:
@@ -21,6 +21,7 @@ spring:
         generate_statistics: ${HIBERNATE_STATISTICS:false}
         temp:
           use_jdbc_metadata_defaults: false
+
 
 oauth2-config:
   client-id: ${OAUTH2_CLIENT_ID:76179baad962d1b8ce4d}
@@ -46,6 +47,7 @@ storage-s3:
   service:
     name: storages3-service
     url: ${STORAGE_URL:https://stage-s3-storage.herokuapp.com}
+    bucket: ${STORAGE_BUCKET:staging-imagens}
 
 email-sender:
   service:

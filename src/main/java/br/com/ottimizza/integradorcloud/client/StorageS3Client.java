@@ -1,7 +1,7 @@
 package br.com.ottimizza.integradorcloud.client;
 
 
-import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.ArquivoS3DTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.ArquivoS3DTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

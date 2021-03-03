@@ -11,33 +11,30 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
-import org.h2.util.json.JSONArray;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra.GrupoRegraDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.grupo_regra_ignorada.GrupoRegraIgnoradaDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
-import br.com.ottimizza.integradorcloud.domain.mappers.grupo_regra.GrupoRegraMapper;
+import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraIgnoradaDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
+import br.com.ottimizza.integradorcloud.domain.mappers.GrupoRegraMapper;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegraIgnorada;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
+import br.com.ottimizza.integradorcloud.repositories.GrupoRegraIgnoradaRepository;
+import br.com.ottimizza.integradorcloud.repositories.RegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
-import br.com.ottimizza.integradorcloud.repositories.grupo_regra_ignorada.GrupoRegraIgnoradaRepository;
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
-import br.com.ottimizza.integradorcloud.repositories.regra.RegraRepository;
 import br.com.ottimizza.integradorcloud.utils.DateUtils;
 
 @Service // @formatter:off

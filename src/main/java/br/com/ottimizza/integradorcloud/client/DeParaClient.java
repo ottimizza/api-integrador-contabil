@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import br.com.ottimizza.integradorcloud.domain.dtos.depara.DeParaContaDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.DeParaContaDTO;
 
 @FeignClient(name = "${depara.service.name}", url = "${depara.service.url}")
 public interface DeParaClient {

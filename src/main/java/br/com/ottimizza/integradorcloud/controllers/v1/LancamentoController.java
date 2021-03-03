@@ -1,17 +1,5 @@
 package br.com.ottimizza.integradorcloud.controllers.v1;
 
-import org.springframework.web.bind.annotation.RestController;
-
-import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
-import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.arquivo.ArquivoDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.lancamento.LancamentoDTO;
-import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
-import br.com.ottimizza.integradorcloud.domain.models.Regra;
-import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
-import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
-import br.com.ottimizza.integradorcloud.services.LancamentoService;
-
 import java.math.BigInteger;
 import java.security.Principal;
 import java.util.List;
@@ -22,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,6 +19,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
+import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.ArquivoDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.LancamentoDTO;
+import br.com.ottimizza.integradorcloud.domain.models.Regra;
+import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
+import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
+import br.com.ottimizza.integradorcloud.services.LancamentoService;
 
 @RestController // @formatter:off
 @RequestMapping("/api/v1/lancamentos")

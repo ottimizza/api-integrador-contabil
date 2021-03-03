@@ -26,16 +26,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.client.SalesForceClient;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.empresa.EmpresaDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.organization.OrganizationDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.sfcontabilidade.SFContabilidade;
-import br.com.ottimizza.integradorcloud.domain.dtos.sfempresa.SFEmpresa;
-import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.EmpresaDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.OrganizationDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFContabilidade;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
+import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.EmpresaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 import br.com.ottimizza.integradorcloud.repositories.ContabilidadeRepository;
-import br.com.ottimizza.integradorcloud.repositories.empresa.EmpresaRepository;
+import br.com.ottimizza.integradorcloud.repositories.EmpresaRepository;
 
 @Service // @formatter:off
 public class EmpresaService {

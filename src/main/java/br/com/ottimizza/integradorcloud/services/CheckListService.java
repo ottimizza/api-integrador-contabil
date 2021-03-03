@@ -1,34 +1,29 @@
 package br.com.ottimizza.integradorcloud.services;
 
 
-
 import java.math.BigInteger;
-import java.text.MessageFormat;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.checklist.CheckListRespostasDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.sfempresa.SFEmpresa;
-import br.com.ottimizza.integradorcloud.domain.mappers.checklist.CheckListMapper;
+import br.com.ottimizza.integradorcloud.domain.dtos.CheckListRespostasDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
+import br.com.ottimizza.integradorcloud.domain.mappers.CheckListMapper;
 import br.com.ottimizza.integradorcloud.domain.models.checklist.CheckList;
 import br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListPerguntas;
 import br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListRespostas;

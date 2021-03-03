@@ -8,9 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.livro_caixa.LivroCaixaDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaDTO;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
-import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
 
 public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 

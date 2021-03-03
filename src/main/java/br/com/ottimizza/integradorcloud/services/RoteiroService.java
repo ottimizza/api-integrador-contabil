@@ -1,13 +1,10 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
-import java.security.Principal;
 import java.text.MessageFormat;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
-
-import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.ArquivoS3DTO;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -28,15 +25,15 @@ import br.com.ottimizza.integradorcloud.client.SalesForceClient;
 import br.com.ottimizza.integradorcloud.client.StorageS3Client;
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.roteiro.RoteiroDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.sfempresa.SFEmpresa;
-import br.com.ottimizza.integradorcloud.domain.dtos.user.UserDTO;
-import br.com.ottimizza.integradorcloud.domain.mappers.roteiro.RoteiroMapper;
+import br.com.ottimizza.integradorcloud.domain.dtos.ArquivoS3DTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.RoteiroDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
+import br.com.ottimizza.integradorcloud.domain.mappers.RoteiroMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
 import br.com.ottimizza.integradorcloud.repositories.ContabilidadeRepository;
-import br.com.ottimizza.integradorcloud.repositories.empresa.EmpresaRepository;
+import br.com.ottimizza.integradorcloud.repositories.EmpresaRepository;
 import br.com.ottimizza.integradorcloud.repositories.roteiro.RoteiroRepository;
 
 @Service
