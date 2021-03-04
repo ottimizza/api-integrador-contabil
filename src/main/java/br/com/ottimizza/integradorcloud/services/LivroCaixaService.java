@@ -120,6 +120,8 @@ public class LivroCaixaService {
 									SalvaArquivoRequest salvaArquivo, 
 									MultipartFile arquivo, 
 									String authorization) {
+		
+		System.out.println(">>> B "+idLivroCaixa+"--"+salvaArquivo.toString());
 
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 		System.out.println(">>> C "+arquivoS3.toString());
