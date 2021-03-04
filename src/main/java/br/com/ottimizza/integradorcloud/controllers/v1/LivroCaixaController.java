@@ -5,7 +5,10 @@ import java.math.BigInteger;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
+import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,4 +61,43 @@ public class LivroCaixaController {
 				service.deletaPorId(id)
 			));
 	}
+	
+	@GetMapping("/sugerir/{id}")
+	public ResponseEntity<?> sugerirRegra(@PathVariable("id") BigInteger livroCaixaId,
+										  @Valid String cnpjContabilidade,
+										  @Valid String cnpjEmpresa ) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<>(
+				service.sugerirRegra(livroCaixaId, cnpjContabilidade, cnpjEmpresa)
+			));
+	}
+	
+	@DeleteMapping("/nao_integrado/{id}")
+	public ResponseEntity<?> deletaNaoIntegradoLC(@PathVariable BigInteger id) throws Exception {
+		JSONObject response = service.deletaNaoIntegrado(id);
+		
+		if (response.get("status") == "Unauthorized") return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		return (response.get("status") == "Success") ? ResponseEntity.ok(response.toString()) : ResponseEntity.badRequest().build();
+	}
+	
+	@PostMapping("/clonar/{id}")
+	public ResponseEntity<?> clonarLivroCaixa(@PathVariable BigInteger id, OAuth2Authentication authentication) {
+		LivroCaixaDTO response = service.clonarLivroCaixa(id, authentication);
+		return (response != null) ? ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(response)) : ResponseEntity.badRequest().build();
+	}
+	
+	@GetMapping("/ultimo_lanc")
+	public ResponseEntity<LivroCaixaDTO> buscaUltimoLancamento(@Valid String cnpjContabilidade,
+			  													@Valid String cnpjEmpresa) throws Exception {
+		return ResponseEntity.ok(service.buscaUltimoLancamentoContabilidadeEmpresa(cnpjContabilidade, cnpjEmpresa));
+		
+	}
+	
+//	@PostMapping("/{idLivroCaixa}")
+//	ResponseEntity<?> uploadImagem(@PathVariable("idLivroCaixa") BigInteger idLivroCaixa,
+//									 @Valid SalvaArquivoRequest salvaArquivo,
+//									 @RequestParam("file") MultipartFile arquivo,
+//									 @RequestHeader("Authorization") String authorization) throws Exception {
+//		return ResponseEntity.ok(new GenericResponse<>(service.uploadFile(idLivroCaixa, salvaArquivo, arquivo, authorization)));
+//	}
 }

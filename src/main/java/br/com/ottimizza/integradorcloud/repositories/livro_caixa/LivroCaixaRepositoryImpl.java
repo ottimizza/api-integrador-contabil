@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.repositories.livro_caixa;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 
 import javax.persistence.EntityManager;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaDTO;
+import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 
 public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
@@ -80,5 +82,34 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 			
 		return new PageImpl<LivroCaixa>(query.getResultList(), PageCriteria.getPageRequest(criteria), totalElements);
 	}
+	
+	@Override
+	public GrupoRegra sugerirRegra(BigInteger livroCaixaId, String cnpjContabilidade, String cnpjEmpresa) {
+		StringBuilder sql = new StringBuilder();
+		
+		sql.append("SELECT grupo_regras.* ");
+		sql.append("FROM grupo_regras  	");
+		sql.append("INNER JOIN livros_caixas ON livros_caixas.termos @>  grupo_regras.campos ");
+		sql.append("WHERE livros_caixas.id = :livroCaixaId ");
+		sql.append("AND grupo_regras.contagem_regras >= 2 ");
+		sql.append("AND grupo_regras.ativo = true ");
+		sql.append("AND NOT EXISTS(SELECT 1 FROM regras r2 WHERE r2.fk_grupo_regras_id = grupo_regras.id AND r2.condicao = 2) ");
+		sql.append("AND grupo_regras.campos not in (SELECT gr.campos FROM grupo_regras_ignoradas gr WHERE gr.cnpj_contabilidade = :cnpjContabilidade) ");
+		sql.append("AND grupo_regras.cnpj_contabilidade = :cnpjContabilidade ");
+		sql.append("AND grupo_regras.cnpj_empresa = :cnpjEmpresa ");
+		sql.append("ORDER BY grupo_regras.contagem_regras DESC, ");
+		sql.append("         grupo_regras.peso_regras DESC, ");
+		sql.append("		 grupo_regras.id DESC ");
+		sql.append("LIMIT 1");
+		
+		Query query = em.createNativeQuery(sql.toString());
+		
+		query.setParameter("livroCaixaId", livroCaixaId);
+		query.setParameter("cnpjContabilidade", cnpjContabilidade);
+		query.setParameter("cnpjEmpresa", cnpjEmpresa);
+		
+		return (GrupoRegra) query.getSingleResult();
+	}
+
 
 }
