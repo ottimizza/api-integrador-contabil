@@ -1,12 +1,9 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
-import javax.validation.Valid;
 
 import org.json.JSONObject;
 import org.springframework.data.domain.Page;
@@ -71,6 +68,11 @@ public class LivroCaixaService {
 	public JSONObject deletaNaoIntegrado(BigInteger id) {
 		JSONObject response = new JSONObject();
 		LivroCaixa livroCaixa = repository.findById(id).orElse(null);
+		if (livroCaixa == null) {
+			response.put("status", "Error");
+			response.put("message", "Houve um problema ao excluir!");
+			return response;
+		}
 		if (!livroCaixa.getIntegradoContabilidade()) {
 			try {
 				repository.deleteById(id);
