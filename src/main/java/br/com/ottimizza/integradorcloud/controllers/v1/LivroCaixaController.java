@@ -102,10 +102,9 @@ public class LivroCaixaController {
 									 @Valid SalvaArquivoRequest salvaArquivo,
 									 @RequestParam("file") MultipartFile arquivo,
 									 @RequestHeader("Authorization") String authorization) throws Exception {
-		System.out.println(">>> A "+salvaArquivo.toString());
-		LivroCaixaDTO dto = service.uploadFile(idLivroCaixa, salvaArquivo, arquivo, authorization);
+
 		return ResponseEntity.ok(new GenericResponse<>(
-				dto
+				service.uploadFile(idLivroCaixa, salvaArquivo, arquivo, authorization)
 				));
 	}
 }
