@@ -91,7 +91,7 @@ public class RegraService {
     }
 
     public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, Short sugerir, String regraSugerida, OAuth2Authentication authentication) throws Exception {
-    	UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+    	UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
     	Empresa empresa = empresaRepository.buscaEmpresa(grupoRegraDTO.getCnpjEmpresa(), userInfo.getOrganization().getId()).orElse(null);
     	BigInteger regraId = null;
     	String tipoMovimento = "";
