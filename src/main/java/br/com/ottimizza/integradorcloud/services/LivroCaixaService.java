@@ -6,13 +6,17 @@ import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.client.StorageS3Client;
+import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.ArquivoS3DTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
@@ -26,6 +30,9 @@ import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 @Service
 public class LivroCaixaService {
 	
+	@Value("${storage-s3.service.url}")
+    private String S3_SERVICE_URL;
+
 	@Inject
 	LivroCaixaRepository repository;
 	
@@ -109,18 +116,18 @@ public class LivroCaixaService {
 				);
 	}
 
-//	public LivroCaixaDTO uploadFile(BigInteger idLivroCaixa, 
-//									SalvaArquivoRequest salvaArquivo, 
-//									MultipartFile arquivo, 
-//									String authorization) {
-//
-//		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
-//		
-//		LivroCaixa lc = repository.findById(idLivroCaixa).orElseThrow(() -> new NoResultException("livro caixa nao encontrado!"));
-//		lc = lc.toBuilder().urlArquivo(S3_SERVICE_URL+"/resources/"+arquivoS3.getId().toString()+"/download").build();
-//		
-//		return LivroCaixaMapper.fromEntity(repository.save(lc));
-//	}
+	public LivroCaixaDTO uploadFile(BigInteger idLivroCaixa, 
+									SalvaArquivoRequest salvaArquivo, 
+									MultipartFile arquivo, 
+									String authorization) {
+		
+		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
+
+		LivroCaixa lc = repository.findById(idLivroCaixa).orElseThrow(() -> new NoResultException("livro caixa nao encontrado!"));
+		lc.setLinkArquivo(S3_SERVICE_URL+"/resources/"+arquivoS3.getId().toString()+"/download");
+		
+		return LivroCaixaMapper.fromEntity(repository.save(lc));
+	}
 	
 
 }
