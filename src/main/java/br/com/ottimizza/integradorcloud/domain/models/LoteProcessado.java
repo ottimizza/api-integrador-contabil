@@ -3,6 +3,7 @@ package br.com.ottimizza.integradorcloud.domain.models;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -72,9 +73,9 @@ public class LoteProcessado {
     @PreUpdate
     public void preUpdate() {
         if (dataCriacao == null) {
-            this.dataCriacao = LocalDateTime.now();
+            this.dataCriacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
         }
-        this.dataAtualizacao = LocalDateTime.now();
+        this.dataAtualizacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
     }
 
 }
