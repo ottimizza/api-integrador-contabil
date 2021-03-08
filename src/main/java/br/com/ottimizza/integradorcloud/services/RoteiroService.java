@@ -133,7 +133,7 @@ public class RoteiroService {
 					//.to(EMAIL_ENVIO_CHECKLIST)
 					.to("daniel.steil@ottimizza.com.br")
 					.subject("Check List Integração "+roteiro.getTipoRoteiro()+" " + empresa.getRazaoSocial() +" " +userInfo.getOrganization().getName())
-					.body(email.toString())
+					.body(email.toString().replaceAll("null", ""))
 				.build();
 			emailSenderClient.sendMail(mail);
 		}
