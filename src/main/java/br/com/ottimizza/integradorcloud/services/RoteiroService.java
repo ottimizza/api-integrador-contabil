@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -13,13 +14,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.ottimizza.integradorcloud.client.EmailSenderClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.client.SalesForceClient;
 import br.com.ottimizza.integradorcloud.client.StorageS3Client;
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.ArquivoS3DTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.CheckListPerguntasRespostasDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.EmailDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.RoteiroDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
 import br.com.ottimizza.integradorcloud.domain.mappers.RoteiroMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
@@ -27,6 +32,7 @@ import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
 import br.com.ottimizza.integradorcloud.repositories.ContabilidadeRepository;
 import br.com.ottimizza.integradorcloud.repositories.EmpresaRepository;
+import br.com.ottimizza.integradorcloud.repositories.checklist.CheckListRespostasRepository;
 import br.com.ottimizza.integradorcloud.repositories.roteiro.RoteiroRepository;
 import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 
@@ -43,6 +49,9 @@ public class RoteiroService {
 	ContabilidadeRepository contabilidadeRepository;
 	
 	@Inject
+	CheckListRespostasRepository checklistRepository;
+	
+	@Inject
 	StorageS3Client s3Client;
 	
 	@Inject
@@ -51,11 +60,17 @@ public class RoteiroService {
 	@Inject
 	SalesForceClient sfClient;
 	
+	@Inject
+	EmailSenderClient emailSenderClient;
+	
 	@Value("${storage-s3.service.url}")
     private String S3_SERVICE_URL;
 	
 	@Value("${salesforce.service.url}")
     private String SF_SERVICE_URL;
+	
+	@Value("${email-envio-checklist}")
+	private String EMAIL_ENVIO_CHECKLIST;
 	
 	public RoteiroDTO salva(RoteiroDTO roteiroDTO, OAuth2Authentication authentication) throws Exception {
 		roteiroDTO.setUsuario(authentication.getName());
@@ -87,11 +102,18 @@ public class RoteiroService {
 	}
 	
 	public RoteiroDTO patch(BigInteger roteiroId, RoteiroDTO roteiroDTO, OAuth2Authentication authentication) throws Exception {
+		StringBuilder email = new StringBuilder();
 		roteiroDTO.setUsuario(authentication.getName());
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
 		if(roteiroDTO.getNome() != null && !roteiroDTO.getNome().equals("")) {
 			if(repository.buscaPorNomeEmpresaIdTipo(roteiroDTO.getNome(), roteiro.getEmpresaId(), roteiro.getTipoRoteiro()) > 0)
 				throw new IllegalArgumentException("Nome de roteiro já existente nesta empresa para este tipo de roteiro!");
+			
+			List<CheckListPerguntasRespostasDTO> perguntasRespostas = checklistRepository.buscaPerguntasRespostasPorRoteiroId(roteiroId);
+			for(CheckListPerguntasRespostasDTO cp : perguntasRespostas) {
+				email.append(cp.getPergunta()+": "+cp.getResposta()+"  Observacao: "+cp.getObservacao()+" ");
+				email.append("<br>");
+			}
 		}
 		if(roteiroDTO.getTipoRoteiro() != null && !roteiroDTO.getTipoRoteiro().equals("")) {
 			if(roteiroDTO.getTipoRoteiro().contains("PAG"))
@@ -102,7 +124,21 @@ public class RoteiroService {
 		}
 		Roteiro retorno = roteiroDTO.patch(roteiro);
 		validaRoteiro(retorno);
-		return RoteiroMapper.fromEntity(repository.save(retorno));
+		Roteiro roteiroRetorno = repository.save(retorno);
+		if(roteiroDTO.getNome() != null && !roteiroDTO.getNome().equals("")) {
+			UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+			Empresa empresa = empresaRepository.buscaEmpresa(roteiro.getCnpjEmpresa(), userInfo.getOrganization().getId()).orElse(null);
+
+			EmailDTO mail = EmailDTO.builder()
+					//.to(EMAIL_ENVIO_CHECKLIST)
+					.to("daniel.steil@ottimizza.com.br")
+					.subject("Check List Integração "+roteiro.getTipoRoteiro()+" " + empresa.getRazaoSocial() +" " +userInfo.getOrganization().getName())
+					.body(email.toString())
+				.build();
+			emailSenderClient.sendMail(mail);
+		}
+		
+		return RoteiroMapper.fromEntity(roteiroRetorno);
 	}
 	
 	public Page<Roteiro> busca(RoteiroDTO filtro, PageCriteria criteria) throws Exception {
