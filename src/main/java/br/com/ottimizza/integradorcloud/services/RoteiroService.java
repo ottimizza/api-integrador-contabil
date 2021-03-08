@@ -111,7 +111,7 @@ public class RoteiroService {
 			
 			List<CheckListPerguntasRespostasDTO> perguntasRespostas = checklistRepository.buscaPerguntasRespostasPorRoteiroId(roteiroId);
 			for(CheckListPerguntasRespostasDTO cp : perguntasRespostas) {
-				email.append(cp.getPergunta()+": "+cp.getResposta()+"  Observacao: "+cp.getObservacao()+" ");
+				email.append(cp.getPergunta()+": "+cp.getResposta()+", Observacao: "+cp.getObservacao()+" ");
 				email.append("<br>");
 			}
 		}
@@ -130,8 +130,7 @@ public class RoteiroService {
 			Empresa empresa = empresaRepository.buscaEmpresa(roteiro.getCnpjEmpresa(), userInfo.getOrganization().getId()).orElse(null);
 
 			EmailDTO mail = EmailDTO.builder()
-					//.to(EMAIL_ENVIO_CHECKLIST)
-					.to("daniel.steil@ottimizza.com.br")
+					.to(EMAIL_ENVIO_CHECKLIST)
 					.subject("Check List Integração "+roteiro.getTipoRoteiro()+" " + empresa.getRazaoSocial() +" " +userInfo.getOrganization().getName())
 					.body(email.toString().replaceAll("null", ""))
 				.build();
