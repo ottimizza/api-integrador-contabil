@@ -26,6 +26,7 @@ import br.com.ottimizza.integradorcloud.domain.dtos.EmailDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.RoteiroDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFRoteiro;
 import br.com.ottimizza.integradorcloud.domain.mappers.RoteiroMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
@@ -85,6 +86,8 @@ public class RoteiroService {
 									 MultipartFile arquivo,
 									 String authorization) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
+		StringBuilder soql = new StringBuilder();
+		String tipoRoteiro = "";
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
 		roteiro = roteiro.toBuilder().status((short) 5).urlArquivo(S3_SERVICE_URL+"/resources/"+arquivoS3.getId().toString()+"/download").build();
@@ -98,6 +101,34 @@ public class RoteiroService {
 			.build();
 		String empresaCrmString = mapper.writeValueAsString(empresaCrm);
 		ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, authorization);
+		
+		//------------------------
+		
+		if(roteiro.getTipoRoteiro().equals("PAG"))
+			tipoRoteiro = "Contas PAGAS";
+		else
+			tipoRoteiro = "Contas RECEBIDAS";
+		
+		String chaveOic = empresa.getCnpj()+"-"+roteiro.getTipoRoteiro();
+		
+		soql.append("SELECT Name, Id ");
+		soql.append("FROM Roteiros__c ");
+		soql.append("WHERE Chave_OIC_Integracao = "+chaveOic);
+	    
+		SFRoteiro response = (SFRoteiro) sfClient.executeSOQL(soql.toString(), 1, authorization).getBody();
+	    if (response == null) {
+	    	SFRoteiro sfRoteiro = SFRoteiro.builder()
+	    			.chaveOic(chaveOic)
+	    			.tipoIntegracao(tipoRoteiro)
+	    			.nomeRelatorioReferencia("Principal")
+	    			.fornecedor("-1")
+	    			.portador("-1")
+	    			.dataMovimento("-1")
+	    			.lerPlanilhasPadroes(true)
+	    		.build();
+	    	sfClient.upsertRoteiro(chaveOic, sfRoteiro, authorization);
+	    }
+	    
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
 	
