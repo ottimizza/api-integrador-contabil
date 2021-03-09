@@ -84,7 +84,8 @@ public class RoteiroService {
 	public RoteiroDTO uploadPlanilha(BigInteger roteiroId,
 									 SalvaArquivoRequest salvaArquivo,
 									 MultipartFile arquivo,
-									 String authorization) throws Exception {
+									 String authorization,
+									 OAuth2Authentication authentication) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		StringBuilder soql = new StringBuilder();
 		String tipoRoteiro = "";
@@ -116,6 +117,8 @@ public class RoteiroService {
 		soql.append("WHERE Chave_OIC_Integracao = "+chaveOic);
 	    
 		SFRoteiro response = (SFRoteiro) sfClient.executeSOQL(soql.toString(), 1, authorization).getBody();
+		
+		System.out.println(response.toString());
 	    if (response == null) {
 	    	SFRoteiro sfRoteiro = SFRoteiro.builder()
 	    			.chaveOic(chaveOic)
@@ -126,7 +129,7 @@ public class RoteiroService {
 	    			.dataMovimento("-1")
 	    			.lerPlanilhasPadroes(true)
 	    		.build();
-	    	sfClient.upsertRoteiro(chaveOic, sfRoteiro, authorization);
+	    	sfClient.upsertRoteiro(chaveOic, sfRoteiro, ServiceUtils.getAuthorizationHeader(authentication));
 	    }
 	    
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
