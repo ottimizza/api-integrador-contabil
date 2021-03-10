@@ -116,7 +116,7 @@ public class RoteiroService {
 		soql.append("FROM Roteiros__c ");
 		soql.append("WHERE Chave_OIC_Integracao = "+chaveOic);
 	    
-		SFRoteiro response = (SFRoteiro) sfClient.executeSOQL(soql.toString(), 1, authorization).getBody();
+		SFRoteiro response = (SFRoteiro) sfClient.executeSOQL(soql.toString(), 1, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
 		
 		System.out.println(response.toString());
 	    if (response == null) {
