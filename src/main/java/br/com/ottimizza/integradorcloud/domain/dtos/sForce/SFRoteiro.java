@@ -18,7 +18,7 @@ public class SFRoteiro {
 	private String empresaId;
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	@JsonProperty(value = "Atualiza_Chave_OIC__c")
+	@JsonProperty(value = "Chave_OIC_Integracao__c")
 	private String chaveOic;	
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
