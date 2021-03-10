@@ -121,7 +121,7 @@ public class RoteiroService {
 		//System.out.println(response.toString());
 	    //if (response == null) {
 	    	SFRoteiro sfRoteiro = SFRoteiro.builder()
-	    			.chaveOic(chaveOic)
+	    			//.chaveOic(chaveOic)
 	    			.tipoIntegracao(tipoRoteiro)
 	    			.nomeRelatorioReferencia("Principal")
 	    			.fornecedor("-1")
