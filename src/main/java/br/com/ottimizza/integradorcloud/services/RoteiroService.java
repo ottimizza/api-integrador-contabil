@@ -105,7 +105,7 @@ public class RoteiroService {
 		
 		//------------------------
 		
-		//SFEmpresa sfEmpresa = sfClient.getEmpresa(empresa.getNomeResumido(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+		SFEmpresa sfEmpresa = sfClient.getEmpresa(empresa.getNomeResumido(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
 		
 		if(roteiro.getTipoRoteiro().equals("PAG"))
 			tipoRoteiro = "Contas PAGAS";
@@ -124,7 +124,7 @@ public class RoteiroService {
 	    //if (response == null) {
 	    	SFRoteiro sfRoteiro = SFRoteiro.builder()
 	    			//.chaveOic(chaveOic)
-	    			.empresaId(empresa.getNomeResumido())
+	    			.empresaId(sfEmpresa)
 	    			.tipoIntegracao(tipoRoteiro)
 	    			.nomeRelatorioReferencia("Principal")
 	    			.fornecedor("-1")
