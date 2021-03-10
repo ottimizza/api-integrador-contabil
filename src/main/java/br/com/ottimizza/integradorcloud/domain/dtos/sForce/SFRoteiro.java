@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class SFRoteiro {
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	@JsonProperty(value = "Empresa__c")
+	@JsonProperty(value = "	Empresa_a_Ser_Integrada__c")
 	private String empresaId;
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
