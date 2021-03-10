@@ -40,7 +40,7 @@ public interface SalesForceClient {
 												@RequestBody SFEmpresa empresa, 
 												@RequestHeader("Authorization")  String authorization);
 	
-	@PostMapping("/api/v1/salesforce/sobjects/Roteiro__c/Atualiza_Chave_OIC__c/{id}")
+	@PostMapping("/api/v1/salesforce/sobjects/Roteiro__c/Chave_OIC_Integracao__c/{id}")
 	public ResponseEntity<String> upsertRoteiro(@PathVariable("id") String chaveOic,
 												@RequestBody SFRoteiro roteiro, 
 												@RequestHeader("Authorization")  String authorization);
