@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,6 +60,6 @@ public interface SalesForceClient {
 	
 	@GetMapping(value = "/execute_soql",  produces = {MediaType.APPLICATION_JSON_VALUE})
 	 public ResponseEntity<?> executeSOQL(@RequestParam("soql") String soql,
-             							  @RequestHeader("Authorization")  String authorization);
+										  OAuth2Authentication authentication);
 	
 }
