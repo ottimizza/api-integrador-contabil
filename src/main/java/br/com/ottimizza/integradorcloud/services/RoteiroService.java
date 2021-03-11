@@ -122,6 +122,8 @@ public class RoteiroService {
 
 		SFRoteiro roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
 
+
+		System.out.println(roteiroSF.toString());
 		//System.out.println(response.toString());
 	    if (roteiroSF == null) {
 	    	SFRoteiro sfRoteiro = SFRoteiro.builder()

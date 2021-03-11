@@ -1,5 +1,7 @@
 package br.com.ottimizza.integradorcloud.domain.dtos.sForce;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -11,7 +13,9 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor @AllArgsConstructor
-public class SFRoteiro {
+public class SFRoteiro implements Serializable{
+
+	static final long serialVersionUID = 1L;
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty(value = "Empresa_a_Ser_Integrada__c")
