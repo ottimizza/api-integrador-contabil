@@ -57,9 +57,13 @@ public interface SalesForceClient {
 	@GetMapping(value = "/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/{nomeResumido}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<SFEmpresa> getEmpresa(@PathVariable("nomeResumido") String nomeResumido,
 											  				@RequestHeader("Authorization")  String authorization);
+
+	@GetMapping(value = "/api/v1/salesforce/sobjects/Roteiros__c/Chave_OIC_Integracao__c/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<SFRoteiro> getRoteiro(@PathVariable("id") String chaveOic,
+											  	@RequestHeader("Authorization")  String authorization);
 	
 	@GetMapping(value = "/execute_soql",  produces = {MediaType.APPLICATION_JSON_VALUE})
 	 public ResponseEntity<?> executeSOQL(@RequestParam("soql") String soql,
-										  OAuth2Authentication authentication);
+	 				  					  @RequestHeader("Authorization")  String authorization);
 	
 }

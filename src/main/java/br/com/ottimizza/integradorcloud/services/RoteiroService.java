@@ -114,16 +114,17 @@ public class RoteiroService {
 		
 		String chaveOic = empresa.getCnpj()+"-"+roteiro.getTipoRoteiro();
 
-		soql.append("SELECT Name, Id ");
+		/*soql.append("SELECT Name, Id ");
 		soql.append("FROM Roteiros__c ");
 		soql.append("WHERE Chave_OIC_Integracao = "+chaveOic);
-	    
-		SFRoteiro response = (SFRoteiro) sfClient.executeSOQL(soql.toString(), authentication).getBody();
-		
-		System.out.println(response.toString());
-	    //if (response == null) {
+		SFRoteiro response = (SFRoteiro) sfClient.executeSOQL(soql.toString(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+		*/
+
+		SFRoteiro roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+
+		//System.out.println(response.toString());
+	    if (roteiroSF == null) {
 	    	SFRoteiro sfRoteiro = SFRoteiro.builder()
-	    			//.chaveOic(chaveOic)
 	    			.empresaId(sfEmpresa.getIdEmpresa())
 	    			.tipoIntegracao(tipoRoteiro)
 	    			.nomeRelatorioReferencia("Principal")
@@ -133,7 +134,7 @@ public class RoteiroService {
 	    			.lerPlanilhasPadroes(true)
 	    		.build();
 	    	sfClient.upsertRoteiro(chaveOic, sfRoteiro, ServiceUtils.getAuthorizationHeader(authentication));
-	   // }
+	    }
 	    
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
