@@ -113,7 +113,8 @@ public class RoteiroService {
 			tipoRoteiro = "Contas RECEBIDAS";
 		
 		String chaveOic = empresa.getCnpj()+"-"+roteiro.getTipoRoteiro();
-		
+		System.out.println(sfEmpresa.getIdEmpresa());
+
 		soql.append("SELECT Name, Id ");
 		soql.append("FROM Roteiros__c ");
 		soql.append("WHERE Chave_OIC_Integracao = "+chaveOic);
@@ -124,7 +125,7 @@ public class RoteiroService {
 	    //if (response == null) {
 	    	SFRoteiro sfRoteiro = SFRoteiro.builder()
 	    			//.chaveOic(chaveOic)
-	    			.empresaId(sfEmpresa)
+	    			.empresaId(sfEmpresa.getIdEmpresa())
 	    			.tipoIntegracao(tipoRoteiro)
 	    			.nomeRelatorioReferencia("Principal")
 	    			.fornecedor("-1")
