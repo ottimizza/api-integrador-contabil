@@ -46,7 +46,7 @@ public class SFEmpresa implements Serializable {
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty(value = "Status_Report_Data__c")
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss:SSSXXXXX")
+	@JsonFormat(pattern = "yyyy-MM-dd'E'HH:mm:ss:SSSXXXXX")
 	private LocalDateTime Status_Report_Data;
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
@@ -71,7 +71,7 @@ public class SFEmpresa implements Serializable {
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty(value = "Proximo_Passo__c")
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss:SSSXXXXX")
+	@JsonFormat(pattern = "yyyy-MM-dd'E'HH:mm:ss:SSSXXXXX")
 	private LocalDateTime Proximo_Passo;
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
