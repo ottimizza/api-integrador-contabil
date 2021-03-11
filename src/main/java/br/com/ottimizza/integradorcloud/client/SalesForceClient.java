@@ -57,9 +57,8 @@ public interface SalesForceClient {
 	public ResponseEntity<SFEmpresa> getEmpresa(@PathVariable("nomeResumido") String nomeResumido,
 											  				@RequestHeader("Authorization")  String authorization);
 	
-	@GetMapping(value = "/execute_soql")
+	@GetMapping(value = "/execute_soql",  produces = {MediaType.APPLICATION_JSON_VALUE})
 	 public ResponseEntity<?> executeSOQL(@RequestParam("soql") String soql,
-             							  @RequestParam(defaultValue = "1", required = false) int methodExecution,
              							  @RequestHeader("Authorization")  String authorization);
 	
 }
