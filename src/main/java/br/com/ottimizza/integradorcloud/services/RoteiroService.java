@@ -104,9 +104,13 @@ public class RoteiroService {
 		ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, authorization);
 		
 		//------------------------
-		
-		SFEmpresa sfEmpresa = sfClient.getEmpresa(empresa.getNomeResumido(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
-		
+		SFEmpresa sfEmpresa = new SFEmpresa();
+		try{
+			sfEmpresa = sfClient.getEmpresa(empresa.getNomeResumido(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+		}
+		catch(Exception ex) {
+
+		}
 		if(roteiro.getTipoRoteiro().equals("PAG"))
 			tipoRoteiro = "Contas PAGAS";
 		else
