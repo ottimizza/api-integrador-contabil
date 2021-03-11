@@ -21,7 +21,7 @@ public class SFEmpresa implements Serializable {
 	public static final String S_NAME = "Empresa__c";
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	@JsonProperty(value = "Id__c")
+	@JsonProperty(value = "Id")
 	private String idEmpresa;
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
