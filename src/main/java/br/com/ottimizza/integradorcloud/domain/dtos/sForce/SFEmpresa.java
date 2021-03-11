@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.domain.dtos.sForce;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -21,6 +20,10 @@ public class SFEmpresa implements Serializable {
 
 	public static final String S_NAME = "Empresa__c";
 	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Id__c")
+	private String idEmpresa;
+
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty(value = "Tipo_de_Projeto__c")
 	private String Possui_OIC;
