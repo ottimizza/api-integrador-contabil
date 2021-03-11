@@ -106,8 +106,8 @@ public class RoteiroService {
 		//------------------------
 		SFEmpresa sfEmpresa = new SFEmpresa();
 		try{
-			String empresaSf = sfClient.getEmpresa(empresa.getNomeResumido(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
-			System.out.println(empresaSf);
+			sfEmpresa = sfClient.getEmpresa(empresa.getNomeResumido(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+			System.out.println(sfEmpresa.toString()
 		}
 		catch(Exception ex) {
 

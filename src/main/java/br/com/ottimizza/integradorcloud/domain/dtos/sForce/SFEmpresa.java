@@ -2,9 +2,13 @@ package br.com.ottimizza.integradorcloud.domain.dtos.sForce;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +46,7 @@ public class SFEmpresa implements Serializable {
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty(value = "Status_Report_Data__c")
+	@JsonFormat(pattern = "yyyy-MM-dd’T’HH:mm:ss:SSSXXXXX")
 	private LocalDateTime Status_Report_Data;
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
@@ -66,6 +71,7 @@ public class SFEmpresa implements Serializable {
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty(value = "Proximo_Passo__c")
+	@JsonFormat(pattern = "yyyy-MM-dd’T’HH:mm:ss:SSSXXXXX")
 	private LocalDateTime Proximo_Passo;
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)

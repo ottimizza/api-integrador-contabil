@@ -55,10 +55,10 @@ public interface SalesForceClient {
 											  				@RequestHeader("Authorization")  String authorization);
 	
 	@GetMapping(value = "/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/{nomeResumido}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<String> getEmpresa(@PathVariable("nomeResumido") String nomeResumido,
+	public ResponseEntity<SFEmpresa> getEmpresa(@PathVariable("nomeResumido") String nomeResumido,
 											  				@RequestHeader("Authorization")  String authorization);
 
-	@GetMapping(value = "/api/v1/salesforce/sobjects/Roteiro__c/Chave_OIC_Integracao__c/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	@GetMapping(value = "/api/v1/salesforce/sobjects/Roteiros__c/Chave_OIC_Integracao__c/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<SFRoteiro> getRoteiro(@PathVariable("id") String chaveOic,
 											  	@RequestHeader("Authorization")  String authorization);
 	
