@@ -117,10 +117,8 @@ public class RoteiroService {
 
 		try{
 			SFRoteiro roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
-			System.out.println("Achou roteiro "+roteiroSF.toString());
 		}
 		catch(Exception ex){
-			System.out.println("Nao achou roteiro");
 	    	SFRoteiro sfRoteiro = SFRoteiro.builder()
 	    			.empresaId(sfEmpresa.getIdEmpresa())
 	    			.tipoIntegracao(tipoRoteiro)
