@@ -65,7 +65,7 @@ public class RegraService {
     @Inject
     EmailSenderClient emailSenderClient;
     
-    @Value("${email_oud_finalizado}")
+    @Value("${email-oud-finalizado}")
     private String EMAIL_OUD_FINALIZADO;
     
     public Page<GrupoRegraDTO> buscarRegras(GrupoRegraDTO filtro, PageCriteria pageCriteria, OAuth2Authentication authentication) 

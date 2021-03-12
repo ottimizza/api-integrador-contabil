@@ -84,9 +84,6 @@ public class LancamentoService {
 	@Value("${oauth.service.url}")
 	private String OAUTH2_SERVER_URL;
 	
-	@Value("${email_oud_finalizado}")
-	private String EMAIL_OUD_FINALIZADO;
-	
 
 	public Lancamento buscarPorId(BigInteger id) throws LancamentoNaoEncontradoException {
 		return lancamentoRepository.findById(id).orElseThrow(() -> new LancamentoNaoEncontradoException(
