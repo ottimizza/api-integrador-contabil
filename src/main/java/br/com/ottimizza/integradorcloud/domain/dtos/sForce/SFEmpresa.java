@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.method.P;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -84,4 +85,12 @@ public class SFEmpresa implements Serializable {
 	@JsonProperty(value = "Quem__c")
 	private String Nome_de_quem_faz_o_fechamento;
 	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Horas_para_digita_o_manual__c")
+	private String Horas_para_digitar;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "ERP_quando_Outros__c")
+	private String ERP_do_cliente;
+
 }
