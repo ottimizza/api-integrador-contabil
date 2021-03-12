@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -106,5 +107,10 @@ public class LivroCaixaController {
 		return ResponseEntity.ok(new GenericResponse<>(
 				service.uploadFile(idLivroCaixa, salvaArquivo, arquivo, authorization)
 				));
+	}
+	
+	@PatchMapping("/integra/{id}")
+	public ResponseEntity<?> integraContabilidade(@PathVariable BigInteger id, OAuth2Authentication authentication) {
+		return ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(service.integraContabilidade(id, authentication)));
 	}
 }

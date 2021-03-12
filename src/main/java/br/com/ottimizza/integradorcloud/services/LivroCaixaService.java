@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -128,6 +129,12 @@ public class LivroCaixaService {
 		
 		return LivroCaixaMapper.fromEntity(repository.save(lc));
 	}
-	
+
+	public LivroCaixaDTO integraContabilidade(BigInteger id, OAuth2Authentication authentication) {
+		LivroCaixa lc = repository.findById(id).orElse(null);
+		lc.setIntegradoContabilidade(true);
+		return LivroCaixaMapper.fromEntity(repository.save(lc));
+	}
+
 
 }
