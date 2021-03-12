@@ -106,7 +106,6 @@ public class RoteiroService {
 		//------------------------
 		
 		SFEmpresa sfEmpresa = sfClient.getEmpresa(empresa.getNomeResumido(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
-		System.out.println(sfEmpresa.toString());
 		
 		if(roteiro.getTipoRoteiro().equals("PAG"))
 			tipoRoteiro = "Contas PAGAS";
