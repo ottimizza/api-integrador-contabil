@@ -24,6 +24,7 @@ import br.com.ottimizza.integradorcloud.domain.dtos.OrganizationDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFContabilidade;
 import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFProdutoContabilidade;
 import br.com.ottimizza.integradorcloud.domain.mappers.EmpresaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
@@ -67,6 +68,7 @@ public class EmpresaService {
     	OrganizationDTO contabilidadeOauth = oauthClient.buscaContabilidadePorId(userInfo.getOrganization().getId(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
     	OrganizationDTO empresaOauth = null;
     	Contabilidade contabilidade = null;
+        String produtoContabilidade = "";
     	String empresaOauthString = "";
     	String nomeResumido = empresaDTO.getNomeResumido().trim();
         nomeResumido = nomeResumido.replaceFirst(nomeResumido.substring(0, 1), nomeResumido.substring(0, 1).toUpperCase());
@@ -106,7 +108,16 @@ public class EmpresaService {
         Empresa empresa = empresaRepository.save(EmpresaMapper.fromDto(empresaDTO));
         if(empresa.getRazaoSocial() != null && !empresa.getRazaoSocial().equals(""))
         	empresaDTO.setRazaoSocial(empresaDTO.getRazaoSocial().toUpperCase());
-        SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO);
+        try{
+            SFProdutoContabilidade produtoContabilidadeObj = salesForceClient.getProdutoContabilidade(contabilidade.getSalesForceId(), ServiceUtils.getAuthorizationHeader(authentication)).getBody()
+            produtoContabilidade = produtoContabilidadeObj.getIdProduto();
+        }
+        catch(Exception ex){ }
+        SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO).toBuilder()
+                .valorMesIntegracao(60.0)
+                .contailidadeFaturamento(contabilidade.getSalesForceId())
+                .produtoContabilidade(produtoContabilidade)
+            .build();
         salesForceClient.upsertEmpresa(nomeResumido, empresaSf, ServiceUtils.getAuthorizationHeader(authentication));
 		return EmpresaMapper.fromEntity(empresa);
     }

@@ -93,4 +93,16 @@ public class SFEmpresa implements Serializable {
 	@JsonProperty(value = "ERP_quando_Outros__c")
 	private String ERP_do_cliente;
 
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Valor_Mensalidade__c")
+	private Double valorMesIntegracao;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Contabilidade_Faturamento__c")
+	private String contailidadeFaturamento;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Produto_da_Contabilidade__c")
+	private String produtoContabilidade;
+
 }
