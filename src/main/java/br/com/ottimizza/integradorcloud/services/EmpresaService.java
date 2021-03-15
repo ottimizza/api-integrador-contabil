@@ -110,7 +110,7 @@ public class EmpresaService {
         	empresaDTO.setRazaoSocial(empresaDTO.getRazaoSocial().toUpperCase());
         try{
             System.out.println("ContabilidadeId "+contabilidade.getSalesForceId());
-            SFProdutoContabilidade produtoContabilidadeObj = salesForceClient.getProdutoContabilidade(contabilidade.getSalesForceId(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+            SFProdutoContabilidade produtoContabilidadeObj = salesForceClient.getProdutoContabilidade(contabilidade.getSalesForceId().substring(0, 15), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
             produtoContabilidade = produtoContabilidadeObj.getIdProduto();
             System.out.println("Produto: "+produtoContabilidade);
         }
