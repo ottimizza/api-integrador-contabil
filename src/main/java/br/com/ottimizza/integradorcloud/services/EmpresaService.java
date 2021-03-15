@@ -109,7 +109,7 @@ public class EmpresaService {
         if(empresa.getRazaoSocial() != null && !empresa.getRazaoSocial().equals(""))
         	empresaDTO.setRazaoSocial(empresaDTO.getRazaoSocial().toUpperCase());
         try{
-            SFProdutoContabilidade produtoContabilidadeObj = salesForceClient.getProdutoContabilidade(contabilidade.getSalesForceId(), ServiceUtils.getAuthorizationHeader(authentication)).getBody()
+            SFProdutoContabilidade produtoContabilidadeObj = salesForceClient.getProdutoContabilidade(contabilidade.getSalesForceId(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
             produtoContabilidade = produtoContabilidadeObj.getIdProduto();
         }
         catch(Exception ex){ }
