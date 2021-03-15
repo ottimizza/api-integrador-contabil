@@ -111,6 +111,7 @@ public class EmpresaService {
         try{
             SFProdutoContabilidade produtoContabilidadeObj = salesForceClient.getProdutoContabilidade(contabilidade.getSalesForceId(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
             produtoContabilidade = produtoContabilidadeObj.getIdProduto();
+            System.out.println("Produto: "+produtoContabilidade);
         }
         catch(Exception ex){ }
         SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO).toBuilder()
