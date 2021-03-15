@@ -109,11 +109,14 @@ public class EmpresaService {
         if(empresa.getRazaoSocial() != null && !empresa.getRazaoSocial().equals(""))
         	empresaDTO.setRazaoSocial(empresaDTO.getRazaoSocial().toUpperCase());
         try{
+            System.out.println("ContabilidadeId "+contabilidade.getSalesForceId());
             SFProdutoContabilidade produtoContabilidadeObj = salesForceClient.getProdutoContabilidade(contabilidade.getSalesForceId(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
             produtoContabilidade = produtoContabilidadeObj.getIdProduto();
             System.out.println("Produto: "+produtoContabilidade);
         }
-        catch(Exception ex){ }
+        catch(Exception ex){ 
+            System.out.println(ex.getMessage());
+        }
         SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO).toBuilder()
                 .valorMesIntegracao(60.0)
                 .contailidadeFaturamento(contabilidade.getSalesForceId())
