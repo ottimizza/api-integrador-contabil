@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.repositories.livro_caixa;
 
 
 import java.math.BigInteger;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 
@@ -15,5 +16,7 @@ public interface LivroCaixaRepositoryCustom { //LivroCaixaRepositoryImpl
 	Page<LivroCaixa> buscaComFiltro(LivroCaixaDTO filtro, PageCriteria criteria);
 
 	GrupoRegra sugerirRegra(BigInteger livroCaixaId, String cnpjContabilidade, String cnpjEmpresa);
+
+	List<LivroCaixaDTO> sugerirLancamento(String cnpjContabilidade, String cnpjEmpresa, Double valor, String data);
 }
 

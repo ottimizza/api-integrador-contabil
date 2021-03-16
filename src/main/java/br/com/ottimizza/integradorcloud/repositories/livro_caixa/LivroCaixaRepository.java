@@ -19,4 +19,5 @@ public interface LivroCaixaRepository extends JpaRepository<LivroCaixa, BigInteg
 	LivroCaixa findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(@Param("cnpjContabilidade") String cnpjContabilidade, 
 																		 @Param("cnpjEmpresa") String cnpjEmpresa);
 
+
 }
