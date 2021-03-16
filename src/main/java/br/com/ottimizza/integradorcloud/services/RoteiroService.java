@@ -26,6 +26,7 @@ import br.com.ottimizza.integradorcloud.domain.dtos.EmailDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.RoteiroDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFRoteiro;
 import br.com.ottimizza.integradorcloud.domain.mappers.RoteiroMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
@@ -83,8 +84,11 @@ public class RoteiroService {
 	public RoteiroDTO uploadPlanilha(BigInteger roteiroId,
 									 SalvaArquivoRequest salvaArquivo,
 									 MultipartFile arquivo,
-									 String authorization) throws Exception {
+									 String authorization,
+									 OAuth2Authentication authentication) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
+		StringBuilder soql = new StringBuilder();
+		String tipoRoteiro = "";
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
 		roteiro = roteiro.toBuilder().status((short) 5).urlArquivo(S3_SERVICE_URL+"/resources/"+arquivoS3.getId().toString()+"/download").build();
@@ -98,6 +102,33 @@ public class RoteiroService {
 			.build();
 		String empresaCrmString = mapper.writeValueAsString(empresaCrm);
 		ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, authorization);
+		
+		//------------------------
+		
+		SFEmpresa sfEmpresa = sfClient.getEmpresa(empresa.getNomeResumido(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+		
+		if(roteiro.getTipoRoteiro().equals("PAG"))
+			tipoRoteiro = "Contas PAGAS";
+		else
+			tipoRoteiro = "Contas RECEBIDAS";
+		
+		String chaveOic = empresa.getCnpj()+"-"+roteiro.getTipoRoteiro();
+
+		try{
+			SFRoteiro roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+		}
+		catch(Exception ex){
+	    	SFRoteiro sfRoteiro = SFRoteiro.builder()
+	    			.empresaId(sfEmpresa.getIdEmpresa())
+	    			.tipoIntegracao(tipoRoteiro)
+	    			.nomeRelatorioReferencia("Principal")
+	    			.fornecedor("-1")
+	    			.portador("-1")
+	    			.dataMovimento("-1")
+	    			.lerPlanilhasPadroes(true)
+	    		.build();
+	    	sfClient.upsertRoteiro(chaveOic, sfRoteiro, ServiceUtils.getAuthorizationHeader(authentication));
+		}
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
 	

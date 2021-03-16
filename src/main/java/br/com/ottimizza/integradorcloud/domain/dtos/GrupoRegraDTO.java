@@ -2,9 +2,7 @@ package br.com.ottimizza.integradorcloud.domain.dtos;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
@@ -13,7 +11,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 
 
 @Data
