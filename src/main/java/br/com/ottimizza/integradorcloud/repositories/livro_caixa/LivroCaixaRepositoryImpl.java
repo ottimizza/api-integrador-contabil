@@ -122,9 +122,6 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		LocalDate data1 = LocalDate.of(Integer.parseInt(data.substring(0, 4)), Integer.parseInt(data.substring(5,7)), Integer.parseInt(data.substring(8))).minusDays(33);
 		LocalDate data2 = LocalDate.of(Integer.parseInt(data.substring(0, 4)), Integer.parseInt(data.substring(5,7)), Integer.parseInt(data.substring(8))).minusDays(27);
 
-		System.out.println("Valor1: "+valor1 + " Valor2: "+valor2);
-		System.out.println("Data1: "+data1.toString()+" Data2: "+data2.toString());
-
 		sql.append("SELECT * ");
 		sql.append("FROM livros_caixas lc ");
 		sql.append("WHERE lc.cnpj_contabilidade = :cnpjContabilidade ");
