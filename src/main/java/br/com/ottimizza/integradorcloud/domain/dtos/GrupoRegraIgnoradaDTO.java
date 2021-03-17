@@ -2,11 +2,8 @@ package br.com.ottimizza.integradorcloud.domain.dtos;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
 import lombok.AllArgsConstructor;

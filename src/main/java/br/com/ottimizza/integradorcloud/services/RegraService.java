@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
@@ -18,24 +18,28 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 
+import br.com.ottimizza.integradorcloud.client.EmailSenderClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.EmailDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraIgnoradaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.GrupoRegraMapper;
+import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegraIgnorada;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
+import br.com.ottimizza.integradorcloud.repositories.EmpresaRepository;
 import br.com.ottimizza.integradorcloud.repositories.GrupoRegraIgnoradaRepository;
 import br.com.ottimizza.integradorcloud.repositories.RegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
 import br.com.ottimizza.integradorcloud.utils.DateUtils;
+import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 
 @Service // @formatter:off
 public class RegraService {
@@ -51,9 +55,18 @@ public class RegraService {
     
     @Inject
     RegraRepository regraRepository;
+    
+    @Inject
+    EmpresaRepository empresaRepository;
 
     @Inject 
     OAuthClient oauthClient;
+    
+    @Inject
+    EmailSenderClient emailSenderClient;
+    
+    @Value("${email-oud-finalizado}")
+    private String EMAIL_OUD_FINALIZADO;
     
     public Page<GrupoRegraDTO> buscarRegras(GrupoRegraDTO filtro, PageCriteria pageCriteria, OAuth2Authentication authentication) 
             throws Exception {
@@ -78,8 +91,10 @@ public class RegraService {
     }
 
     public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, Short sugerir, String regraSugerida, OAuth2Authentication authentication) throws Exception {
-    	List<String> campos = new ArrayList();
+    	UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+    	Empresa empresa = empresaRepository.buscaEmpresa(grupoRegraDTO.getCnpjEmpresa(), userInfo.getOrganization().getId()).orElse(null);
     	BigInteger regraId = null;
+    	String tipoMovimento = "";
         validaGrupoRegra(grupoRegraDTO);
         grupoRegraDTO.setUsuario(authentication.getName());
 
@@ -104,6 +119,29 @@ public class RegraService {
             regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getContaMovimento(), grupoRegra.getId(), sugerir, regraId);
 
         grupoRegraRepository.ajustePosicao(grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getTipoLancamento());
+        
+        for(Regra r : regrasSalvas) {
+        	if(r.getCampo().equals("tipoMovimento"))
+        		tipoMovimento = r.getValor();
+        }
+		Long lancamentosRestantes = lancamentoRepository.contarLancamentosRestantesEmpresa(grupoRegra.getCnpjEmpresa(), grupoRegra.getCnpjContabilidade(), tipoMovimento);
+        if(lancamentosRestantes == 0) {
+        	StringBuilder sb = new StringBuilder();
+			sb.append("Contabilidade: "+userInfo.getOrganization().getName()+"<br>");
+			sb.append("Empresa: "+empresa.getRazaoSocial()+"<br>");
+			sb.append("Processo: "+tipoMovimento+"<br>");
+			sb.append("Finalizado por: "+userInfo.getFirstName()+" "+userInfo.getLastName()+" ("+userInfo.getUsername()+")");
+			sb.append("<br>");
+			sb.append("<br>");
+			sb.append("Enviado Automaticamente por Otimizza Última Digitação");
+			EmailDTO email = EmailDTO.builder()
+					.to(EMAIL_OUD_FINALIZADO)
+					.subject("Empresa "+empresa.getRazaoSocial()+"/"+userInfo.getOrganization().getName()+" com OUD finalizado.")
+					.body(sb.toString())
+				.build();
+			emailSenderClient.sendMail(email);
+        }
+        
         return grupoRegraDTO;
     }
 
@@ -291,7 +329,7 @@ public class RegraService {
     }
     
     public GrupoRegraIgnoradaDTO ignorarSugestaoRegra(GrupoRegraIgnoradaDTO grupoRegra, OAuth2Authentication authentication) throws Exception {
-    	UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+    	UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
     	grupoRegra.setCnpjContabilidade(userInfo.getOrganization().getCnpj());
     	GrupoRegraIgnorada regraIgnorada = grupoRegraIgnoradaRepository.save(GrupoRegraMapper.ignoradaFromDto(grupoRegra));
     	return GrupoRegraMapper.ignoradaFromEntity(regraIgnorada);
@@ -510,11 +548,6 @@ public class RegraService {
     	return contagemRegras;
     }
     
-    private String getAuthorizationHeader(OAuth2Authentication authentication) {
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
-        return MessageFormat.format("Bearer {0}", accessToken);
-    }
 
 }
 

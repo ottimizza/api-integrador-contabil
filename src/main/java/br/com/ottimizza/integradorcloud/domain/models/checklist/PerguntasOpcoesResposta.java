@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.domain.models.checklist;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

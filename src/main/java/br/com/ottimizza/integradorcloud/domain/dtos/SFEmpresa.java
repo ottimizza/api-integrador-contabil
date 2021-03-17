@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.domain.dtos;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
