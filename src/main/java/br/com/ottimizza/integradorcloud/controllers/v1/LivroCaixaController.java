@@ -107,4 +107,14 @@ public class LivroCaixaController {
 				service.uploadFile(idLivroCaixa, salvaArquivo, arquivo, authorization)
 				));
 	}
+
+	@GetMapping("/sugerir_lancamento")
+	ResponseEntity<?> sugerirLancamento(@Valid String cnpjContabilidade,
+										@Valid String cnpjEmpresa,
+										@Valid String data,
+										@Valid Double valor) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<>(
+				service.sugerirLancamento(cnpjContabilidade, cnpjEmpresa, data, valor)	
+			));
+	}
 }

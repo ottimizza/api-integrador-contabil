@@ -105,4 +105,8 @@ public class SFEmpresa implements Serializable {
 	@JsonProperty(value = "Produto_da_Contabilidade__c")
 	private String produtoContabilidade;
 
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Previsao_Homologacao__c")
+	private String Previsao_Homologacao;
+
 }

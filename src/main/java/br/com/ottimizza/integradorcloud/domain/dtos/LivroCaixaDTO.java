@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -62,6 +64,7 @@ public class LivroCaixaDTO implements Serializable {
 
 	private LocalDateTime dataCriacao;
 
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String dataString;
 	
 	public LivroCaixa patch(LivroCaixa livroCaixa) {

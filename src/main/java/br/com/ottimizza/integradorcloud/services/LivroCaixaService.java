@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -127,6 +128,10 @@ public class LivroCaixaService {
 		lc.setLinkArquivo(S3_SERVICE_URL+"/resources/"+arquivoS3.getId().toString()+"/download");
 		
 		return LivroCaixaMapper.fromEntity(repository.save(lc));
+	}
+
+	public List<LivroCaixaDTO> sugerirLancamento(String cnpjContabilidade, String cnpjEmpresa, String data, Double valor) throws Exception {
+		return repository.sugerirLancamento(cnpjContabilidade, cnpjEmpresa, valor, data);
 	}
 	
 

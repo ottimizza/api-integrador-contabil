@@ -1,6 +1,8 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -109,18 +111,15 @@ public class EmpresaService {
         if(empresa.getRazaoSocial() != null && !empresa.getRazaoSocial().equals(""))
         	empresaDTO.setRazaoSocial(empresaDTO.getRazaoSocial().toUpperCase());
         try{
-            System.out.println("ContabilidadeId "+contabilidade.getSalesForceId());
             SFProdutoContabilidade produtoContabilidadeObj = salesForceClient.getProdutoContabilidade(contabilidade.getSalesForceId().substring(0, 15), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
             produtoContabilidade = produtoContabilidadeObj.getIdProduto();
-            System.out.println("Produto: "+produtoContabilidade);
         }
-        catch(Exception ex){ 
-            System.out.println(ex.getMessage());
-        }
+        catch(Exception ex){ }
         SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO).toBuilder()
                 .valorMesIntegracao(60.0)
                 .contailidadeFaturamento(contabilidade.getSalesForceId())
                 .produtoContabilidade(produtoContabilidade)
+                .Previsao_Homologacao(LocalDateTime.now(ZoneId.of("Brazil/East")).plusMonths(1).toString())
             .build();
         salesForceClient.upsertEmpresa(nomeResumido, empresaSf, ServiceUtils.getAuthorizationHeader(authentication));
 		return EmpresaMapper.fromEntity(empresa);
