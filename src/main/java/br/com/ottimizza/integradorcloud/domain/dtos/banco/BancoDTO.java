@@ -1,8 +1,9 @@
-package br.com.ottimizza.integradorcloud.domain.dtos;
+package br.com.ottimizza.integradorcloud.domain.dtos.banco;
 
 import java.io.Serializable;
 import java.math.BigInteger;
 
+import br.com.ottimizza.integradorcloud.domain.models.banco.ObjetoAutenticacao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,4 +26,8 @@ public class BancoDTO implements Serializable{
 	private String nomeBanco;
 	
 	private String descricao;
+
+	private String codigoBanco;
+
+	private ObjetoAutenticacao objetoAutenticacao;
 }

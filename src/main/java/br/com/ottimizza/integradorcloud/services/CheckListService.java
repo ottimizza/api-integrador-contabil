@@ -101,7 +101,7 @@ public class CheckListService {
 			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
 			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString,authorization);
 		}
-		if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.3")) {
+		else if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.3")) {
 			String nomeResumido = perguntasRepository.getNomeEmpresaPorRoteiroId(respostaDTO.getRoteiroId());
 			empresaCrm = SFEmpresa.builder()
 					.Horas_para_digitar(respostaDTO.getResposta())
@@ -109,7 +109,7 @@ public class CheckListService {
 			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
 			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString,authorization);
 		}
-		if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.5")) {
+		else if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.5")) {
 			String nomeResumido = perguntasRepository.getNomeEmpresaPorRoteiroId(respostaDTO.getRoteiroId());
 			empresaCrm = SFEmpresa.builder()
 					.Nome_de_quem_faz_o_fechamento(respostaDTO.getResposta())
@@ -118,7 +118,7 @@ public class CheckListService {
 			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
 			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString,authorization);
 		}
-		if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.6")) {
+		else if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.6")) {
 			String nomeResumido = perguntasRepository.getNomeEmpresaPorRoteiroId(respostaDTO.getRoteiroId());
 			empresaCrm = SFEmpresa.builder()
 					.Email_de_quem_faz_o_fechamento(respostaDTO.getResposta())
@@ -126,7 +126,14 @@ public class CheckListService {
 			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
 			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString, authorization);
 		}
-		
+		else if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.7")) {
+			String nomeResumido = perguntasRepository.getNomeEmpresaPorRoteiroId(respostaDTO.getRoteiroId());
+			empresaCrm = SFEmpresa.builder()
+					.Email_Gestor(respostaDTO.getResposta())
+				.build();
+			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
+			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString, authorization);
+		}
 	}
 	
 }

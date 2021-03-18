@@ -1,4 +1,4 @@
-package br.com.ottimizza.integradorcloud.domain.models;
+package br.com.ottimizza.integradorcloud.domain.models.banco;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -12,6 +12,10 @@ import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+
+import org.hibernate.annotations.TypeDef;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Table(name = "bancos", indexes = {@Index(name = "banco_index", columnList = "id", unique = true)})
 public class Banco implements Serializable{
 	
@@ -42,5 +47,9 @@ public class Banco implements Serializable{
 	private String nomeBanco;
 	
 	private String descricao;
+
+	private String codigoBanco;
+
+	private ObjetoAutenticacao objetoAutenticacao;
 
 }

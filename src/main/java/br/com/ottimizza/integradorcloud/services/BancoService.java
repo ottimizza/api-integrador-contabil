@@ -16,9 +16,9 @@ import org.springframework.stereotype.Service;
 
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.BancoDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.banco.BancoDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.BancoMapper;
-import br.com.ottimizza.integradorcloud.domain.models.Banco;
+import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
 import br.com.ottimizza.integradorcloud.repositories.BancoRepository;
 
 @Service
