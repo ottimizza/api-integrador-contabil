@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.repositories.livro_caixa;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaDTO;
+import br.com.ottimizza.integradorcloud.domain.mappers.LivroCaixaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 
@@ -110,6 +112,36 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		query.setParameter("cnpjEmpresa", cnpjEmpresa);
 		
 		return (GrupoRegra) query.getSingleResult();
+	}
+
+	@Override
+	public List<LivroCaixaDTO> sugerirLancamento(String cnpjContabilidade, String cnpjEmpresa, Double valor, String data) {
+		StringBuilder sql = new StringBuilder();
+		Double valor1 = valor * 0.9;
+		Double valor2 = valor * 1.1;
+		LocalDate data1 = LocalDate.of(Integer.parseInt(data.substring(0, 4)), Integer.parseInt(data.substring(5,7)), Integer.parseInt(data.substring(8))).minusDays(33);
+		LocalDate data2 = LocalDate.of(Integer.parseInt(data.substring(0, 4)), Integer.parseInt(data.substring(5,7)), Integer.parseInt(data.substring(8))).minusDays(27);
+
+		sql.append("SELECT * ");
+		sql.append("FROM livros_caixas lc ");
+		sql.append("WHERE lc.cnpj_contabilidade = :cnpjContabilidade ");
+		sql.append("AND lc.cnpj_empresa = :cnpjEmpresa ");
+		sql.append("AND lc.valor_original >= :valor1 ");
+		sql.append("AND lc.valor_original <= :valor2 ");
+		sql.append("AND lc.data_movimento >= :data1 ");
+		sql.append("AND lc.data_movimento <= :data2 ");
+		sql.append("LIMIT 5");
+
+		Query query = em.createNativeQuery(sql.toString(), LivroCaixa.class);
+
+		query.setParameter("cnpjContabilidade", cnpjContabilidade);
+		query.setParameter("cnpjEmpresa", cnpjEmpresa);
+		query.setParameter("valor1", valor1);
+		query.setParameter("valor2", valor2);
+		query.setParameter("data1", data1);
+		query.setParameter("data2", data2);
+
+		return LivroCaixaMapper.fromEntities(query.getResultList());
 	}
 
 

@@ -136,5 +136,9 @@ public class LivroCaixaService {
 		return LivroCaixaMapper.fromEntity(repository.save(lc));
 	}
 
+	public List<LivroCaixaDTO> sugerirLancamento(String cnpjContabilidade, String cnpjEmpresa, String data, Double valor) throws Exception {
+		return repository.sugerirLancamento(cnpjContabilidade, cnpjEmpresa, valor, data);
+	}
+	
 
 }

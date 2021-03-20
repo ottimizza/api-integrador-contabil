@@ -129,13 +129,13 @@
 			<artifactId>jdo-api</artifactId>
 			<version>3.1</version>
 		</dependency>
-		
-		<dependency> 
-			<groupId>org.json</groupId> 
+
+		<dependency>
+			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20190722</version> 
+			<version>20190722</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-ses</artifactId>
@@ -169,9 +169,9 @@
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-sns</artifactId>
 		</dependency>
-		
+
 	</dependencies>
-<dependencyManagement>
+	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
@@ -190,7 +190,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr4-maven-plugin</artifactId>
@@ -223,36 +223,13 @@
 
 		</plugins>
 	</build>
-	<!-- 
-	<repositories>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-		</repository>
-		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-	-->
+	<!-- <repositories> <repository> <id>spring-milestones</id> <name>Spring 
+		Milestones</name> <url>https://repo.spring.io/milestone</url> </repository> 
+		<repository> <id>spring-snapshots</id> <name>Spring Snapshots</name> <url>https://repo.spring.io/snapshot</url> 
+		<snapshots> <enabled>true</enabled> </snapshots> </repository> </repositories> 
+		<pluginRepositories> <pluginRepository> <id>spring-milestones</id> <name>Spring 
+		Milestones</name> <url>https://repo.spring.io/milestone</url> </pluginRepository> 
+		<pluginRepository> <id>spring-snapshots</id> <name>Spring Snapshots</name> 
+		<url>https://repo.spring.io/snapshot</url> <snapshots> <enabled>true</enabled> 
+		</snapshots> </pluginRepository> </pluginRepositories> -->
 </project>

@@ -113,4 +113,14 @@ public class LivroCaixaController {
 	public ResponseEntity<?> integraContabilidade(@PathVariable BigInteger id, OAuth2Authentication authentication) {
 		return ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(service.integraContabilidade(id, authentication)));
 	}
+	
+	@GetMapping("/sugerir_lancamento")
+	ResponseEntity<?> sugerirLancamento(@Valid String cnpjContabilidade,
+										@Valid String cnpjEmpresa,
+										@Valid String data,
+										@Valid Double valor) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<>(
+				service.sugerirLancamento(cnpjContabilidade, cnpjEmpresa, data, valor)	
+			));
+	}
 }
