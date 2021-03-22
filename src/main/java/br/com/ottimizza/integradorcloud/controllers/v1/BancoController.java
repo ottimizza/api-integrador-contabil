@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.banco.BancoDTO;
+import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.BancoService;
@@ -41,7 +42,7 @@ public class BancoController {
     public ResponseEntity<?> buscarBancos(@Valid BancoDTO filter, 
                                           @Valid PageCriteria pageCriteria, 
                                            OAuth2Authentication authentication) throws Exception {
-        return ResponseEntity.ok(new GenericPageableResponse<BancoDTO>(
+        return ResponseEntity.ok(new GenericPageableResponse<Banco>(
             bancoService.buscarBancos(filter, pageCriteria, authentication)
         ));
     }

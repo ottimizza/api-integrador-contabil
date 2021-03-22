@@ -1,4 +1,4 @@
-package br.com.ottimizza.integradorcloud.repositories;
+package br.com.ottimizza.integradorcloud.repositories.banco;
 
 import java.math.BigInteger;
 
@@ -10,6 +10,6 @@ import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
 
 
 @Repository
-public interface BancoRepository extends JpaRepository<Banco, BigInteger>{
+public interface BancoRepository extends JpaRepository<Banco, BigInteger>, BancoRepositoryCustom{
 
 }

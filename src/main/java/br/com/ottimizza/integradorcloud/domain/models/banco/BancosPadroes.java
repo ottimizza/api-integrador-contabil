@@ -7,11 +7,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import lombok.AllArgsConstructor;
@@ -46,7 +49,12 @@ public class BancosPadroes {
 
     private String descricao;
 
+    @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
     private ObjetoAutenticacao objetoAutenticacao;
 
+    @PrePersist @PreUpdate
+    public void prePersist() {
+    	descricao = codigoBanco+" - "+nomeBanco.toUpperCase(); 
+    }
 }
