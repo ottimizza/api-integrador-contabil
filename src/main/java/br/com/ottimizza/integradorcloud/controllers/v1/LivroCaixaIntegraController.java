@@ -22,9 +22,9 @@ public class LivroCaixaIntegraController {
 	@Inject
 	LivroCaixaService service;
 	
-	@PatchMapping("{id}")
-	public ResponseEntity<?> integraContabilidade(@PathVariable BigInteger id, OAuth2Authentication authentication) {
-		return ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(service.integraContabilidade(id, authentication)));
+	@PatchMapping("/{id}")
+	public ResponseEntity<?> integraContabilidade(@PathVariable BigInteger id) {
+		return ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(service.integraContabilidade(id)));
 	}
 	
 }
