@@ -5,8 +5,7 @@ import java.math.BigInteger;
 import javax.inject.Inject;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,10 +21,11 @@ public class LivroCaixaIntegraController {
 	@Inject
 	LivroCaixaService service;
 	
-	@PatchMapping("/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<?> integraContabilidade(@PathVariable BigInteger id) {
 		System.out.println(">>> X99 "+id);
-		return ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(service.integraContabilidade(id)));
+		service.integraContabilidade(id);
+		return ResponseEntity.ok().build();
 	}
 	
 }
