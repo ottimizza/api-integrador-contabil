@@ -24,6 +24,7 @@ public class LivroCaixaIntegraController {
 	
 	@PatchMapping("/{id}")
 	public ResponseEntity<?> integraContabilidade(@PathVariable BigInteger id) {
+		System.out.println(">>> X99 "+id);
 		return ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(service.integraContabilidade(id)));
 	}
 	
