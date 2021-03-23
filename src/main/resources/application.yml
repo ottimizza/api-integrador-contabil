@@ -62,6 +62,11 @@ email-sender:
     name: email-sender-service
     url: ${EMAIL_SENDER_URL:https://api-emaiil-sender.herokuapp.com}
 
+cora:
+  service:
+    name: cora-service
+    url: ${CORA_SERVER_URL:https://api.stage.cora.com.br}
+
 email-oud-finalizado: ${EMAIL_OUD_FINALIZADO:projetooic@ottimizza.com.br}
 
 email-envio-checklist: ${EMAIL_ENVIO_CHECKLIST:preentrega@ottimizza.com.br}
