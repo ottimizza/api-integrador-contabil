@@ -1,7 +1,6 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
-import java.text.MessageFormat;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -9,12 +8,11 @@ import javax.persistence.NoResultException;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
@@ -73,12 +71,6 @@ public class HistoricoService {
     	historico.setUsuario(authentication.getName());
     	
     	return HistoricoMapper.fromEntity(historicoRepository.save(historico));
-    }
-
-    public String getAuthorizationHeader(OAuth2Authentication authentication) {
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
-        return MessageFormat.format("Bearer {0}", accessToken);
     }
 
     private Example<Historico> getDefaultQueryByExample(HistoricoDTO historicoDTO) {
