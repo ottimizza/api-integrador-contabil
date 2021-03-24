@@ -138,6 +138,7 @@ public class LivroCaixaService {
 	
 	public LivroCaixaDTO integraContabilidade(BigInteger id) {
 		LivroCaixa lc = repository.findById(id).orElse(null);
+		System.out.println(">>> iN 02 "+lc.toString());
 		lc.setIntegradoContabilidade(true);
 		return LivroCaixaMapper.fromEntity(repository.save(lc));
 	}
