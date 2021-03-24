@@ -4,6 +4,7 @@ import java.math.BigInteger;
 
 import javax.inject.Inject;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,13 @@ public class LivroCaixaIntegraController {
 	
 	@PostMapping("/{id}")
 	public ResponseEntity<?> integraContabilidade(@PathVariable BigInteger id) {
-		return ResponseEntity.ok(service.integraContabilidade(id));
+		try {
+			return ResponseEntity.ok(service.integraContabilidade(id));			
+		}catch (Exception e) {
+			System.out.println("Error integraContabilidade "+e.getMessage());
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
 	}
 	
 }
