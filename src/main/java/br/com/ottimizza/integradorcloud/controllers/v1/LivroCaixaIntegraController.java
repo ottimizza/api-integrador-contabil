@@ -22,6 +22,7 @@ public class LivroCaixaIntegraController {
 	
 	@PostMapping("/{id}")
 	public ResponseEntity<?> integraContabilidade(@PathVariable BigInteger id) {
+		System.out.println(">>> iN 01 "+id);
 		try {
 			return ResponseEntity.ok(service.integraContabilidade(id));			
 		}catch (Exception e) {
