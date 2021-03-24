@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.services.LivroCaixaService;
+import javassist.NotFoundException;
 
 @RestController
 @RequestMapping("/integra/v1/livro_caixa")
@@ -22,13 +23,12 @@ public class LivroCaixaIntegraController {
 	
 	@PostMapping("/{id}")
 	public ResponseEntity<?> integraContabilidade(@PathVariable BigInteger id) {
-		System.out.println(">>> iN 01 "+id);
 		try {
 			return ResponseEntity.ok(service.integraContabilidade(id));			
 		}catch (Exception e) {
-			System.out.println("Error integraContabilidade "+e.getMessage());
+			new NotFoundException(e.getMessage());
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
 	}
 	
