@@ -130,7 +130,7 @@ public class LivroCaixaService {
 		return LivroCaixaMapper.fromEntity(repository.save(lc));
 	}
 
-	public LivroCaixaDTO integraContabilidade(BigInteger id, OAuth2Authentication authentication) {
+	public LivroCaixaDTO integraContabilidade(BigInteger id, String authorization) {
 		LivroCaixa lc = repository.findById(id).orElse(null);
 		lc.setIntegradoContabilidade(true);
 		return LivroCaixaMapper.fromEntity(repository.save(lc));
