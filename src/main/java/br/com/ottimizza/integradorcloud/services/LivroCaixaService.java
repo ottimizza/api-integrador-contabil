@@ -130,6 +130,18 @@ public class LivroCaixaService {
 		return LivroCaixaMapper.fromEntity(repository.save(lc));
 	}
 
+//	public LivroCaixaDTO integraContabilidade(BigInteger id, String authorization) {
+//		LivroCaixa lc = repository.findById(id).orElse(null);
+//		lc.setIntegradoContabilidade(true);
+//		return LivroCaixaMapper.fromEntity(repository.save(lc));
+//	}
+	
+	public LivroCaixaDTO integraContabilidade(BigInteger id) {
+		LivroCaixa lc = repository.findById(id).orElse(null);
+		lc.setIntegradoContabilidade(true);
+		return LivroCaixaMapper.fromEntity(repository.save(lc));
+	}
+
 	public List<LivroCaixaDTO> sugerirLancamento(String cnpjContabilidade, String cnpjEmpresa, String data, Double valor) throws Exception {
 		return repository.sugerirLancamento(cnpjContabilidade, cnpjEmpresa, valor, data);
 	}

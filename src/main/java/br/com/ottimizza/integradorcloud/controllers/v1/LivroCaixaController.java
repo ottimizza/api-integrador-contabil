@@ -107,7 +107,12 @@ public class LivroCaixaController {
 				service.uploadFile(idLivroCaixa, salvaArquivo, arquivo, authorization)
 				));
 	}
-
+	
+//	@PostMapping("/integra/{id}")
+//	public ResponseEntity<?> integraContabilidade(@PathVariable BigInteger id, OAuth2Authentication authentication) {
+//		return ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(service.integraContabilidade(id, authentication)));
+//	}
+	
 	@GetMapping("/sugerir_lancamento")
 	ResponseEntity<?> sugerirLancamento(@Valid String cnpjContabilidade,
 										@Valid String cnpjEmpresa,
