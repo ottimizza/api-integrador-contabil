@@ -18,5 +18,7 @@ public interface LivroCaixaRepositoryCustom { //LivroCaixaRepositoryImpl
 	GrupoRegra sugerirRegra(BigInteger livroCaixaId, String cnpjContabilidade, String cnpjEmpresa);
 
 	List<LivroCaixaDTO> sugerirLancamento(String cnpjContabilidade, String cnpjEmpresa, Double valor, String data);
+
+	
 }
 

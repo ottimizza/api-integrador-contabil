@@ -44,7 +44,7 @@ public class BancoController {
                                            OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(new GenericPageableResponse<Banco>(
             bancoService.buscarBancos(filter, pageCriteria, authentication)
-        ));
+        )); 
     }
 
 	@DeleteMapping("{id}")

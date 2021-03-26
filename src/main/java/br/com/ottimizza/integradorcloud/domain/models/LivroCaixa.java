@@ -117,6 +117,9 @@ public class LivroCaixa implements Serializable {
 			this.valorFinal = this.valorOriginal;
 		else
 			this.valorFinal = this.valorPago;
+			
+		if(this.tipoMovimento.equals("PAG") && this.valorFinal > 0)
+			this.valorFinal = this.valorFinal * -1;
 	}
 
 	public static class Status  {

@@ -27,17 +27,17 @@ public class BancoRepositoryImpl implements BancoRepositoryCustom {
         sql.append("FROM bancos b ");
         sql.append("LEFT JOIN bancos_padroes bp ");
         sql.append("ON bp.id = b.fk_banco_padrao_id ");
-        sql.append("WHERE b.cnpj_contabilidade = :cnpjContabilidade ");
+        sql.append("WHERE b.cnpj_empresa = :cnpjEmpresa ");
         if(filtro.getDescricao() != null && !filtro.getDescricao().equals(""))
             sql.append("AND b.descricao LIKE(:descricao)");
         if(filtro.getCodigoBanco() != null)
             sql.append("AND b.codigo_banco LIKE(:codBanco)");
         
         Query query = em.createNativeQuery(sql.toString());
-        query.setParameter("cnpjContabilidade", filtro.getCnpjContabilidade());
+        query.setParameter("cnpjEmpresa", filtro.getCnpjEmpresa());
 
         if(filtro.getDescricao() != null && !filtro.getDescricao().equals(""))
-            query.setParameter("descricao","%"+filtro.getDescricao()+"%");
+            query.setParameter("descricao","%"+filtro.getDescricao().toUpperCase()+"%");
         if(filtro.getCodigoBanco() != null)
             query.setParameter("codBanco","%"+filtro.getCodigoBanco()+"%");
         
