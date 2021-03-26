@@ -51,9 +51,8 @@ public class RoteiroController {
 	ResponseEntity<?> uploadPlanilha(@PathVariable("roteiroId") BigInteger roteiroId,
 									 @Valid SalvaArquivoRequest salvaArquivo,
 									 @RequestParam("file") MultipartFile arquivo,
-									 @RequestHeader("Authorization") String authorization,
-									 OAuth2Authentication authentication) throws Exception {
-		return ResponseEntity.ok(new GenericResponse<>(roteiroService.uploadPlanilha(roteiroId, salvaArquivo, arquivo, authorization, authentication)));
+									 @RequestHeader("Authorization") String authorization) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<>(roteiroService.uploadPlanilha(roteiroId, salvaArquivo, arquivo, authorization)));
 	}
 	
 	@PatchMapping("/{roteiroId}")

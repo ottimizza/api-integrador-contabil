@@ -49,18 +49,14 @@ public class ArquivoPronto {
 	
 	@Column(name = "tipo_movimento")
 	private String tipoMovimento;
-
-	@Column(name = "historico")
-	private String historico;
-
+	
 	@Column(name = "codigo_historico")
 	private String codigoHistorico;
-
+	
 	@Column(name = "erp_contabil")
 	private String erpContabil;
 	
 	@Column(name = "lote")
 	private String lote;
-
 
 }
