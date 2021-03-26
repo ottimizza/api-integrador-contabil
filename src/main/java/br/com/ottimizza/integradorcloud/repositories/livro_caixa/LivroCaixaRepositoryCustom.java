@@ -11,12 +11,13 @@ import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaDTO;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 
-public interface LivroCaixaRepositoryCustom { //LivroCaixaRepositoryImpl
+public interface LivroCaixaRepositoryCustom {
 
 	Page<LivroCaixa> buscaComFiltro(LivroCaixaDTO filtro, PageCriteria criteria);
 
 	GrupoRegra sugerirRegra(BigInteger livroCaixaId, String cnpjContabilidade, String cnpjEmpresa);
 
 	List<LivroCaixaDTO> sugerirLancamento(String cnpjContabilidade, String cnpjEmpresa, Double valor, String data);
+
 }
 

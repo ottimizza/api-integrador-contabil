@@ -144,5 +144,4 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		return LivroCaixaMapper.fromEntities(query.getResultList());
 	}
 
-
 }
