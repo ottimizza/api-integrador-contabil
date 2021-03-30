@@ -11,8 +11,6 @@ public class BancosPadroesMapper {
     public static BancosPadroes fromDTO(BancosPadroesDTO banco) {
         return BancosPadroes.builder()
                 .id(banco.getId())
-                .cnpjContabilidade(banco.getCnpjContabilidade())
-                .cnpjEmpresa(banco.getCnpjEmpresa())
                 .nomeBanco(banco.getNomeBanco())
                 .codigoBanco(banco.getCodigoBanco())
                 .descricao(banco.getDescricao())
@@ -24,8 +22,6 @@ public class BancosPadroesMapper {
     public static BancosPadroesDTO fromEntity(BancosPadroes banco) {
         return BancosPadroesDTO.builder()
                 .id(banco.getId())
-                .cnpjContabilidade(banco.getCnpjContabilidade())
-                .cnpjEmpresa(banco.getCnpjEmpresa())
                 .nomeBanco(banco.getNomeBanco())
                 .codigoBanco(banco.getCodigoBanco())
                 .descricao(banco.getDescricao())

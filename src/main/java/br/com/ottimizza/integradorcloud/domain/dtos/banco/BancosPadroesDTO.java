@@ -16,12 +16,8 @@ public class BancosPadroesDTO implements Serializable {
     
     private static final long serialVersionUID = 1L;
 
-    private BigInteger id;
-
-	private String cnpjContabilidade;
-
-	private String cnpjEmpresa;
-	
+    private BigInteger id; 
+    
 	private String nomeBanco;
 
     private String iconeBanco;

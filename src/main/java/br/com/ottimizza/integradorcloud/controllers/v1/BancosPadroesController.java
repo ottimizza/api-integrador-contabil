@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.controllers.v1;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.ottimizza.integradorcloud.domain.commands.bancos_padroes.ImportacaoBancosPadroes;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.banco.BancosPadroesDTO;
 import br.com.ottimizza.integradorcloud.domain.models.banco.BancosPadroes;
@@ -51,6 +53,13 @@ public class BancosPadroesController {
         return ResponseEntity.ok(new GenericResponse<>(
                 service.deletaPorId(id)
             ));
+    }
+
+    @PostMapping("/importar")
+    public ResponseEntity<?> importarBancosPadroes(@RequestBody ImportacaoBancosPadroes bancos) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<>(
+            service.importarBancos(bancos.getBancos())
+        ));
     }
 
 }

@@ -1,6 +1,8 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -25,7 +27,6 @@ public class BancosPadroesService {
     BancosPadroesRepository repository;
 
     public BancosPadroesDTO salva(BancosPadroes banco) throws Exception {
-        System.out.println(banco.getObjetoAutenticacao().toString());
         BancosPadroes retorno = repository.save(banco);
         return BancosPadroesMapper.fromEntity(retorno);
     }
@@ -41,5 +42,11 @@ public class BancosPadroesService {
     public String deletaPorId(BigInteger id) throws Exception {
         repository.deleteById(id);
         return "BancosPadroes removido com sucesso!";
+    }
+
+    public List<BancosPadroesDTO> importarBancos(List<BancosPadroes> bancos) throws Exception {
+        List<BancosPadroes> retorno = new ArrayList<>();
+        repository.saveAll(bancos).forEach(retorno::add);
+        return BancosPadroesMapper.fromEntities(retorno);
     }
 }

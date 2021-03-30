@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.domain.models.banco;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 import javax.persistence.Column;
@@ -28,18 +29,14 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Table(name = "bancos_padroes")
-public class BancosPadroes {
+public class BancosPadroes implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+
     @Id
 	@SequenceGenerator(name = "banco_padrao_sequence", sequenceName = "banco_padrao_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "banco_padrao_sequence")
     private BigInteger id;
-
-    @Column(length = 14)
-	private String cnpjContabilidade;
-
-	@Column(length = 14)
-	private String cnpjEmpresa;
 	
 	private String nomeBanco;
 

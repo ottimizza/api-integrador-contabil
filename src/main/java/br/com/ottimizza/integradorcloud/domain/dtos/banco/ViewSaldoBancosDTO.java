@@ -20,12 +20,12 @@ public class ViewSaldoBancosDTO implements Serializable{
 
     BigInteger banco;
 
-    LocalDate  data;
+    LocalDate data;
     
-    Double     saldo;
+    Double saldo;
     
-    String 	   cnpjEmpresa;
+    String cnpjEmpresa;
     
-    Double     valores;
+    Double valores;
     
 }

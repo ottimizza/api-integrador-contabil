@@ -33,10 +33,17 @@ public class SaldoBancosController {
             ));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> buscaSaldo(@PathVariable BigInteger bancoId) throws Exception {
+    @GetMapping("/{cnpjEmpresa}")
+    public ResponseEntity<?> buscaSaldo(@PathVariable String cnpjEmpresa) throws Exception {
         return ResponseEntity.ok(new GenericResponse<>(
-                service.buscaUltimoSaldo(bancoId)
+                service.buscaUltimoSaldo(cnpjEmpresa)
             ));
+    }
+
+    @GetMapping("/{cnpjEmpresa}/pendentes")
+    public ResponseEntity<?> buscaRestantes(@PathVariable String cnpjEmpresa) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<>(
+            service.contarPagamentosRecebimentosRestantes(cnpjEmpresa)
+        ));
     }
 }
