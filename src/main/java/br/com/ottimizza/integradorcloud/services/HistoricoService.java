@@ -69,6 +69,7 @@ public class HistoricoService {
     	historico.setIdRoteiro(existente.getIdRoteiro());
     	historico.setDataCriacao(existente.getDataCriacao());
     	historico.setUsuario(authentication.getName());
+		historico.setAtivo(true);
     	
     	return HistoricoMapper.fromEntity(historicoRepository.save(historico));
     }
