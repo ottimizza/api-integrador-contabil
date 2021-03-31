@@ -1,5 +1,7 @@
 package br.com.ottimizza.integradorcloud.domain.commands.lancamento;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Data;
 

@@ -9,15 +9,7 @@ spring:
     username: u2ek3sojqjmutl
     password: pbe732d63e9863961de97ad2f9ec31ff8e4492e49d6b04bcf49a34508a22a043b
     driver-class-name: org.postgresql.Driver
-  servlet:
-    multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
-      enabled: true
-    
-    tomcat:
-      initial-size: 2
-     
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true

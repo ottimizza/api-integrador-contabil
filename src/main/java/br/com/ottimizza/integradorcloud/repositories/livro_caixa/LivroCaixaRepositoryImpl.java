@@ -144,5 +144,26 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		return LivroCaixaMapper.fromEntities(query.getResultList());
 	}
 
+	@Override
+	public LivroCaixa enviaLivroCaixaNaoIntegrado(LivroCaixaDTO filtro) {
+		StringBuilder sql = new StringBuilder();
+
+		sql.append("SELECT lc.* ");
+		sql.append("FROM livros_caixas lc ");
+		sql.append("WHERE lc.cnpj_empresa = :cnpjEmpresa ");
+		sql.append("AND lc.data_movimento <= :dataMovimento ");
+		if(filtro.getBancoId() != null)
+			sql.append("AND lc.fk_banco_id = :bancoId ");
+		sql.append("AND lc.integrado_contabilidade = false");
+		sql.append("LIMIT 1 ");
+		
+		Query query = em.createNativeQuery(sql.toString(), LivroCaixa.class);
+		query.setParameter("cnpjEmpresa", filtro.getCnpjEmpresa());
+		query.setParameter("dataMovimento", filtro.getDataMovimento());
+		if(filtro.getBancoId() != null)
+			query.setParameter("bancoId",filtro.getBancoId());
+			
+		return (LivroCaixa) query.getSingleResult();
+	}
 
 }

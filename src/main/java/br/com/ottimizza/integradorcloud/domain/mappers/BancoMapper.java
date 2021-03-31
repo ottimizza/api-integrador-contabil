@@ -7,7 +7,8 @@ import br.com.ottimizza.integradorcloud.domain.dtos.banco.BancoDTO;
 import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
 
 public class BancoMapper {
-	public static Banco fromDto(BancoDTO dto) {
+    
+    public static Banco fromDto(BancoDTO dto) {
         return Banco.builder()
 	                .id(dto.getId())
 	                .cnpjContabilidade(dto.getCnpjContabilidade())
