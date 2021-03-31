@@ -1,8 +1,17 @@
 package br.com.ottimizza.integradorcloud.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "")
+import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
+
+
+@FeignClient(name = "${kafka.service.name}", url = "${kafka.service.url}")
 public interface KafkaClient {
     
+    @PostMapping
+    ResponseEntity<?> integradaLivrosCaixas(@RequestBody LivroCaixa livroCaixa);
+
 }

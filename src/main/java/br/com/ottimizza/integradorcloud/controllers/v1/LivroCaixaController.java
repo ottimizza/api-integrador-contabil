@@ -1,9 +1,12 @@
 package br.com.ottimizza.integradorcloud.controllers.v1;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+
+import com.amazonaws.Response;
 
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -123,4 +126,14 @@ public class LivroCaixaController {
 				service.sugerirLancamento(cnpjContabilidade, cnpjEmpresa, data, valor)	
 			));
 	}
+
+	@PostMapping("/integrar")
+	ResponseEntity<?> integrarLivrosCaixa(@Valid String cnpjEmpresa,
+										  @Valid LocalDate dataMovimento,
+										  @Valid BigInteger bancoId) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<>(
+			service.integraLivrosCaixas(cnpjEmpresa, dataMovimento, bancoId)
+		));		
+	}
+
 }

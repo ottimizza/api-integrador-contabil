@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -13,6 +14,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.ottimizza.integradorcloud.client.KafkaClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.client.StorageS3Client;
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
@@ -42,6 +44,9 @@ public class LivroCaixaService {
 	
 	@Inject
 	StorageS3Client s3Client;
+
+	@Inject
+	KafkaClient kafkaClient;
 	
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa) throws Exception {
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
@@ -146,5 +151,9 @@ public class LivroCaixaService {
 		return repository.sugerirLancamento(cnpjContabilidade, cnpjEmpresa, valor, data);
 	}
 	
+	public String integraLivrosCaixas(String cnpjEmpresa, LocalDate dataMovimento, BigInteger bancoId) throws Exception {
+		kafkaClient.integradaLivrosCaixas(repository.enviaLivroCaixaNaoIntegrado(cnpjEmpresa, dataMovimento, bancoId));
+		return "livrosCaixas integrados com sucesso!";
+	}
 
 }
