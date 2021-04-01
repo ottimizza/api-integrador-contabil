@@ -129,7 +129,7 @@ public class LivroCaixaController {
 
 	@PostMapping("/integrar")
 	ResponseEntity<?> integrarLivrosCaixa(@Valid String cnpjEmpresa,
-										  @Valid LocalDate dataMovimento,
+										  @Valid String dataMovimento,
 										  @Valid BigInteger bancoId) throws Exception {
         return ResponseEntity.ok(new GenericResponse<>(
 			service.integraLivrosCaixas(cnpjEmpresa, dataMovimento, bancoId)
