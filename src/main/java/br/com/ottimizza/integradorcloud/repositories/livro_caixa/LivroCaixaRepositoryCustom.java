@@ -20,7 +20,7 @@ public interface LivroCaixaRepositoryCustom {
 
 	List<LivroCaixaDTO> sugerirLancamento(String cnpjContabilidade, String cnpjEmpresa, Double valor, String data);
 
-	LivroCaixa enviaLivroCaixaNaoIntegrado(String cnpjEmpresa, LocalDate dataMovimento, BigInteger bancoId);
+	List<LivroCaixa> enviaLivroCaixaNaoIntegrado(String cnpjEmpresa, LocalDate dataMovimento, BigInteger bancoId);
 	
 }
 

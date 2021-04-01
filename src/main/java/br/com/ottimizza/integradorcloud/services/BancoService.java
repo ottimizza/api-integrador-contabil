@@ -19,6 +19,7 @@ import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.banco.BancoDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.BancoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
+import br.com.ottimizza.integradorcloud.domain.models.banco.BancosPadroes;
 import br.com.ottimizza.integradorcloud.repositories.banco.BancoRepository;
 
 @Service
@@ -39,6 +40,12 @@ public class BancoService {
 									   OAuth2Authentication authentication) {
 		return bancoRepository.buscaComFiltro(filter, pageCriteria);
 	}
+
+	public Page<BancosPadroes> buscaBancosPadroes(@Valid BancoDTO filter, 
+									   			  @Valid PageCriteria pageCriteria) throws Exception {
+		return bancoRepository.buscaBancosPadroesComFiltro(filter, pageCriteria);
+    }
+
 
 	public JSONObject remover(BigInteger id) throws Exception {
 		JSONObject response = new JSONObject();

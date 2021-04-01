@@ -16,6 +16,7 @@ public class BancoMapper {
 	            	.nomeBanco(dto.getNomeBanco())
 	            	.descricao(dto.getDescricao())
 					.codigoBanco(dto.getCodigoBanco())
+					.bancoPadraoId(dto.getBancoPadraoId())
 					.objetoAutenticacao(dto.getObjetoAutenticacao())
 	            	.build(); 
     }
@@ -28,6 +29,7 @@ public class BancoMapper {
 		            	.nomeBanco(entity.getNomeBanco())
 		            	.descricao(entity.getDescricao())
 						.codigoBanco(entity.getCodigoBanco())
+						.bancoPadraoId(entity.getBancoPadraoId())
 					    .objetoAutenticacao(entity.getObjetoAutenticacao())
 		            	.build(); 
     }

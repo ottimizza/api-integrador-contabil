@@ -145,7 +145,7 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 	}
 
 	@Override
-	public LivroCaixa enviaLivroCaixaNaoIntegrado(String cnpjEmpresa, LocalDate dataMovimento, BigInteger bancoId) {
+	public List<LivroCaixa> enviaLivroCaixaNaoIntegrado(String cnpjEmpresa, LocalDate dataMovimento, BigInteger bancoId) {
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("SELECT lc.* ");
@@ -155,7 +155,6 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		if(bancoId != null)
 			sql.append("AND lc.fk_banco_id = :bancoId ");
 		sql.append("AND lc.integrado_contabilidade = false ");
-		sql.append("LIMIT 1 ");
 		
 		Query query = em.createNativeQuery(sql.toString(), LivroCaixa.class);
 		query.setParameter("cnpjEmpresa", cnpjEmpresa);
@@ -163,7 +162,7 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		if(bancoId != null)
 			query.setParameter("bancoId",bancoId);
 			
-		return (LivroCaixa) query.getSingleResult();
+		return query.getResultList();
 	}
 
 }

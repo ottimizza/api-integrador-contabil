@@ -29,5 +29,7 @@ public class BancoDTO implements Serializable{
 
 	private String codigoBanco;
 
+	private BigInteger bancoPadraoId;
+
 	private ObjetoAutenticacao objetoAutenticacao;
 }

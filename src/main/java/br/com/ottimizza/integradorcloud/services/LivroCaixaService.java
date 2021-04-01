@@ -152,10 +152,23 @@ public class LivroCaixaService {
 	}
 	
 	public String integraLivrosCaixas(String cnpjEmpresa, String dataMovimento, BigInteger bancoId) throws Exception {
+		StringBuilder obj = new StringBuilder();
+		int contador = 1;
 		LocalDate data = LocalDate.of(Integer.parseInt(dataMovimento.substring(0, 4)), Integer.parseInt(dataMovimento.substring(5, 7)), Integer.parseInt(dataMovimento.substring(8)));
-		LivroCaixa lc = repository.enviaLivroCaixaNaoIntegrado(cnpjEmpresa, data, bancoId);
-		System.out.println(lc.toString());
-		kafkaClient.integradaLivrosCaixas(lc.toString());
+		List<LivroCaixa> livrosCaixas = repository.enviaLivroCaixaNaoIntegrado(cnpjEmpresa, data, bancoId);
+		int qntLivros = livrosCaixas.size();
+		obj.append("[");
+		for(LivroCaixa lc : livrosCaixas){
+			if(contador == qntLivros){
+				obj.append(lc.toString());
+			}
+			else{
+				obj.append(lc.toString()+",");
+			}
+			contador ++;
+		}
+		obj.append("]");
+		kafkaClient.integradaLivrosCaixas(obj.toString());
 		return "livrosCaixas integrados com sucesso!";
 	}
 
