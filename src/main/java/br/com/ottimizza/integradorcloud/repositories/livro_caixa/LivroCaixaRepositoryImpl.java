@@ -154,7 +154,7 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		sql.append("AND lc.data_movimento <= :dataMovimento ");
 		if(bancoId != null)
 			sql.append("AND lc.fk_banco_id = :bancoId ");
-		sql.append("AND lc.integrado_contabilidade = false");
+		sql.append("AND lc.integrado_contabilidade = false ");
 		sql.append("LIMIT 1 ");
 		
 		Query query = em.createNativeQuery(sql.toString(), LivroCaixa.class);

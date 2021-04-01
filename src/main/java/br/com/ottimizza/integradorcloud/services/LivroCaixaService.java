@@ -55,7 +55,7 @@ public class LivroCaixaService {
 	
 	public LivroCaixaDTO patch(BigInteger id, LivroCaixaDTO livroCaixaDTO) throws Exception {
 		LivroCaixa livroCaixa = repository.findById(id).orElseThrow(() -> new NoResultException("Livro Caixa nao encontrado!"));
-		LivroCaixa retorno = livroCaixaDTO.patch(livroCaixa);
+		LivroCaixa retorno = repository.save(livroCaixaDTO.patch(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
 	
@@ -153,7 +153,9 @@ public class LivroCaixaService {
 	
 	public String integraLivrosCaixas(String cnpjEmpresa, String dataMovimento, BigInteger bancoId) throws Exception {
 		LocalDate data = LocalDate.of(Integer.parseInt(dataMovimento.substring(0, 4)), Integer.parseInt(dataMovimento.substring(5, 7)), Integer.parseInt(dataMovimento.substring(8)));
-		kafkaClient.integradaLivrosCaixas(repository.enviaLivroCaixaNaoIntegrado(cnpjEmpresa, data, bancoId));
+		LivroCaixa lc = repository.enviaLivroCaixaNaoIntegrado(cnpjEmpresa, data, bancoId);
+		System.out.println(lc.toString());
+		kafkaClient.integradaLivrosCaixas(lc.toString());
 		return "livrosCaixas integrados com sucesso!";
 	}
 

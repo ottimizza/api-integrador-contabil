@@ -11,7 +11,7 @@ import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 @FeignClient(name = "${kafka.service.name}", url = "${kafka.service.url}")
 public interface KafkaClient {
     
-    @PostMapping
-    ResponseEntity<?> integradaLivrosCaixas(@RequestBody LivroCaixa livroCaixa);
+    @PostMapping("/oic/v1/meucaixa")
+    ResponseEntity<?> integradaLivrosCaixas(@RequestBody String livroCaixa);
 
 }

@@ -62,7 +62,7 @@ cora:
 kafka:
   service:
     name: kafka-service
-    url: ${KAFKA_SERVER_URL:https://queue-events.herokuapp.com}
+    url: ${KAFKA_SERVER_URL:https://ottimizza-queue-events.herokuapp.com}
 
 email-oud-finalizado: ${EMAIL_OUD_FINALIZADO:projetooic@ottimizza.com.br}
 
