@@ -62,12 +62,12 @@ public class EmpresaMapper {
     			.Resumo_Prox_Passo("Ativar OIC - Entraremos em contato para termos mais informacoes do projeto.")
     			.Status_Projeto("01. Empresa Listada")
     			.Codigo_Empresa_ERP(empresa.getCodigoERP())
-    			.Status_Report_Data(LocalDateTime.now())
+    			.Status_Report_Data(LocalDateTime.now().toString())
     			.Contabilidade_Id(empresa.getContabilidadeCrmId())
     			.Nome_Empresa(empresa.getRazaoSocial())
     			.Cnpj(empresa.getCnpj())
     			.Envolvidos("Kleber")
-    			.Proximo_Passo(LocalDateTime.now().plusDays(2))
+    			.Proximo_Passo(LocalDateTime.now().plusDays(2).toString())
     		.build();
     }
 

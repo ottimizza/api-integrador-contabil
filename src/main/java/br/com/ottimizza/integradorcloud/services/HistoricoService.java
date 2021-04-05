@@ -75,12 +75,6 @@ public class HistoricoService {
     	return HistoricoMapper.fromEntity(historicoRepository.save(historico));
     }
 
-    public String getAuthorizationHeader(OAuth2Authentication authentication) {
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
-        return MessageFormat.format("Bearer {0}", accessToken);
-    }
-
     private Example<Historico> getDefaultQueryByExample(HistoricoDTO historicoDTO) {
         ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.EXACT);
         return Example.of(HistoricoMapper.fromDto(historicoDTO), matcher);

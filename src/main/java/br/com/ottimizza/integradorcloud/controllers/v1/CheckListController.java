@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,9 +48,10 @@ public class CheckListController {
 	
 	@PostMapping("/resposta")
 	public ResponseEntity<?> salvaCheckListResposta(@RequestBody CheckListRespostasDTO resposta,
-													@RequestHeader("Authorization") String authorization) throws Exception {
+													@RequestHeader("Authorization") String authorization,
+													OAuth2Authentication authentication) throws Exception {
 		return ResponseEntity.ok(new GenericResponse<CheckListRespostasDTO>(
-				checklistService.salvaResposta(resposta,authorization)
+				checklistService.salvaResposta(resposta,authorization, authentication)
 			));
 	}
 	
