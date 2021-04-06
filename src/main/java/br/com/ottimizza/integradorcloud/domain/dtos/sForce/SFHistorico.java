@@ -1,5 +1,7 @@
 package br.com.ottimizza.integradorcloud.domain.dtos.sForce;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -11,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SFHistorico {
-
+public class SFHistorico implements Serializable {
+	
 	public static final String S_NAME = "Roteiros_vs_Historio__c";
 
 	public static final String RECORD_TYPE_ID = "0121500000100GB";

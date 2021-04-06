@@ -117,6 +117,10 @@ public class LivroCaixa implements Serializable {
 			this.valorFinal = this.valorOriginal;
 		else
 			this.valorFinal = this.valorPago;
+			
+		if(this.tipoMovimento.equals("PAG") && this.valorFinal > 0)
+			this.valorFinal = this.valorFinal * -1;
+		
 	}
 
 	public static class Status  {
@@ -146,6 +150,14 @@ public class LivroCaixa implements Serializable {
 		this.criadoPor				= livroCaixa.getCriadoPor();		
 		this.integradoContabilidade	= false;
 		this.dataCriacao			= LocalDateTime.now(ZoneId.of("Brazil/East"));
+	}
+
+	@Override
+	public String toString() {
+		return "{ \"id\":"+id+", \"cnpjContabilidade\":"+"\""+cnpjContabilidade+"\""+", \"cnpjEmpresa\":"+"\""+cnpjEmpresa+"\""+", \"dataMovimento\":"+"\""+dataMovimento+"\""+", \"dataPrevisaoPagamento\":"+"\""+dataPrevisaoPagamento+"\""+
+				", \"valorOriginal\":"+valorOriginal+", \"valorPago\":"+valorPago+", \"valorFinal\":"+valorFinal+", \"descricao\":"+"\""+descricao+"\""+", \"bancoId\":"+bancoId+", \"categoriaId\":"+categoriaId+
+				", \"tipoMovimento\":"+"\""+tipoMovimento+"\""+", \"complemento\":"+"\""+complemento+"\""+", \"linkArquivo\":"+"\""+linkArquivo+"\""+", \"origem\":"+origem+", \"integradoContabilidade\":"+integradoContabilidade+
+				", \"status\":"+status+", \"textoDocumento\":"+"\""+textoDocumento+"\""+", \"termos\":"+"\""+termos+"\""+", \"criadoPor\":"+"\""+criadoPor+"\""+", \"dataCriacao\":"+"\""+dataCriacao+"\""+"}";
 	}
 
 }

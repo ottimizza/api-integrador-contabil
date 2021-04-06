@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -13,6 +14,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.ottimizza.integradorcloud.client.KafkaClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.client.StorageS3Client;
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
@@ -42,6 +44,9 @@ public class LivroCaixaService {
 	
 	@Inject
 	StorageS3Client s3Client;
+
+	@Inject
+	KafkaClient kafkaClient;
 	
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa) throws Exception {
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
@@ -50,7 +55,7 @@ public class LivroCaixaService {
 	
 	public LivroCaixaDTO patch(BigInteger id, LivroCaixaDTO livroCaixaDTO) throws Exception {
 		LivroCaixa livroCaixa = repository.findById(id).orElseThrow(() -> new NoResultException("Livro Caixa nao encontrado!"));
-		LivroCaixa retorno = livroCaixaDTO.patch(livroCaixa);
+		LivroCaixa retorno = repository.save(livroCaixaDTO.patch(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
 	
@@ -146,5 +151,25 @@ public class LivroCaixaService {
 		return repository.sugerirLancamento(cnpjContabilidade, cnpjEmpresa, valor, data);
 	}
 	
+	public String integraLivrosCaixas(String cnpjEmpresa, String dataMovimento, BigInteger bancoId) throws Exception {
+		StringBuilder obj = new StringBuilder();
+		int contador = 1;
+		LocalDate data = LocalDate.of(Integer.parseInt(dataMovimento.substring(0, 4)), Integer.parseInt(dataMovimento.substring(5, 7)), Integer.parseInt(dataMovimento.substring(8)));
+		List<LivroCaixa> livrosCaixas = repository.enviaLivroCaixaNaoIntegrado(cnpjEmpresa, data, bancoId);
+		int qntLivros = livrosCaixas.size();
+		obj.append("[");
+		for(LivroCaixa lc : livrosCaixas){
+			if(contador == qntLivros){
+				obj.append(lc.toString());
+			}
+			else{
+				obj.append(lc.toString()+",");
+			}
+			contador ++;
+		}
+		obj.append("]");
+		kafkaClient.integradaLivrosCaixas(obj.toString());
+		return "livrosCaixas integrados com sucesso!";
+	}
 
 }

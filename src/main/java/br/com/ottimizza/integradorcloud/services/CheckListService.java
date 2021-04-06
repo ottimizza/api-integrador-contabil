@@ -15,13 +15,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.CheckListRespostasDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
 import br.com.ottimizza.integradorcloud.domain.mappers.CheckListMapper;
 import br.com.ottimizza.integradorcloud.domain.models.checklist.CheckList;
@@ -29,6 +32,7 @@ import br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListPergunt
 import br.com.ottimizza.integradorcloud.domain.models.checklist.CheckListRespostas;
 import br.com.ottimizza.integradorcloud.repositories.checklist.CheckListPerguntasRepository;
 import br.com.ottimizza.integradorcloud.repositories.checklist.CheckListRespostasRepository;
+import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 
 @Service
 public class CheckListService {
@@ -39,6 +43,9 @@ public class CheckListService {
 	@Inject
 	CheckListRespostasRepository respostasRepository;
 	
+	@Inject
+	OAuthClient oauthClient;
+
 	@Value("${salesforce.service.url}")
     private String SF_SERVICE_URL;
 
@@ -57,7 +64,7 @@ public class CheckListService {
 	
 	// RESPOSTAS
 	
-	public CheckListRespostasDTO salvaResposta(CheckListRespostasDTO respostaDTO, String authorization) throws Exception {
+	public CheckListRespostasDTO salvaResposta(CheckListRespostasDTO respostaDTO, String authorization, OAuth2Authentication authentication) throws Exception {
 		CheckListRespostas respostaDb = null;
 		
 		//List<BigInteger> idsPerguntasContato = perguntasRepository.getIdsPerguntasContanto();
@@ -66,13 +73,13 @@ public class CheckListService {
 		}catch(Exception ex) { } 
 		if(respostaDb != null) {
 			CheckListRespostas resposta = respostasRepository.save(respostaDTO.patch(respostaDb));
-			atualizaEmpresaCRM(respostaDTO, authorization);
+			atualizaEmpresaCRM(respostaDTO, authorization, authentication);
 			return CheckListMapper.respostasFromEntity(resposta);
 		}
 		else {
 			//if(idsPerguntasContato.contains(respostaDTO.getPerguntaId())) {
 			CheckListRespostas resposta = respostasRepository.save(CheckListMapper.respostasFromDTO(respostaDTO));
-			atualizaEmpresaCRM(respostaDTO, authorization);
+			atualizaEmpresaCRM(respostaDTO, authorization, authentication);
 			return CheckListMapper.respostasFromEntity(resposta);
 		}
 	}
@@ -85,41 +92,44 @@ public class CheckListService {
         										.map(CheckListMapper::respostasFromEntity);
 	}
 	
-	public void atualizaEmpresaCRM(CheckListRespostasDTO respostaDTO, String authorization) throws Exception {
+	public void atualizaEmpresaCRM(CheckListRespostasDTO respostaDTO, String authorization, OAuth2Authentication authentication)throws Exception {
+		UserDTO user = oauthClient.getUserInfo(authorization).getBody().getRecord();
 		SFEmpresa empresaCrm = null;
 		ObjectMapper mapper = new ObjectMapper();
-		if(respostaDTO.getPerguntaId() == BigInteger.valueOf(7)) {
+
+		if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.2")) {
+			String nomeResumido = perguntasRepository.getNomeEmpresaPorRoteiroId(respostaDTO.getRoteiroId());
+			empresaCrm = SFEmpresa.builder()
+					.ERP_do_cliente(respostaDTO.getResposta())
+					.build();
+			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
+			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString,authorization);
+		}
+		if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.3")) {
+			String nomeResumido = perguntasRepository.getNomeEmpresaPorRoteiroId(respostaDTO.getRoteiroId());
+			empresaCrm = SFEmpresa.builder()
+					.Horas_para_digitar(respostaDTO.getResposta())
+					.build();
+			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
+			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString,authorization);
+		}	
+		if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.5")) {
 			String nomeResumido = perguntasRepository.getNomeEmpresaPorRoteiroId(respostaDTO.getRoteiroId());
 			empresaCrm = SFEmpresa.builder()
 					.Nome_de_quem_faz_o_fechamento(respostaDTO.getResposta())
+					.Envolvidos(user.getFirstName()+" / "+respostaDTO.getResposta())
 					.build();
 			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
-			defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString,authorization);
+			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString, authorization);
 		}
-		if(respostaDTO.getPerguntaId() == BigInteger.valueOf(37)) {
+		if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.6")) {
 			String nomeResumido = perguntasRepository.getNomeEmpresaPorRoteiroId(respostaDTO.getRoteiroId());
 			empresaCrm = SFEmpresa.builder()
 					.Email_de_quem_faz_o_fechamento(respostaDTO.getResposta())
 				.build();
 			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
-			defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString, authorization);
+			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString, authorization);
 		}
 	}
-	
-	private String defaultPatch(String url, String body, String authentication) {
-    	RestTemplate template = new RestTemplate();
-    	
-    	HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-    	requestFactory.setConnectTimeout(15000);
-    	requestFactory.setReadTimeout(15000);
-    	
-    	template.setRequestFactory(requestFactory);
-    	
-    	HttpHeaders headers =  new HttpHeaders();
-    	headers.setContentType(MediaType.APPLICATION_JSON);
-    	headers.set("Authorization", authentication);
-    	
-    	return template.patchForObject(url, new HttpEntity<String>(body, headers), String.class);
-    }
 
 }

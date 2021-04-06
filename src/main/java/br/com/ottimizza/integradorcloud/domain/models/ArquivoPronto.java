@@ -52,6 +52,9 @@ public class ArquivoPronto {
 	
 	@Column(name = "codigo_historico")
 	private String codigoHistorico;
+
+	@Column(name = "historico")
+	private String historico;
 	
 	@Column(name = "erp_contabil")
 	private String erpContabil;
