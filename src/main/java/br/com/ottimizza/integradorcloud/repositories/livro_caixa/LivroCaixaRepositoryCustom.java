@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.repositories.livro_caixa;
 
 
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -19,5 +20,7 @@ public interface LivroCaixaRepositoryCustom {
 
 	List<LivroCaixaDTO> sugerirLancamento(String cnpjContabilidade, String cnpjEmpresa, Double valor, String data);
 
+	List<LivroCaixa> enviaLivroCaixaNaoIntegrado(String cnpjEmpresa, LocalDate dataMovimento, BigInteger bancoId);
+	
 }
 

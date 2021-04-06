@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.repositories.livro_caixa;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,24 @@ public interface LivroCaixaRepository extends JpaRepository<LivroCaixa, BigInteg
 			+"		ORDER BY lc.id DESC LIMIT 1							", nativeQuery = true)
 	LivroCaixa findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(@Param("cnpjContabilidade") String cnpjContabilidade, 
 																		 @Param("cnpjEmpresa") String cnpjEmpresa);
+
+    @Query(value ="SELECT SUM(lc.valor_original) "
+	 			 +"FROM livros_caixas lc "
+				 +"WHERE lc.cnpj_empresa = :cnpjEmpresa "
+				 +"AND lc.tipo_movimento = 'PAG' "
+				 +"AND lc.status = 0  "
+				 +"AND lc.data_movimento <= :dataMovimento ", nativeQuery = true)
+	Double buscaPagamentosPendentes(@Param("cnpjEmpresa") String cnpjEmpresa,
+									@Param("dataMovimento") LocalDate dataMovimento);
+
+	@Query(value ="SELECT SUM(lc.valor_original) "
+				 +"FROM livros_caixas lc "
+				 +"WHERE lc.cnpj_empresa = :cnpjEmpresa "
+				 +"AND lc.tipo_movimento = 'REC' "
+				 +"AND lc.status = 0  "
+				 +"AND lc.data_movimento <= :dataMovimento ", nativeQuery = true)
+    Double buscaRecebimentosPendentes(@Param("cnpjEmpresa") String cnpjEmpresa,
+									  @Param("dataMovimento") LocalDate dataMovimento);
+				  
+
 }

@@ -2,6 +2,8 @@ package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -30,12 +32,14 @@ import br.com.ottimizza.integradorcloud.domain.dtos.EmpresaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.OrganizationDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFContabilidade;
 import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
+import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFProdutoContabilidade;
 import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.EmpresaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 import br.com.ottimizza.integradorcloud.repositories.ContabilidadeRepository;
 import br.com.ottimizza.integradorcloud.repositories.EmpresaRepository;
+import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 
 @Service // @formatter:off
 public class EmpresaService {
@@ -69,20 +73,21 @@ public class EmpresaService {
 
     public EmpresaDTO salvar(EmpresaDTO empresaDTO, OAuth2Authentication authentication) throws Exception {
     	ObjectMapper mapper = new ObjectMapper();
-    	UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
-    	OrganizationDTO contabilidadeOauth = oauthClient.buscaContabilidadePorId(userInfo.getOrganization().getId(), getAuthorizationHeader(authentication)).getBody().getRecord();
+    	UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+    	OrganizationDTO contabilidadeOauth = oauthClient.buscaContabilidadePorId(userInfo.getOrganization().getId(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
     	OrganizationDTO empresaOauth = null;
     	Contabilidade contabilidade = null;
+        String produtoContabilidade = "";
     	String empresaOauthString = "";
     	String nomeResumido = empresaDTO.getNomeResumido().trim();
         nomeResumido = nomeResumido.replaceFirst(nomeResumido.substring(0, 1), nomeResumido.substring(0, 1).toUpperCase());
     	try {
-    		empresaOauth = oauthClient.buscaEmpresa(empresaDTO.getCnpj(),userInfo.getOrganization().getId(), 2, getAuthorizationHeader(authentication)).getBody().getRecords().get(0);
+    		empresaOauth = oauthClient.buscaEmpresa(empresaDTO.getCnpj(),userInfo.getOrganization().getId(), 2, ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecords().get(0);
     	} catch(Exception ex) { }
         if(empresaOauth != null ) {
 			if(empresaOauth.getCodigoERP().equals("") || empresaOauth.getCodigoERP().equals(null)) {
 				empresaOauthString = mapper.writeValueAsString(OrganizationDTO.builder().codigoERP(empresaDTO.getCodigoERP()).build());
-        		defaultPatch(OAUTH2_SERVER_URL+"/api/v1/organizations/"+empresaOauth.getId(), empresaOauthString, getAuthorizationHeader(authentication));
+        		ServiceUtils.defaultPatch(OAUTH2_SERVER_URL+"/api/v1/organizations/"+empresaOauth.getId(), empresaOauthString, ServiceUtils.getAuthorizationHeader(authentication));
 			}
         }
         else {
@@ -92,7 +97,7 @@ public class EmpresaService {
         								.name(empresaDTO.getRazaoSocial())
         								.organizationId(userInfo.getOrganization().getId())
         								.type(2)
-        					.build(), getAuthorizationHeader(authentication)).getBody().getRecord();
+        					.build(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
         }
         empresaDTO.setOrganizationId(empresaOauth.getId());
         empresaDTO.setAccountingId(userInfo.getOrganization().getId());
@@ -100,7 +105,7 @@ public class EmpresaService {
         	contabilidade = contabilidadeRepository.buscaPorCnpj(contabilidadeOauth.getCnpj());
         } catch(Exception ex) { }
         if(contabilidade == null) {
-        	SFContabilidade sfContabilidade = salesForceClient.getContabilidade(contabilidadeOauth.getCnpj(), getAuthorizationHeader(authentication)).getBody();
+        	SFContabilidade sfContabilidade = salesForceClient.getContabilidade(contabilidadeOauth.getCnpj(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
         	contabilidade = contabilidadeRepository.save(Contabilidade.builder()
         				.cnpj(contabilidadeOauth.getCnpj())
         				.nome(contabilidadeOauth.getName())
@@ -112,13 +117,23 @@ public class EmpresaService {
         Empresa empresa = empresaRepository.save(EmpresaMapper.fromDto(empresaDTO));
         if(empresa.getRazaoSocial() != null && !empresa.getRazaoSocial().equals(""))
         	empresaDTO.setRazaoSocial(empresaDTO.getRazaoSocial().toUpperCase());
-        SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO);
-        salesForceClient.upsertEmpresa(nomeResumido, empresaSf, getAuthorizationHeader(authentication));
+            try{
+                SFProdutoContabilidade produtoContabilidadeObj = salesForceClient.getProdutoContabilidade(contabilidade.getSalesForceId().substring(0, 15), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+                produtoContabilidade = produtoContabilidadeObj.getIdProduto();
+            }
+            catch(Exception ex){ }
+            SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO).toBuilder()
+                    .valorMesIntegracao(60.0)
+                    .contailidadeFaturamento(contabilidade.getSalesForceId())
+                    .produtoContabilidade(produtoContabilidade)
+                    .Previsao_Homologacao(LocalDateTime.now(ZoneId.of("Brazil/East")).plusMonths(1).toString())
+                .build();
+            salesForceClient.upsertEmpresa(nomeResumido, empresaSf, ServiceUtils.getAuthorizationHeader(authentication));
 		return EmpresaMapper.fromEntity(empresa);
     }
     
     public Page<EmpresaDTO> buscarEmpresas(EmpresaDTO filter, PageCriteria pageCriteria, OAuth2Authentication authentication) throws Exception {
-        UserDTO userInfo = oauthClient.getUserInfo(getAuthorizationHeader(authentication)).getBody().getRecord();
+        UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
 
         filter.setAccountingId(userInfo.getOrganization().getId());
        
@@ -133,28 +148,5 @@ public class EmpresaService {
     public EmpresaDTO salvar(EmpresaDTO empresaDTO) throws Exception {
         throw new Exception("");
     }
-
-    private String getAuthorizationHeader(OAuth2Authentication authentication) {
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
-        return MessageFormat.format("Bearer {0}", accessToken);
-    }
-    
-    private String defaultPatch(String url, String body, String authentication) {
-    	RestTemplate template = new RestTemplate();
-    	
-    	HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-    	requestFactory.setConnectTimeout(15000);
-    	requestFactory.setReadTimeout(15000);
-    	
-    	template.setRequestFactory(requestFactory);
-    	
-    	HttpHeaders headers =  new HttpHeaders();
-    	headers.setContentType(MediaType.APPLICATION_JSON);
-    	headers.set("Authorization", authentication);
-    	
-    	return template.patchForObject(url, new HttpEntity<String>(body, headers), String.class);
-    }
   
-
 }
