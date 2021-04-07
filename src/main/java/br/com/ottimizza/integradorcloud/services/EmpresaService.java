@@ -78,7 +78,7 @@ public class EmpresaService {
     		empresaOauth = oauthClient.buscaEmpresa(empresaDTO.getCnpj(),userInfo.getOrganization().getId(), 2, ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecords().get(0);
     	} catch(Exception ex) { }
         if(empresaOauth != null ) {
-			if(empresaOauth.getCodigoERP().equals("") || empresaOauth.getCodigoERP().equals(null)) {
+			if(empresaOauth.getCodigoERP() == null || empresaOauth.getCodigoERP().equals("")) {
 				empresaOauthString = mapper.writeValueAsString(OrganizationDTO.builder().codigoERP(empresaDTO.getCodigoERP()).build());
 				ServiceUtils.defaultPatch(OAUTH2_SERVER_URL+"/api/v1/organizations/"+empresaOauth.getId(), empresaOauthString, ServiceUtils.getAuthorizationHeader(authentication));
 			}
