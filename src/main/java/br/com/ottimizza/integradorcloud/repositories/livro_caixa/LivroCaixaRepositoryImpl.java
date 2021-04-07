@@ -31,6 +31,7 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		sql.append("FROM livros_caixas lc ");
 		sql.append("WHERE lc.cnpj_contabilidade = :cnpjContabilidade ");
 		sql.append("AND lc.cnpj_empresa = :cnpjEmpresa ");
+		sql.append("AND lc.integrado_contabilidade = false ");
 		
 		if(filtro.getId() != null)
 			sql.append("AND lc.id = :id ");
@@ -52,7 +53,8 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		if(filtro.getTipoMovimento() != null && !filtro.getTipoMovimento().equals(""))
 			sql.append("AND lc.tipo_movimento = :tipoMovimento ");
 		
-		sql.append("ORDER BY lc.data_movimento ASC ");
+		sql.append("ORDER BY lc.status ASC ,");
+		sql.append("		 lc.data_movimento ASC ");
 		
 		Query query = em.createNativeQuery(sql.toString(), LivroCaixa.class);
 		query.setParameter("cnpjContabilidade", filtro.getCnpjContabilidade());

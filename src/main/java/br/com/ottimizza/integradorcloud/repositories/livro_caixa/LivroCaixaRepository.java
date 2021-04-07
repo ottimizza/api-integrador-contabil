@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.repositories.livro_caixa;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -39,4 +40,9 @@ public interface LivroCaixaRepository extends JpaRepository<LivroCaixa, BigInteg
 									  @Param("dataMovimento") LocalDate dataMovimento);
 				  
 
+	@Query(value = "SELECT lc.* FROM livros_caixas lc WHERE lc.id_externo = :idExterno ", nativeQuery = true)
+	LivroCaixa findByIdExterno(@Param("idExterno") String idExterno);
+
+	@Query(value = "SELECT lc.* FROM livros_caixas lc WHERE lc.cnpj_empresa = :cnpjEmpresa AND lc.fk_banco_id = :bancoId AND data_movimento < :data AND lc.integrado_contabilidade = false", nativeQuery = true)
+	List<LivroCaixa> findByCnpjEmpresaBancoData(@Param("cnpjEmpresa") String cnpjEmpresa, @Param("bancoId") BigInteger bancoId, @Param("data") LocalDate data);
 }

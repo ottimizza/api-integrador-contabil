@@ -1,8 +1,10 @@
 package br.com.ottimizza.integradorcloud.controllers.v1;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 
 import com.amazonaws.Response;
 
@@ -44,6 +46,14 @@ public class SaldoBancosController {
     public ResponseEntity<?> buscaRestantes(@PathVariable String cnpjEmpresa) throws Exception {
         return ResponseEntity.ok(new GenericResponse<>(
             service.contarPagamentosRecebimentosRestantes(cnpjEmpresa)
+        ));
+    }
+
+    @GetMapping()
+    public ResponseEntity<?> buscaPorBancoData(@Valid BigInteger bancoId,
+                                               @Valid String data) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<SaldoBancosDTO>(
+            service.buscaPorBancoData(bancoId, data)
         ));
     }
 }
