@@ -23,5 +23,4 @@ public interface CheckListRespostasRepository extends JpaRepository<CheckListRes
 		         + "WHERE cr.roteiroId = :roteiroId "
 		         + "ORDER BY cp.descricao ASC")
 	List<CheckListPerguntasRespostasDTO> buscaPerguntasRespostasPorRoteiroId(@Param("roteiroId") BigInteger roteiroId);
-	
 }

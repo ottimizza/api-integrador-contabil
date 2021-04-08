@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SFHistorico implements Serializable {
-
+	
 	public static final String S_NAME = "Roteiros_vs_Historio__c";
 
 	public static final String RECORD_TYPE_ID = "0121500000100GB";

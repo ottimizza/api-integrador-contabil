@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 
 import br.com.ottimizza.integradorcloud.client.EmailSenderClient;
@@ -55,19 +57,19 @@ public class RegraService {
     
     @Inject
     RegraRepository regraRepository;
-    
-    @Inject
+
+	@Inject
     EmpresaRepository empresaRepository;
 
     @Inject 
     OAuthClient oauthClient;
-    
-    @Inject
+
+	@Inject
     EmailSenderClient emailSenderClient;
-    
+
     @Value("${email-oud-finalizado}")
     private String EMAIL_OUD_FINALIZADO;
-    
+
     public Page<GrupoRegraDTO> buscarRegras(GrupoRegraDTO filtro, PageCriteria pageCriteria, OAuth2Authentication authentication) 
             throws Exception {
         filtro.setAtivo(true);
@@ -91,10 +93,10 @@ public class RegraService {
     }
 
     public GrupoRegraDTO salvar(GrupoRegraDTO grupoRegraDTO, Short sugerir, String regraSugerida, OAuth2Authentication authentication) throws Exception {
-    	UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+		UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
     	Empresa empresa = empresaRepository.buscaEmpresa(grupoRegraDTO.getCnpjEmpresa(), userInfo.getOrganization().getId()).orElse(null);
     	BigInteger regraId = null;
-    	String tipoMovimento = "";
+		String tipoMovimento = "";
         validaGrupoRegra(grupoRegraDTO);
         grupoRegraDTO.setUsuario(authentication.getName());
 
@@ -119,7 +121,6 @@ public class RegraService {
             regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getContaMovimento(), grupoRegra.getId(), sugerir, regraId);
 
         grupoRegraRepository.ajustePosicao(grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getTipoLancamento());
-        
         for(Regra r : regrasSalvas) {
         	if(r.getCampo().equals("tipoMovimento"))
         		tipoMovimento = r.getValor();
@@ -141,8 +142,8 @@ public class RegraService {
 				.build();
 			emailSenderClient.sendMail(email);
         }
-        
-        return grupoRegraDTO;
+
+		return grupoRegraDTO;
     }
 
     public GrupoRegraDTO atualizar(BigInteger id, GrupoRegraDTO grupoRegraDTO, OAuth2Authentication authentication) throws Exception {
@@ -547,7 +548,5 @@ public class RegraService {
     	contagemRegras = contagemRegras + campos.length;
     	return contagemRegras;
     }
-    
-
 }
 

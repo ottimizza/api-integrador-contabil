@@ -1,4 +1,4 @@
 aws:
   awsAccessKey: ${AWS_SES_ACCESS_KEY:awsKey}
 
-  awsSecretKey: ${AWS_SES_SECRET_KEY:secretKey}
+  awsSecretKey: ${AWS_SES_SECRET_KEY:secretKey} 

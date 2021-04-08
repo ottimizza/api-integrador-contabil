@@ -3,17 +3,21 @@ package br.com.ottimizza.integradorcloud.domain.mappers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import br.com.ottimizza.integradorcloud.domain.dtos.BancoDTO;
-import br.com.ottimizza.integradorcloud.domain.models.Banco;
+import br.com.ottimizza.integradorcloud.domain.dtos.banco.BancoDTO;
+import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
 
 public class BancoMapper {
-	public static Banco fromDto(BancoDTO dto) {
+    
+    public static Banco fromDto(BancoDTO dto) {
         return Banco.builder()
 	                .id(dto.getId())
 	                .cnpjContabilidade(dto.getCnpjContabilidade())
 	                .cnpjEmpresa(dto.getCnpjEmpresa())
 	            	.nomeBanco(dto.getNomeBanco())
 	            	.descricao(dto.getDescricao())
+					.codigoBanco(dto.getCodigoBanco())
+					.bancoPadraoId(dto.getBancoPadraoId())
+					.objetoAutenticacao(dto.getObjetoAutenticacao())
 	            	.build(); 
     }
 
@@ -24,6 +28,9 @@ public class BancoMapper {
 		                .cnpjEmpresa(entity.getCnpjEmpresa())
 		            	.nomeBanco(entity.getNomeBanco())
 		            	.descricao(entity.getDescricao())
+						.codigoBanco(entity.getCodigoBanco())
+						.bancoPadraoId(entity.getBancoPadraoId())
+					    .objetoAutenticacao(entity.getObjetoAutenticacao())
 		            	.build(); 
     }
 

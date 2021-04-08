@@ -78,4 +78,4 @@ public class LoteProcessado {
         this.dataAtualizacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
     }
 
-}
+} 

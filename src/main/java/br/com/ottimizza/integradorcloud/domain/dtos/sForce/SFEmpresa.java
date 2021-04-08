@@ -2,14 +2,9 @@ package br.com.ottimizza.integradorcloud.domain.dtos.sForce;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.access.method.P;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

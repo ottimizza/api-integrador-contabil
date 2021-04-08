@@ -47,4 +47,4 @@ public class LoteProcessadoMapper {
 	public static List<LoteProcessadoDTO> fromEntities(List<LoteProcessado> lotes) {
         return lotes.stream().map(lote -> fromEntity(lote)).collect(Collectors.toList());
     }
-}
+} 

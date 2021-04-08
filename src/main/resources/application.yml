@@ -14,10 +14,10 @@ spring:
       max-file-size: 20MB
       max-request-size: 20MB
       enabled: true
-    
+
     tomcat:
       initial-size: 2
-     
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
@@ -61,6 +61,16 @@ email-sender:
   service:
     name: email-sender-service
     url: ${EMAIL_SENDER_URL:https://api-emaiil-sender.herokuapp.com}
+
+cora:
+  service:
+    name: cora-service
+    url: ${CORA_SERVER_URL:https://api.stage.cora.com.br}
+
+kafka:
+  service:
+    name: kafka-service
+    url: ${KAFKA_SERVER_URL:https://ottimizza-queue-events.herokuapp.com}
 
 email-oud-finalizado: ${EMAIL_OUD_FINALIZADO:projetooic@ottimizza.com.br}
 

@@ -26,4 +26,4 @@ public class CategoriaMapper {
         return categorias.stream().map(categoria -> fromEntity(categoria)).collect(Collectors.toList());
     }
 
-}
+} 

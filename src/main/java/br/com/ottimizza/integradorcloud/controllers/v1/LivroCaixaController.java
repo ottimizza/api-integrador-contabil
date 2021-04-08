@@ -1,9 +1,12 @@
 package br.com.ottimizza.integradorcloud.controllers.v1;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+
+import com.amazonaws.Response;
 
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaDTO;
+import br.com.ottimizza.integradorcloud.domain.mappers.LivroCaixaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
@@ -107,7 +111,12 @@ public class LivroCaixaController {
 				service.uploadFile(idLivroCaixa, salvaArquivo, arquivo, authorization)
 				));
 	}
-
+	
+//	@PostMapping("/integra/{id}")
+//	public ResponseEntity<?> integraContabilidade(@PathVariable BigInteger id, OAuth2Authentication authentication) {
+//		return ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(service.integraContabilidade(id, authentication)));
+//	}
+	
 	@GetMapping("/sugerir_lancamento")
 	ResponseEntity<?> sugerirLancamento(@Valid String cnpjContabilidade,
 										@Valid String cnpjEmpresa,
@@ -117,4 +126,14 @@ public class LivroCaixaController {
 				service.sugerirLancamento(cnpjContabilidade, cnpjEmpresa, data, valor)	
 			));
 	}
+
+	@PostMapping("/integrar")
+	ResponseEntity<?> integrarLivrosCaixa(@Valid String cnpjEmpresa,
+										  @Valid String dataMovimento,
+										  @Valid BigInteger bancoId) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<>(
+			service.integraLivrosCaixas(cnpjEmpresa, dataMovimento, bancoId)
+		));		
+	}
+
 }

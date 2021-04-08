@@ -16,10 +16,11 @@ import org.springframework.stereotype.Service;
 
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.BancoDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.banco.BancoDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.BancoMapper;
-import br.com.ottimizza.integradorcloud.domain.models.Banco;
-import br.com.ottimizza.integradorcloud.repositories.BancoRepository;
+import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
+import br.com.ottimizza.integradorcloud.domain.models.banco.BancosPadroes;
+import br.com.ottimizza.integradorcloud.repositories.banco.BancoRepository;
 
 @Service
 public class BancoService {
@@ -34,15 +35,17 @@ public class BancoService {
 		return BancoMapper.fromEntity(bancoRepository.save(BancoMapper.fromDto(bancoDto)));
 	}
 
-	public Page<BancoDTO> buscarBancos(@Valid BancoDTO filter, 
+	public Page<Banco> buscarBancos(@Valid BancoDTO filter, 
 									   @Valid PageCriteria pageCriteria,
 									   OAuth2Authentication authentication) {
-		
-		ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
-		Example<Banco> example = Example.of(BancoMapper.fromDto(filter), matcher);
-		return bancoRepository.findAll(example, PageRequest.of(pageCriteria.getPageIndex(), pageCriteria.getPageSize())).map(BancoMapper::fromEntity);
-		
+		return bancoRepository.buscaComFiltro(filter, pageCriteria);
 	}
+
+	public Page<BancosPadroes> buscaBancosPadroes(@Valid BancoDTO filter, 
+									   			  @Valid PageCriteria pageCriteria) throws Exception {
+		return bancoRepository.buscaBancosPadroesComFiltro(filter, pageCriteria);
+    }
+
 
 	public JSONObject remover(BigInteger id) throws Exception {
 		JSONObject response = new JSONObject();

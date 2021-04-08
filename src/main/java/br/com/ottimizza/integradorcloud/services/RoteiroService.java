@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -8,8 +9,14 @@ import javax.persistence.NoResultException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +55,7 @@ public class RoteiroService {
 	
 	@Inject
 	ContabilidadeRepository contabilidadeRepository;
-	
+
 	@Inject
 	CheckListRespostasRepository checklistRepository;
 	
@@ -60,7 +67,7 @@ public class RoteiroService {
 	
 	@Inject
 	SalesForceClient sfClient;
-	
+
 	@Inject
 	EmailSenderClient emailSenderClient;
 	
@@ -69,9 +76,10 @@ public class RoteiroService {
 	
 	@Value("${salesforce.service.url}")
     private String SF_SERVICE_URL;
-	
+
 	@Value("${email-envio-checklist}")
 	private String EMAIL_ENVIO_CHECKLIST;
+
 	
 	public RoteiroDTO salva(RoteiroDTO roteiroDTO, OAuth2Authentication authentication) throws Exception {
 		roteiroDTO.setUsuario(authentication.getName());
@@ -102,16 +110,16 @@ public class RoteiroService {
 			.build();
 		String empresaCrmString = mapper.writeValueAsString(empresaCrm);
 		ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, authorization);
-		
+
 		//------------------------
-		
+
 		SFEmpresa sfEmpresa = sfClient.getEmpresa(empresa.getNomeResumido(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
-		
+
 		if(roteiro.getTipoRoteiro().equals("PAG"))
 			tipoRoteiro = "Contas PAGAS";
 		else
 			tipoRoteiro = "Contas RECEBIDAS";
-		
+
 		String chaveOic = empresa.getCnpj()+"-"+roteiro.getTipoRoteiro();
 
 		try{
@@ -129,6 +137,7 @@ public class RoteiroService {
 	    		.build();
 	    	sfClient.upsertRoteiro(chaveOic, sfRoteiro, ServiceUtils.getAuthorizationHeader(authentication));
 		}
+
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
 	
@@ -139,7 +148,7 @@ public class RoteiroService {
 		if(roteiroDTO.getNome() != null && !roteiroDTO.getNome().equals("")) {
 			if(repository.buscaPorNomeEmpresaIdTipo(roteiroDTO.getNome(), roteiro.getEmpresaId(), roteiro.getTipoRoteiro()) > 0)
 				throw new IllegalArgumentException("Nome de roteiro já existente nesta empresa para este tipo de roteiro!");
-			
+
 			List<CheckListPerguntasRespostasDTO> perguntasRespostas = checklistRepository.buscaPerguntasRespostasPorRoteiroId(roteiroId);
 			for(CheckListPerguntasRespostasDTO cp : perguntasRespostas) {
 				email.append(cp.getPergunta()+": "+cp.getResposta()+", Observacao: "+cp.getObservacao()+" ");
@@ -167,7 +176,7 @@ public class RoteiroService {
 				.build();
 			emailSenderClient.sendMail(mail);
 		}
-		
+
 		return RoteiroMapper.fromEntity(roteiroRetorno);
 	}
 	
@@ -179,7 +188,7 @@ public class RoteiroService {
 		repository.deleteById(roteiroId);
 		return "Roteiro removido com sucesso!";
 	}
-
+	
 	private boolean validaRoteiro(Roteiro roteiro) throws Exception {
 		if(roteiro.getStatus() == 1) {
 			if(roteiro.getCnpjContabilidade() == null || roteiro.getCnpjContabilidade().equals(""))

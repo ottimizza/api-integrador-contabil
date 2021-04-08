@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -10,11 +11,17 @@ import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,10 +30,10 @@ import br.com.ottimizza.integradorcloud.client.SalesForceClient;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.EmpresaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.OrganizationDTO;
-import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFContabilidade;
 import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
 import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFProdutoContabilidade;
+import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.EmpresaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
@@ -80,7 +87,7 @@ public class EmpresaService {
         if(empresaOauth != null ) {
 			if(empresaOauth.getCodigoERP() == null || empresaOauth.getCodigoERP().equals("")) {
 				empresaOauthString = mapper.writeValueAsString(OrganizationDTO.builder().codigoERP(empresaDTO.getCodigoERP()).build());
-				ServiceUtils.defaultPatch(OAUTH2_SERVER_URL+"/api/v1/organizations/"+empresaOauth.getId(), empresaOauthString, ServiceUtils.getAuthorizationHeader(authentication));
+        		ServiceUtils.defaultPatch(OAUTH2_SERVER_URL+"/api/v1/organizations/"+empresaOauth.getId(), empresaOauthString, ServiceUtils.getAuthorizationHeader(authentication));
 			}
         }
         else {
@@ -110,18 +117,18 @@ public class EmpresaService {
         Empresa empresa = empresaRepository.save(EmpresaMapper.fromDto(empresaDTO));
         if(empresa.getRazaoSocial() != null && !empresa.getRazaoSocial().equals(""))
         	empresaDTO.setRazaoSocial(empresaDTO.getRazaoSocial().toUpperCase());
-        try{
-            SFProdutoContabilidade produtoContabilidadeObj = salesForceClient.getProdutoContabilidade(contabilidade.getSalesForceId().substring(0, 15), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
-            produtoContabilidade = produtoContabilidadeObj.getIdProduto();
-        }
-        catch(Exception ex){ }
-        SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO).toBuilder()
-                .valorMesIntegracao(60.0)
-                .contailidadeFaturamento(contabilidade.getSalesForceId())
-                .produtoContabilidade(produtoContabilidade)
-                .Previsao_Homologacao(LocalDateTime.now(ZoneId.of("Brazil/East")).plusMonths(1).toString())
-            .build();
-        salesForceClient.upsertEmpresa(nomeResumido, empresaSf, ServiceUtils.getAuthorizationHeader(authentication));
+            try{
+                SFProdutoContabilidade produtoContabilidadeObj = salesForceClient.getProdutoContabilidade(contabilidade.getSalesForceId().substring(0, 15), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+                produtoContabilidade = produtoContabilidadeObj.getIdProduto();
+            }
+            catch(Exception ex){ }
+            SFEmpresa empresaSf = EmpresaMapper.toSalesFoce(empresaDTO).toBuilder()
+                    .valorMesIntegracao(60.0)
+                    .contailidadeFaturamento(contabilidade.getSalesForceId())
+                    .produtoContabilidade(produtoContabilidade)
+                    .Previsao_Homologacao(LocalDateTime.now(ZoneId.of("Brazil/East")).plusMonths(1).toString())
+                .build();
+            salesForceClient.upsertEmpresa(nomeResumido, empresaSf, ServiceUtils.getAuthorizationHeader(authentication));
 		return EmpresaMapper.fromEntity(empresa);
     }
     
@@ -141,5 +148,5 @@ public class EmpresaService {
     public EmpresaDTO salvar(EmpresaDTO empresaDTO) throws Exception {
         throw new Exception("");
     }
-
+  
 }

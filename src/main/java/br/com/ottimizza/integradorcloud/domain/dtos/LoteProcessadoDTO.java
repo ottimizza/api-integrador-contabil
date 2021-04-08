@@ -40,4 +40,4 @@ public class LoteProcessadoDTO {
 
 	private LocalDateTime dataAtualizacao;
 
-}
+} 

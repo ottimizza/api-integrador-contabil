@@ -27,7 +27,7 @@ public class AmazonService {
 
 	@Value("${storage-s3.service.bucket}")
 	private String STORAGE_BUCKET;
-	
+
 	public String analizarArquivo(String nomeArquivo) throws Exception {
 
 		AmazonS3 s3client = AmazonS3ClientBuilder.standard()
@@ -64,5 +64,5 @@ public class AmazonService {
 		}
 		return sb.toString();
 	}
-	
+
 }

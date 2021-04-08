@@ -15,7 +15,7 @@ import feign.Param;
 @Repository
 public interface ArquivoProntoRepository extends JpaRepository<ArquivoPronto, BigInteger>, ArquivoProntoRepositoryCustom{
 
-	@Modifying
+    @Modifying
     @Transactional
 	@Query(value = "DELETE "
 				 + "FROM arquivo_pronto ap "
@@ -23,5 +23,5 @@ public interface ArquivoProntoRepository extends JpaRepository<ArquivoPronto, Bi
 				 + "AND   ap.cnpj_contabilidade = :cnpjContabilidade "
 				 + "AND   ap.lote = :lote", nativeQuery = true)
 	void deletaPorLoteECnpjs(@Param("lote") String lote, @Param("cnpjEmpresa") String cnpjEmpresa, @Param("cnpjContabilidade") String cnpjContabilidade);
-	
+
 }

@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor
 @Builder
 public class SFProdutoContabilidade implements Serializable {
-	
+
 	static final long serialVersionUID = 1L;
-    
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty(value = "Id")
 	private String idProduto;

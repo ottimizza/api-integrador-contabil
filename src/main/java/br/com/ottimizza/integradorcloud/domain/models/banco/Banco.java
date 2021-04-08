@@ -1,4 +1,4 @@
-package br.com.ottimizza.integradorcloud.domain.models;
+package br.com.ottimizza.integradorcloud.domain.models.banco;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -9,8 +9,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Table(name = "bancos", indexes = {@Index(name = "banco_index", columnList = "id", unique = true)})
 public class Banco implements Serializable{
 	
@@ -42,5 +50,19 @@ public class Banco implements Serializable{
 	private String nomeBanco;
 	
 	private String descricao;
+
+	private String codigoBanco;
+
+	@Column(name = "fk_banco_padrao_id")
+	private BigInteger bancoPadraoId;
+
+	@Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
+	private ObjetoAutenticacao objetoAutenticacao;
+
+	@PrePersist @PreUpdate
+    public void prePersist() {
+    	descricao = codigoBanco+" - "+nomeBanco.toUpperCase(); 
+    }
 
 }

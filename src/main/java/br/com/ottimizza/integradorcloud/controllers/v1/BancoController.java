@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
-import br.com.ottimizza.integradorcloud.domain.dtos.BancoDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.banco.BancoDTO;
+import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
+import br.com.ottimizza.integradorcloud.domain.models.banco.BancosPadroes;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.BancoService;
@@ -30,7 +32,7 @@ public class BancoController {
 	BancoService bancoService;
 
 	@PostMapping
-	public ResponseEntity<?> salvarBanco(@RequestBody BancoDTO bancoDto, OAuth2Authentication authentication) throws Exception {
+	public ResponseEntity<?> salvarBanco(@RequestBody br.com.ottimizza.integradorcloud.domain.dtos.banco.BancoDTO bancoDto, OAuth2Authentication authentication) throws Exception {
 
 		return ResponseEntity.ok(new GenericResponse<BancoDTO> (
 				bancoService.salvar(bancoDto, authentication) 
@@ -41,9 +43,18 @@ public class BancoController {
     public ResponseEntity<?> buscarBancos(@Valid BancoDTO filter, 
                                           @Valid PageCriteria pageCriteria, 
                                            OAuth2Authentication authentication) throws Exception {
-        return ResponseEntity.ok(new GenericPageableResponse<BancoDTO>(
+        return ResponseEntity.ok(new GenericPageableResponse<Banco>(
             bancoService.buscarBancos(filter, pageCriteria, authentication)
-        ));
+        )); 
+    }
+
+	@GetMapping("/padroes")
+	public ResponseEntity<?> buscaBancosPadroes(@Valid BancoDTO filter,
+												@Valid PageCriteria pageCriteria) throws Exception {
+
+		return ResponseEntity.ok(new GenericPageableResponse<BancosPadroes>(
+            bancoService.buscaBancosPadroes(filter, pageCriteria)
+		));
     }
 
 	@DeleteMapping("{id}")

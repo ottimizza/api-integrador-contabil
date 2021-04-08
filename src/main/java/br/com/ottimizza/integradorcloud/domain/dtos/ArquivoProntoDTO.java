@@ -31,13 +31,13 @@ public class ArquivoProntoDTO {
 	private String tipoMovimento;
 
 	private String codigoHistorico;
-	
+
 	private String historico;
 
 	private String erpContabil;
 
 	private String lote;
-	
+
 	public ArquivoPronto patch(ArquivoPronto arquivo) {
 
 		if(contaDebito != null && !contaDebito.equals(""))

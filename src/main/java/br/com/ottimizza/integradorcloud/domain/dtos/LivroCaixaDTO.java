@@ -75,6 +75,18 @@ public class LivroCaixaDTO implements Serializable {
 		if(dataMovimento != null)
 			livroCaixa.setDataMovimento(dataMovimento);
 		
+		if(valorOriginal != null)
+			livroCaixa.setValorOriginal(valorOriginal);
+
+		if(bancoId != null)
+			livroCaixa.setBancoId(bancoId);
+
+		if(descricao != null && !descricao.equals(""))
+			livroCaixa.setDescricao(descricao);
+
+		if(status != null)
+			livroCaixa.setStatus(status);
+			
 		return livroCaixa;
 	}
 }

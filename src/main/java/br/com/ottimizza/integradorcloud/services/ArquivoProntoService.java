@@ -29,9 +29,9 @@ public class ArquivoProntoService {
 		ArquivoPronto retorno = repository.save(ArquivoProntoMapper.fromDTO(arquivo));
 		return ArquivoProntoMapper.fromEntity(retorno);
 	}
-	
+
 	public List<ArquivoPronto> importarArquivos(ImportacaoArquivoPronto importacaoArquivos) throws Exception {
-		List<ArquivoPronto> retorno = new ArrayList();
+		List<ArquivoPronto> retorno = new ArrayList<>();
 		repository.deletaPorLoteECnpjs(importacaoArquivos.getArquivos().get(0).getLote(), importacaoArquivos.getCnpjEmpresa(), importacaoArquivos.getCnpjContabilidade());
 		List<ArquivoPronto> arquivos = importacaoArquivos.getArquivos().stream().map((arquivo) -> {
 			return ArquivoProntoMapper.fromDTO(arquivo).toBuilder()
@@ -56,5 +56,4 @@ public class ArquivoProntoService {
 		repository.deleteById(id);
 		return "Arquivo pronto removido com sucesso!";
 	}
-
 }

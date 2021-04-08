@@ -9,12 +9,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
-import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -89,10 +92,11 @@ public class CheckListService {
         										.map(CheckListMapper::respostasFromEntity);
 	}
 	
-	public void atualizaEmpresaCRM(CheckListRespostasDTO respostaDTO, String authorization, OAuth2Authentication authentication) throws Exception {
+	public void atualizaEmpresaCRM(CheckListRespostasDTO respostaDTO, String authorization, OAuth2Authentication authentication)throws Exception {
 		UserDTO user = oauthClient.getUserInfo(authorization).getBody().getRecord();
 		SFEmpresa empresaCrm = null;
 		ObjectMapper mapper = new ObjectMapper();
+
 		if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.2")) {
 			String nomeResumido = perguntasRepository.getNomeEmpresaPorRoteiroId(respostaDTO.getRoteiroId());
 			empresaCrm = SFEmpresa.builder()
@@ -108,7 +112,7 @@ public class CheckListService {
 					.build();
 			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
 			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString,authorization);
-		}
+		}	
 		if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.5")) {
 			String nomeResumido = perguntasRepository.getNomeEmpresaPorRoteiroId(respostaDTO.getRoteiroId());
 			empresaCrm = SFEmpresa.builder()
@@ -116,7 +120,7 @@ public class CheckListService {
 					.Envolvidos(user.getFirstName()+" / "+respostaDTO.getResposta())
 					.build();
 			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
-			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString,authorization);
+			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString, authorization);
 		}
 		if(perguntasRepository.getDescricaoPorId(respostaDTO.getPerguntaId()).contains("1.6")) {
 			String nomeResumido = perguntasRepository.getNomeEmpresaPorRoteiroId(respostaDTO.getRoteiroId());
@@ -126,7 +130,6 @@ public class CheckListService {
 			String empresaCrmString = mapper.writeValueAsString(empresaCrm);
 			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+nomeResumido, empresaCrmString, authorization);
 		}
-		
 	}
-	
+
 }

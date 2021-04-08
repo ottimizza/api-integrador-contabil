@@ -30,5 +30,5 @@ public class Categoria {
 
 	@Column(name = "descricao")
 	private String descricao;
-	
-}
+
+} 

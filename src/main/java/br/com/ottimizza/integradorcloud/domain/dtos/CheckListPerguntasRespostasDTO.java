@@ -12,8 +12,7 @@ public class CheckListPerguntasRespostasDTO {
 
 	private String pergunta;
 
-	private String resposta;
+    private String resposta;
 
-	private String observacao;
-
+    private String observacao;
 }

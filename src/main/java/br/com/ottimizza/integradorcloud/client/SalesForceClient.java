@@ -5,7 +5,6 @@ import java.math.BigInteger;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +29,11 @@ public interface SalesForceClient {
 										 @RequestBody SFParticularidade particularidade,
 										 @RequestHeader("Authorization") String authorization);
 	
-	
+    @PostMapping("/api/v1/salesforce/sobjects/Roteiros__c/Chave_OIC_Integracao__c/{id}")
+	public ResponseEntity<String> upsertRoteiro(@PathVariable("id") String chaveOic,
+												@RequestBody SFRoteiro roteiro, 
+												@RequestHeader("Authorization")  String authorization);
+										 
 	@PostMapping("/api/v1/salesforce/sobjects/Roteiro_vs_Historio__c/ID_Externo__c/{id}")
 	public ResponseEntity<String> upsertHistorico(@PathVariable("id") BigInteger id,
 												  @RequestBody SFHistorico hisorico, 
@@ -39,11 +42,6 @@ public interface SalesForceClient {
 	@PostMapping("/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/{id}")
 	public ResponseEntity<String> upsertEmpresa(@PathVariable("id") String nomeResumido,
 												@RequestBody SFEmpresa empresa, 
-												@RequestHeader("Authorization")  String authorization);
-	
-	@PostMapping("/api/v1/salesforce/sobjects/Roteiros__c/Chave_OIC_Integracao__c/{id}")
-	public ResponseEntity<String> upsertRoteiro(@PathVariable("id") String chaveOic,
-												@RequestBody SFRoteiro roteiro, 
 												@RequestHeader("Authorization")  String authorization);
 	
 	@PatchMapping("/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/{id}")
@@ -58,17 +56,17 @@ public interface SalesForceClient {
 	@GetMapping(value = "/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/{nomeResumido}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<SFEmpresa> getEmpresa(@PathVariable("nomeResumido") String nomeResumido,
 											  				@RequestHeader("Authorization")  String authorization);
-
+	
 	@GetMapping(value = "/api/v1/salesforce/sobjects/Roteiros__c/Chave_OIC_Integracao__c/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<SFRoteiro> getRoteiro(@PathVariable("id") String chaveOic,
-											  	@RequestHeader("Authorization")  String authorization);
+	public ResponseEntity<SFRoteiro> getRoteiro(@PathVariable("id") String chaveOic, 
+	                                            @RequestHeader("Authorization")  String authorization);
 
 	@GetMapping(value = "/api/v1/salesforce/sobjects/Contabilidade_vs_Produtos__c/Chave_OIC_30__c/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<SFProdutoContabilidade> getProdutoContabilidade(@PathVariable("id") String contabilidadeId,
 																		  @RequestHeader("Authorization")  String authorization);
-	
+
 	@GetMapping(value = "/execute_soql",  produces = {MediaType.APPLICATION_JSON_VALUE})
-	 public ResponseEntity<?> executeSOQL(@RequestParam("soql") String soql,
-	 				  					  @RequestHeader("Authorization")  String authorization);
-	
+	public ResponseEntity<?> executeSOQL(@RequestParam("soql") String soql,
+										 @RequestHeader("Authorization")  String authorization);
+											
 }

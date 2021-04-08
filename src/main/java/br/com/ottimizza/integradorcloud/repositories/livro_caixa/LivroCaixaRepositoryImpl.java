@@ -28,9 +28,10 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		StringBuilder sql = new StringBuilder();
 		
 		sql.append("SELECT * 		 	");
-		sql.append("FROM livro_caixa lc ");
+		sql.append("FROM livros_caixas lc ");
 		sql.append("WHERE lc.cnpj_contabilidade = :cnpjContabilidade ");
 		sql.append("AND lc.cnpj_empresa = :cnpjEmpresa ");
+		sql.append("AND lc.integrado_contabilidade = false ");
 		
 		if(filtro.getId() != null)
 			sql.append("AND lc.id = :id ");
@@ -52,7 +53,8 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		if(filtro.getTipoMovimento() != null && !filtro.getTipoMovimento().equals(""))
 			sql.append("AND lc.tipo_movimento = :tipoMovimento ");
 		
-		sql.append("ORDER BY lc.data_movimento ASC ");
+		sql.append("ORDER BY lc.status ASC ,");
+		sql.append("		 lc.data_movimento ASC ");
 		
 		Query query = em.createNativeQuery(sql.toString(), LivroCaixa.class);
 		query.setParameter("cnpjContabilidade", filtro.getCnpjContabilidade());
@@ -144,5 +146,25 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		return LivroCaixaMapper.fromEntities(query.getResultList());
 	}
 
+	@Override
+	public List<LivroCaixa> enviaLivroCaixaNaoIntegrado(String cnpjEmpresa, LocalDate dataMovimento, BigInteger bancoId) {
+		StringBuilder sql = new StringBuilder();
+
+		sql.append("SELECT lc.* ");
+		sql.append("FROM livros_caixas lc ");
+		sql.append("WHERE lc.cnpj_empresa = :cnpjEmpresa ");
+		sql.append("AND lc.data_movimento <= :dataMovimento ");
+		if(bancoId != null)
+			sql.append("AND lc.fk_banco_id = :bancoId ");
+		sql.append("AND lc.integrado_contabilidade = false ");
+		
+		Query query = em.createNativeQuery(sql.toString(), LivroCaixa.class);
+		query.setParameter("cnpjEmpresa", cnpjEmpresa);
+		query.setParameter("dataMovimento", dataMovimento);
+		if(bancoId != null)
+			query.setParameter("bancoId",bancoId);
+			
+		return query.getResultList();
+	}
 
 }

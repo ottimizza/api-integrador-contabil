@@ -22,7 +22,6 @@ public class ArquivoProntoRepositoryImpl implements ArquivoProntoRepositoryCusto
 		sql.append("SELECT * FROM arquivo_pronto ap ");
 		sql.append("WHERE ap.cnpj_contabilidade = :cnpjContabilidade ");
 		sql.append("AND ap.cnpj_empresa = :cnpjEmpresa");
-
 		if(filtro.getHistorico() != null && !filtro.getHistorico().equals(""))
 			sql.append("AND ap.historico ILIKE('&:historico%') ");
 

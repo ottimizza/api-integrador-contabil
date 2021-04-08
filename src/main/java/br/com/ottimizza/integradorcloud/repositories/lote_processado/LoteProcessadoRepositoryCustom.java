@@ -10,4 +10,4 @@ public interface LoteProcessadoRepositoryCustom {
 
 	Page<LoteProcessado> buscaComFiltro(LoteProcessadoDTO filtro, PageCriteria criteria);
 
-}
+} 
