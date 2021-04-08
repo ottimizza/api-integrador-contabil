@@ -26,8 +26,8 @@ public class BancoRepositoryImpl implements BancoRepositoryCustom {
         
         sql.append("SELECT b.* ");
         sql.append("FROM bancos b ");
-        sql.append("LEFT JOIN bancos_padroes bp ");
-        sql.append("ON bp.id = b.fk_banco_padrao_id ");
+        //sql.append("LEFT JOIN bancos_padroes bp ");
+        //sql.append("ON bp.id = b.fk_banco_padrao_id ");
         sql.append("WHERE b.cnpj_empresa = :cnpjEmpresa ");
         if(filtro.getDescricao() != null && !filtro.getDescricao().equals(""))
             sql.append("AND b.descricao LIKE(:descricao) ");
