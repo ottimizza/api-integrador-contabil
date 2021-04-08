@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -17,17 +18,23 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.ottimizza.integradorcloud.client.KafkaClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.client.StorageS3Client;
+import br.com.ottimizza.integradorcloud.domain.commands.livro_caixa.ImprortacaoLivroCaixas;
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.ArquivoS3DTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaImportadoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.GrupoRegraMapper;
 import br.com.ottimizza.integradorcloud.domain.mappers.LivroCaixaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
+import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
+import br.com.ottimizza.integradorcloud.domain.models.banco.SaldoBancos;
+import br.com.ottimizza.integradorcloud.repositories.banco.BancoRepository;
 import br.com.ottimizza.integradorcloud.repositories.livro_caixa.LivroCaixaRepository;
+import br.com.ottimizza.integradorcloud.repositories.saldo_bancos.SaldoBancosRepository;
 import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 
 @Service
@@ -38,7 +45,13 @@ public class LivroCaixaService {
 
 	@Inject
 	LivroCaixaRepository repository;
+
+	@Inject 
+	BancoRepository bancoRepository;
 	
+	@Inject 
+	SaldoBancosRepository saldoRepository;
+
 	@Inject
 	OAuthClient oAuthClient; 
 	
@@ -49,6 +62,10 @@ public class LivroCaixaService {
 	KafkaClient kafkaClient;
 	
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa) throws Exception {
+		SaldoBancos ultimoSaldo = saldoRepository.buscaPorBancoDataMaior(livroCaixa.getBancoId(), livroCaixa.getDataMovimento());
+		if(ultimoSaldo != null) {
+			throw new IllegalArgumentException("O mês informado já foi encerrado e dados enviados a contabilidade.");
+		}
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
@@ -170,6 +187,28 @@ public class LivroCaixaService {
 		obj.append("]");
 		kafkaClient.integradaLivrosCaixas(obj.toString());
 		return "livrosCaixas integrados com sucesso!";
+	}
+
+	public List<LivroCaixa> importarLivrosCaixas(ImprortacaoLivroCaixas importLivrosCaixas) throws Exception {
+		List<LivroCaixa> livrosCaixas = new ArrayList<>();
+		Banco banco =  bancoRepository.findByNomeAndCnpjEmpresa(importLivrosCaixas.getBanco().toUpperCase(), importLivrosCaixas.getCnpjEmpresa());
+		for(LivroCaixaImportadoDTO lc : importLivrosCaixas.getLivrosCaixas()){
+			if(repository.findByIdExterno(lc.getIdExterno()) == null) {
+				LivroCaixa livro = LivroCaixa.builder()
+						.bancoId(banco.getId())
+						.cnpjEmpresa(banco.getCnpjEmpresa())
+						.cnpjContabilidade(banco.getCnpjContabilidade())
+						.descricao(lc.getDescricao())
+						.tipoMovimento(lc.getTipoMovimento())
+						.valorOriginal(lc.getValor())
+						.dataMovimento(lc.getData())
+						.idExterno(lc.getIdExterno())
+					.build();
+				livrosCaixas.add(livro);
+			}
+		}
+		List<LivroCaixa> retorno = repository.saveAll(livrosCaixas);
+		return retorno;
 	}
 
 }

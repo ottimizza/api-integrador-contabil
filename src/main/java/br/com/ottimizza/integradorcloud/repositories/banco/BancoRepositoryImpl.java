@@ -26,14 +26,14 @@ public class BancoRepositoryImpl implements BancoRepositoryCustom {
         
         sql.append("SELECT b.* ");
         sql.append("FROM bancos b ");
-        sql.append("LEFT JOIN bancos_padroes bp ");
-        sql.append("ON bp.id = b.fk_banco_padrao_id ");
+        //sql.append("LEFT JOIN bancos_padroes bp ");
+        //sql.append("ON bp.id = b.fk_banco_padrao_id ");
         sql.append("WHERE b.cnpj_empresa = :cnpjEmpresa ");
         if(filtro.getDescricao() != null && !filtro.getDescricao().equals(""))
             sql.append("AND b.descricao LIKE(:descricao) ");
         if(filtro.getCodigoBanco() != null)
             sql.append("AND b.codigo_banco LIKE(:codBanco) ");
-        sql.append("ORDER BY bp.nome_banco");
+        sql.append("ORDER BY b.nome_banco");
         
         Query query = em.createNativeQuery(sql.toString(), Banco.class);
         query.setParameter("cnpjEmpresa", filtro.getCnpjEmpresa());

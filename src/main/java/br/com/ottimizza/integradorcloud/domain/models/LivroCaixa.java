@@ -88,11 +88,14 @@ public class LivroCaixa implements Serializable {
 	@Column(name = "origem")
 	private Integer origem;
 
-	@Column(name = "integrado_contabilidade")
+	@Column(name = "integrado_contabilidade", columnDefinition = "boolean default false")
 	private Boolean integradoContabilidade;
 
 	@Column(name = "status")
 	private Short status;
+
+	@Column(name = "id_externo")
+	private String idExterno;
 
 	@Column(name = "texto_documento", columnDefinition = "varchar(800) default ''")
 	private String textoDocumento;
