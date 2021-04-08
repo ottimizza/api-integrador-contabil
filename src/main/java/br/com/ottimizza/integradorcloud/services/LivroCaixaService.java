@@ -31,8 +31,10 @@ import br.com.ottimizza.integradorcloud.domain.mappers.LivroCaixaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
+import br.com.ottimizza.integradorcloud.domain.models.banco.SaldoBancos;
 import br.com.ottimizza.integradorcloud.repositories.banco.BancoRepository;
 import br.com.ottimizza.integradorcloud.repositories.livro_caixa.LivroCaixaRepository;
+import br.com.ottimizza.integradorcloud.repositories.saldo_bancos.SaldoBancosRepository;
 import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 
 @Service
@@ -47,6 +49,9 @@ public class LivroCaixaService {
 	@Inject 
 	BancoRepository bancoRepository;
 	
+	@Inject 
+	SaldoBancosRepository saldoRepository;
+
 	@Inject
 	OAuthClient oAuthClient; 
 	
@@ -57,6 +62,10 @@ public class LivroCaixaService {
 	KafkaClient kafkaClient;
 	
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa) throws Exception {
+		SaldoBancos ultimoSaldo = saldoRepository.buscaPorBancoDataMaior(livroCaixa.getBancoId(), livroCaixa.getDataMovimento());
+		if(ultimoSaldo != null) {
+			throw new IllegalArgumentException("O mês informado já foi encerrado e dados enviados a contabilidade.");
+		}
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
