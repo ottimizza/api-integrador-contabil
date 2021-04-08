@@ -17,7 +17,7 @@ import br.com.ottimizza.integradorcloud.domain.models.banco.ViewSaldoBancos;
 public interface SaldoBancosRepository extends JpaRepository<SaldoBancos, BigInteger>, SaldoBancosRepositoryCustom{
     
 
-    @Query(value = "SELECT sb.* FROM saldo_bancos sb WHERE sb.fk_banco_id = :bancoId AND sb.data = :data", nativeQuery = true)
+    @Query(value = "SELECT sb.* FROM saldo_bancos sb WHERE sb.fk_banco_id = :bancoId AND sb.data = :data LIMIT 1", nativeQuery = true)
     SaldoBancos buscaPorBancoData(@Param("bancoId") BigInteger bancoId, @Param("data") LocalDate data); 
 
 

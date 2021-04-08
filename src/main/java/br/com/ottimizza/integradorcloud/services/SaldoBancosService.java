@@ -83,7 +83,11 @@ public class SaldoBancosService {
 
     public SaldoBancosDTO buscaPorBancoData(BigInteger bancoId, String dataString) throws Exception {
         LocalDate data = LocalDate.of(Integer.parseInt(dataString.substring(0, 4)), Integer.parseInt(dataString.substring(5, 7)), Integer.parseInt(dataString.substring(8)));
-        return SaldoBancosMapper.fromEntity(repository.buscaPorBancoData(bancoId, data));
+        SaldoBancos saldo = repository.buscaPorBancoData(bancoId, data);
+        if(saldo == null) {
+            return null;
+        }
+        return SaldoBancosMapper.fromEntity(saldo);
     }
 
     public String deletaSaldo(BigInteger id) throws Exception {
