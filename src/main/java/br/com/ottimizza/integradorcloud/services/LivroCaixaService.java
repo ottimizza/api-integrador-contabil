@@ -134,9 +134,9 @@ public class LivroCaixaService {
 	}
 
 	public LivroCaixaDTO buscaUltimoLancamentoContabilidadeEmpresa(String cnpjContabilidade, String cnpjEmpresa) {
-		return LivroCaixaMapper.fromEntity(
-				repository.findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(cnpjContabilidade, cnpjEmpresa)
-				);
+		LivroCaixa livroCaixa = repository.findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(cnpjContabilidade, cnpjEmpresa);
+		if(livroCaixa == null) return null;
+		return LivroCaixaMapper.fromEntity(livroCaixa);
 	}
 
 	public LivroCaixaDTO uploadFile(BigInteger idLivroCaixa, 

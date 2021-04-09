@@ -113,8 +113,10 @@ public class LivroCaixa implements Serializable {
 	@PrePersist
 	@PreUpdate
 	public void prePersist() {
-		if(this.dataCriacao == null)
+		if(this.dataCriacao == null){
 			this.dataCriacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
+			this.integradoContabilidade = false;
+		}
 
 		if(this.status == 0)
 			this.valorFinal = this.valorOriginal;
