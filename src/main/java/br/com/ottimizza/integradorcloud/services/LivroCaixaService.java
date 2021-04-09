@@ -134,9 +134,9 @@ public class LivroCaixaService {
 	}
 
 	public LivroCaixaDTO buscaUltimoLancamentoContabilidadeEmpresa(String cnpjContabilidade, String cnpjEmpresa) {
-		return LivroCaixaMapper.fromEntity(
-				repository.findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(cnpjContabilidade, cnpjEmpresa)
-				);
+		LivroCaixa livroCaixa = repository.findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(cnpjContabilidade, cnpjEmpresa);
+		if(livroCaixa == null) return null;
+		return LivroCaixaMapper.fromEntity(livroCaixa);
 	}
 
 	public LivroCaixaDTO uploadFile(BigInteger idLivroCaixa, 
@@ -144,7 +144,7 @@ public class LivroCaixaService {
 									MultipartFile arquivo, 
 									String authorization) {
 		
-		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
+		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjContabilidade(), salvaArquivo.getCnpjEmpresa(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 
 		LivroCaixa lc = repository.findById(idLivroCaixa).orElseThrow(() -> new NoResultException("livro caixa nao encontrado!"));
 		lc.setLinkArquivo(S3_SERVICE_URL+"/resources/"+arquivoS3.getId().toString()+"/download");
