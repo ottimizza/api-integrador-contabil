@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.services;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -142,9 +143,9 @@ public class LivroCaixaService {
 	public LivroCaixaDTO uploadFile(BigInteger idLivroCaixa, 
 									SalvaArquivoRequest salvaArquivo, 
 									MultipartFile arquivo, 
-									String authorization) {
+									String authorization) throws IOException {
 		
-		System.out.println("arquivo: "+arquivo.toString() +" nome arquivo:"+arquivo.getOriginalFilename());
+		System.out.println("contentType: "+arquivo.getContentType()+ " path :"+arquivo.getResource().getFile().getPath() + " nome "+arquivo.getName()+"nome arquivo:"+arquivo.getOriginalFilename());
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 
 		LivroCaixa lc = repository.findById(idLivroCaixa).orElseThrow(() -> new NoResultException("livro caixa nao encontrado!"));
