@@ -144,6 +144,7 @@ public class LivroCaixaService {
 									MultipartFile arquivo, 
 									String authorization) {
 		
+		System.out.println("arquivo: "+arquivo.toString() +" nome arquivo:"+arquivo.getOriginalFilename());
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 
 		LivroCaixa lc = repository.findById(idLivroCaixa).orElseThrow(() -> new NoResultException("livro caixa nao encontrado!"));
