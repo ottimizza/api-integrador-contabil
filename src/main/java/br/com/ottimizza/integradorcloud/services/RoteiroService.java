@@ -105,7 +105,7 @@ public class RoteiroService {
 		
 		Contabilidade contabilidade = contabilidadeRepository.buscaPorCnpj(roteiro.getCnpjContabilidade());
 		SFEmpresa empresaCrm = SFEmpresa.builder()
-				.Arquivo_Portal(S3_SERVICE_URL+"/resources/"+arquivoS3.getId().toString()+"/download")
+				.Arquivo_Portal(S3_SERVICE_URL+"/api/v2/resources/"+arquivoS3.getUuid().toString()+"/download")
 				.Contabilidade_Id(contabilidade.getSalesForceId())
 			.build();
 		String empresaCrmString = mapper.writeValueAsString(empresaCrm);

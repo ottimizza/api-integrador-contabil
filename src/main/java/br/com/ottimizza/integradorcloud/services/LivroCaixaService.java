@@ -145,11 +145,10 @@ public class LivroCaixaService {
 									MultipartFile arquivo, 
 									String authorization) throws IOException {
 		
-		System.out.println("contentType: "+arquivo.getContentType()+ " nome "+arquivo.getName()+"nome arquivo:"+arquivo.getOriginalFilename());
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 
 		LivroCaixa lc = repository.findById(idLivroCaixa).orElseThrow(() -> new NoResultException("livro caixa nao encontrado!"));
-		lc.setLinkArquivo(S3_SERVICE_URL+"/resources/"+arquivoS3.getId().toString()+"/download");
+		lc.setLinkArquivo(S3_SERVICE_URL+"/api/v2/resources/"+arquivoS3.getUuid().toString()+"/download");
 		
 		return LivroCaixaMapper.fromEntity(repository.save(lc));
 	}
@@ -174,10 +173,16 @@ public class LivroCaixaService {
 		StringBuilder obj = new StringBuilder();
 		int contador = 1;
 		LocalDate data = LocalDate.of(Integer.parseInt(dataMovimento.substring(0, 4)), Integer.parseInt(dataMovimento.substring(5, 7)), Integer.parseInt(dataMovimento.substring(8)));
-		List<LivroCaixa> livrosCaixas = repository.enviaLivroCaixaNaoIntegrado(cnpjEmpresa, data, bancoId);
+		List<LivroCaixaDTO> livrosCaixas = LivroCaixaMapper.fromEntities(repository.enviaLivroCaixaNaoIntegrado(cnpjEmpresa, data, bancoId));
 		int qntLivros = livrosCaixas.size();
 		obj.append("[");
-		for(LivroCaixa lc : livrosCaixas){
+		BigInteger bancoLivroCaixa = BigInteger.ZERO;
+		Banco banco = new Banco();
+		for(LivroCaixaDTO lc : livrosCaixas){
+			if(lc.getBancoId() != bancoLivroCaixa){
+				banco = bancoRepository.findById(lc.getBancoId()).orElseThrow(() -> new NoResultException("Banco nao encontrado!"));
+			}
+			lc.setDescricaoBanco(banco.getDescricao());
 			if(contador == qntLivros){
 				obj.append(lc.toString());
 			}
@@ -185,8 +190,10 @@ public class LivroCaixaService {
 				obj.append(lc.toString()+",");
 			}
 			contador ++;
+			bancoLivroCaixa = lc.getBancoId();
 		}
 		obj.append("]");
+		System.out.println(obj.toString());
 		kafkaClient.integradaLivrosCaixas(obj.toString());
 		return "livrosCaixas integrados com sucesso!";
 	}
