@@ -139,7 +139,10 @@ public class RoteiroService {
 	    		.build();
 	    	
 		}
-		urlArquivoPortal.append(roteiroSF.getArquivoDoPortal());
+		
+		if(roteiroSF.getArquivoDoPortal() != null && !roteiroSF.getArquivoDoPortal().equals(""))
+			urlArquivoPortal.append(roteiroSF.getArquivoDoPortal());
+
 		urlArquivoPortal.append("Data Upload: "+ LocalDate.now(ZoneId.of("Brazil/East")));
 		urlArquivoPortal.append("\n");
 		urlArquivoPortal.append(S3_SERVICE_URL+"/resources/v2/"+arquivoS3.getUuid().toString()+"/download");
