@@ -2,6 +2,8 @@ package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -95,8 +97,8 @@ public class RoteiroService {
 									 String authorization,
 									 OAuth2Authentication authentication) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		StringBuilder soql = new StringBuilder();
 		String tipoRoteiro = "";
+		StringBuilder urlArquivoPortal = new StringBuilder();
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 		Roteiro roteiro = repository.findById(roteiroId).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
 		roteiro = roteiro.toBuilder().status((short) 5).urlArquivo(S3_SERVICE_URL+"/resources/"+arquivoS3.getId().toString()+"/download").build();
@@ -105,7 +107,6 @@ public class RoteiroService {
 		
 		Contabilidade contabilidade = contabilidadeRepository.buscaPorCnpj(roteiro.getCnpjContabilidade());
 		SFEmpresa empresaCrm = SFEmpresa.builder()
-				.Arquivo_Portal(S3_SERVICE_URL+"/resources/v2/"+arquivoS3.getUuid().toString()+"/download")
 				.Contabilidade_Id(contabilidade.getSalesForceId())
 			.build();
 		String empresaCrmString = mapper.writeValueAsString(empresaCrm);
@@ -122,11 +123,12 @@ public class RoteiroService {
 
 		String chaveOic = empresa.getCnpj()+"-"+roteiro.getTipoRoteiro();
 
+		SFRoteiro roteiroSF;
 		try{
-			SFRoteiro roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+			roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
 		}
 		catch(Exception ex){
-	    	SFRoteiro sfRoteiro = SFRoteiro.builder()
+	    	roteiroSF = SFRoteiro.builder()
 	    			.empresaId(sfEmpresa.getIdEmpresa())
 	    			.tipoIntegracao(tipoRoteiro)
 	    			.nomeRelatorioReferencia("Principal")
@@ -135,8 +137,14 @@ public class RoteiroService {
 	    			.dataMovimento("-1")
 	    			.lerPlanilhasPadroes(true)
 	    		.build();
-	    	sfClient.upsertRoteiro(chaveOic, sfRoteiro, ServiceUtils.getAuthorizationHeader(authentication));
+	    	
 		}
+
+		urlArquivoPortal.append("Data Upload: "+ LocalDate.now(ZoneId.of("Brazil/East")));
+		urlArquivoPortal.append("\n");
+		urlArquivoPortal.append(S3_SERVICE_URL+"/resources/v2/"+arquivoS3.getUuid().toString()+"/download");
+		roteiroSF.setArquivoDoPortal(urlArquivoPortal.toString());
+		sfClient.upsertRoteiro(chaveOic, roteiroSF, ServiceUtils.getAuthorizationHeader(authentication));
 
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
 	}
