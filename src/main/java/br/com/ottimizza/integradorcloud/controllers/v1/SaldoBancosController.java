@@ -35,6 +35,17 @@ public class SaldoBancosController {
             ));
     }
 
+    @PostMapping("/oic")
+    public ResponseEntity<?> finalizaMesOIC(@Valid String cnpjEmpresa,
+                                            @Valid Double saldo,
+                                            @Valid String data,
+                                            @Valid BigInteger bancoPadraoId) throws Exception {
+
+        return ResponseEntity.ok(new GenericResponse<>(
+                service.finalizaMesOIC(cnpjEmpresa, saldo, data, bancoPadraoId)
+            ));
+    }
+
     @GetMapping("/{cnpjEmpresa}")
     public ResponseEntity<?> buscaSaldo(@PathVariable String cnpjEmpresa) throws Exception {
         return ResponseEntity.ok(new GenericResponse<>(
