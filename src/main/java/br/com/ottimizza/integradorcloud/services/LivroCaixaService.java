@@ -148,7 +148,7 @@ public class LivroCaixaService {
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 
 		LivroCaixa lc = repository.findById(idLivroCaixa).orElseThrow(() -> new NoResultException("livro caixa nao encontrado!"));
-		lc.setLinkArquivo(S3_SERVICE_URL+"/v2/resources/"+arquivoS3.getUuid().toString()+"/download");
+		lc.setLinkArquivo(S3_SERVICE_URL+"/resources/v2/"+arquivoS3.getUuid().toString()+"/download");
 		
 		return LivroCaixaMapper.fromEntity(repository.save(lc));
 	}
