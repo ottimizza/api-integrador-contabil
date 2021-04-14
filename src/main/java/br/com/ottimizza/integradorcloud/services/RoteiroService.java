@@ -126,6 +126,7 @@ public class RoteiroService {
 		SFRoteiro roteiroSF;
 		try{
 			roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+			roteiroSF.setChaveOic(null);
 		}
 		catch(Exception ex){
 	    	roteiroSF = SFRoteiro.builder()
@@ -139,7 +140,7 @@ public class RoteiroService {
 	    		.build();
 	    	
 		}
-		
+
 		if(roteiroSF.getArquivoDoPortal() != null && !roteiroSF.getArquivoDoPortal().equals(""))
 			urlArquivoPortal.append(roteiroSF.getArquivoDoPortal());
 
