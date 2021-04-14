@@ -141,8 +141,10 @@ public class RoteiroService {
 	    	
 		}
 
-		if(roteiroSF.getArquivoDoPortal() != null && !roteiroSF.getArquivoDoPortal().equals(""))
+		if(roteiroSF.getArquivoDoPortal() != null && !roteiroSF.getArquivoDoPortal().equals("")){
 			urlArquivoPortal.append(roteiroSF.getArquivoDoPortal());
+			urlArquivoPortal.append("\n");
+		}
 
 		urlArquivoPortal.append("Data Upload: "+ LocalDate.now(ZoneId.of("Brazil/East")));
 		urlArquivoPortal.append("\n");
