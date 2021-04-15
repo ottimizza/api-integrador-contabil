@@ -193,7 +193,6 @@ public class LivroCaixaService {
 			bancoLivroCaixa = lc.getBancoId();
 		}
 		obj.append("]");
-		System.out.println(obj.toString());
 		kafkaClient.integradaLivrosCaixas(obj.toString());
 		return "livrosCaixas integrados com sucesso!";
 	}
