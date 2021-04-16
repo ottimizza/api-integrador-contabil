@@ -15,6 +15,8 @@ public class ImprortacaoLivroCaixas {
     
     private String cnpjEmpresa;
 
+    private String cnpjContabilidade;
+
     private String banco;
 
     private List<LivroCaixaImportadoDTO> livrosCaixas;
