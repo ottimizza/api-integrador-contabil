@@ -62,17 +62,22 @@ public class LivroCaixaService {
 	@Inject
 	KafkaClient kafkaClient;
 	
-	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa) throws Exception {
+	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa, OAuth2Authentication authentication) throws Exception {
+		UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
 		SaldoBancos ultimoSaldo = saldoRepository.buscaPorBancoDataMaior(livroCaixa.getBancoId(), livroCaixa.getDataMovimento());
 		if(ultimoSaldo != null) {
 			throw new IllegalArgumentException("O mês informado já foi encerrado e dados enviados a contabilidade.");
 		}
+		livroCaixa.setCriadoPor(user.getUsername());
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
 	
 	public LivroCaixaDTO patch(BigInteger id, LivroCaixaDTO livroCaixaDTO) throws Exception {
 		LivroCaixa livroCaixa = repository.findById(id).orElseThrow(() -> new NoResultException("Livro Caixa nao encontrado!"));
+		if(livroCaixa.getOrigem() == 1){
+			throw new IllegalArgumentException("Não é possível alterar este livro caixa");
+		}
 		LivroCaixa retorno = repository.save(livroCaixaDTO.patch(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
@@ -209,8 +214,12 @@ public class LivroCaixaService {
 						.descricao(lc.getDescricao())
 						.tipoMovimento(lc.getTipoMovimento())
 						.valorOriginal(lc.getValor())
+						.valorFinal(lc.getValor())
+						.valorPago(lc.getValor())
 						.dataMovimento(lc.getData())
 						.idExterno(lc.getIdExterno())
+						.status(LivroCaixa.Status.PAGO)
+						.origem(1)
 					.build();
 				livrosCaixas.add(livro);
 			}
