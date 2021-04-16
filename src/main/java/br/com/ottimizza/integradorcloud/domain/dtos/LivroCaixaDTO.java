@@ -66,6 +66,9 @@ public class LivroCaixaDTO implements Serializable {
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String dataString;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String descricaoBanco;
 	
 	public LivroCaixa patch(LivroCaixa livroCaixa) {
 		
@@ -84,9 +87,19 @@ public class LivroCaixaDTO implements Serializable {
 		if(descricao != null && !descricao.equals(""))
 			livroCaixa.setDescricao(descricao);
 
-		if(status != null)
+		if(status != null) {
 			livroCaixa.setStatus(status);
 			
+		}
 		return livroCaixa;
 	}
+
+	@Override
+	public String toString() {
+		return "{ \"id\":"+id+", \"cnpjContabilidade\":"+"\""+cnpjContabilidade+"\""+", \"cnpjEmpresa\":"+"\""+cnpjEmpresa+"\""+", \"dataMovimento\":"+"\""+dataMovimento+"\""+", \"dataPrevisaoPagamento\":"+"\""+dataPrevisaoPagamento+"\""+
+				", \"valorOriginal\":"+valorOriginal+", \"valorPago\":"+valorPago+", \"valorFinal\":"+valorFinal+", \"descricao\":"+"\""+descricao+"\""+", \"bancoId\":"+bancoId+", \"categoriaId\":"+categoriaId+
+				", \"tipoMovimento\":"+"\""+tipoMovimento+"\""+", \"complemento\":"+"\""+complemento+"\""+", \"linkArquivo\":"+"\""+linkArquivo+"\""+", \"origem\":"+origem+", \"integradoContabilidade\":"+integradoContabilidade+
+				", \"status\":"+status+", \"textoDocumento\":"+"\""+textoDocumento+"\""+", \"termos\":"+"\""+termos+"\""+", \"criadoPor\":"+"\""+criadoPor+"\""+", \"dataCriacao\":"+"\""+dataCriacao+"\""+", \"descricaoBanco\":"+"\""+descricaoBanco+"\"}";
+	}
+
 }

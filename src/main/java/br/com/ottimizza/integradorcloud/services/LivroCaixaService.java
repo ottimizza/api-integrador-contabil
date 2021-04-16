@@ -1,5 +1,6 @@
 package br.com.ottimizza.integradorcloud.services;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -134,20 +135,20 @@ public class LivroCaixaService {
 	}
 
 	public LivroCaixaDTO buscaUltimoLancamentoContabilidadeEmpresa(String cnpjContabilidade, String cnpjEmpresa) {
-		return LivroCaixaMapper.fromEntity(
-				repository.findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(cnpjContabilidade, cnpjEmpresa)
-				);
+		LivroCaixa livroCaixa = repository.findByCnpjContabilidadeAndCnpjEmpresaFirstByOrderByIdDesc(cnpjContabilidade, cnpjEmpresa);
+		if(livroCaixa == null) return null;
+		return LivroCaixaMapper.fromEntity(livroCaixa);
 	}
 
 	public LivroCaixaDTO uploadFile(BigInteger idLivroCaixa, 
 									SalvaArquivoRequest salvaArquivo, 
 									MultipartFile arquivo, 
-									String authorization) {
+									String authorization) throws IOException {
 		
 		ArquivoS3DTO arquivoS3 = s3Client.uploadArquivo(salvaArquivo.getCnpjEmpresa(), salvaArquivo.getCnpjContabilidade(), salvaArquivo.getApplicationId(), arquivo, authorization).getBody();
 
 		LivroCaixa lc = repository.findById(idLivroCaixa).orElseThrow(() -> new NoResultException("livro caixa nao encontrado!"));
-		lc.setLinkArquivo(S3_SERVICE_URL+"/resources/"+arquivoS3.getId().toString()+"/download");
+		lc.setLinkArquivo(S3_SERVICE_URL+"/resources/v2/"+arquivoS3.getUuid().toString()+"/download");
 		
 		return LivroCaixaMapper.fromEntity(repository.save(lc));
 	}
@@ -172,10 +173,16 @@ public class LivroCaixaService {
 		StringBuilder obj = new StringBuilder();
 		int contador = 1;
 		LocalDate data = LocalDate.of(Integer.parseInt(dataMovimento.substring(0, 4)), Integer.parseInt(dataMovimento.substring(5, 7)), Integer.parseInt(dataMovimento.substring(8)));
-		List<LivroCaixa> livrosCaixas = repository.enviaLivroCaixaNaoIntegrado(cnpjEmpresa, data, bancoId);
+		List<LivroCaixaDTO> livrosCaixas = LivroCaixaMapper.fromEntities(repository.enviaLivroCaixaNaoIntegrado(cnpjEmpresa, data, bancoId));
 		int qntLivros = livrosCaixas.size();
 		obj.append("[");
-		for(LivroCaixa lc : livrosCaixas){
+		BigInteger bancoLivroCaixa = BigInteger.ZERO;
+		Banco banco = new Banco();
+		for(LivroCaixaDTO lc : livrosCaixas){
+			if(lc.getBancoId() != bancoLivroCaixa){
+				banco = bancoRepository.findById(lc.getBancoId()).orElseThrow(() -> new NoResultException("Banco nao encontrado!"));
+			}
+			lc.setDescricaoBanco(banco.getDescricao());
 			if(contador == qntLivros){
 				obj.append(lc.toString());
 			}
@@ -183,6 +190,7 @@ public class LivroCaixaService {
 				obj.append(lc.toString()+",");
 			}
 			contador ++;
+			bancoLivroCaixa = lc.getBancoId();
 		}
 		obj.append("]");
 		kafkaClient.integradaLivrosCaixas(obj.toString());
