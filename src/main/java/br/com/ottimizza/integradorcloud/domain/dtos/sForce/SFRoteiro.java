@@ -65,4 +65,8 @@ public class SFRoteiro implements Serializable{
 	@JsonProperty(value = "Conta_Fixa_Desconto__c")
 	private String contaFixaDesconto;
 
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Arquivo_do_Portal__c")
+	private String arquivoDoPortal;
+
 }

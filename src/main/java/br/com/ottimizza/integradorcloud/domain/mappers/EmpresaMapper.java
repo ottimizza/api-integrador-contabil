@@ -60,7 +60,7 @@ public class EmpresaMapper {
     	return SFEmpresa.builder()
     			.Possui_OIC("Possui OIC")
     			.Resumo_Prox_Passo("Ativar OIC - Entraremos em contato para termos mais informacoes do projeto.")
-    			.Status_Projeto("01. Empresa Listada")
+    			.Status_Projeto("03. Em Desenvolvimento")
     			.Codigo_Empresa_ERP(empresa.getCodigoERP())
     			.Status_Report_Data(LocalDateTime.now().toString())
     			.Contabilidade_Id(empresa.getContabilidadeCrmId())

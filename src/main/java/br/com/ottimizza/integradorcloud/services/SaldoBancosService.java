@@ -74,6 +74,17 @@ public class SaldoBancosService {
         return saldos;
     }
 
+    public SaldoBancos finalizaMesOIC(String cnpjEmpresa, Double valorSaldo, String datasSaldo, BigInteger bancoPadraoId) throws Exception {
+        Banco banco = bancoRepository.findByCnpjAndBancoPadraoId(cnpjEmpresa, bancoPadraoId);
+        LocalDate dataSaldo = LocalDate.of(Integer.parseInt(datasSaldo.substring(0, 4)), Integer.parseInt(datasSaldo.substring(5, 7)), Integer.parseInt(datasSaldo.substring(8)));
+        SaldoBancosDTO saldo = SaldoBancosDTO.builder()
+                .bancoId(banco.getId())
+                .saldo(valorSaldo)
+                .data(dataSaldo)
+            .build();
+        return salvaSaldo(saldo);
+    }
+
     public PagRecRestantesDTO contarPagamentosRecebimentosRestantes(String cnpjEmpresa) throws Exception {
         return PagRecRestantesDTO.builder()
                 .pagamentosRestantes(livroCaixaRepository.buscaPagamentosPendentes(cnpjEmpresa, LocalDate.now()))
