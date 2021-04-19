@@ -32,7 +32,7 @@ public class BancoRepositoryImpl implements BancoRepositoryCustom {
         if(filtro.getDescricao() != null && !filtro.getDescricao().equals(""))
             sql.append("AND b.descricao LIKE(:descricao) ");
         if(filtro.getCodigoBanco() != null)
-            sql.append("AND b.codigo_banco LIKE(:codBanco) ");
+            sql.append("AND b.codigo_banco LIKE :codBanco ");
         sql.append("ORDER BY b.nome_banco");
         
         Query query = em.createNativeQuery(sql.toString(), Banco.class);
