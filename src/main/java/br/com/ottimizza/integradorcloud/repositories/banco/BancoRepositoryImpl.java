@@ -32,7 +32,7 @@ public class BancoRepositoryImpl implements BancoRepositoryCustom {
         if(filtro.getDescricao() != null && !filtro.getDescricao().equals(""))
             sql.append("AND b.descricao LIKE(:descricao) ");
         if(filtro.getCodigoBanco() != null)
-            sql.append("AND b.codigo_banco LIKE :codBanco ");
+            sql.append("AND b.codigo_banco ILIKE :codBanco ");
         sql.append("ORDER BY b.nome_banco");
         
         Query query = em.createNativeQuery(sql.toString(), Banco.class);
@@ -58,7 +58,7 @@ public class BancoRepositoryImpl implements BancoRepositoryCustom {
         sql.append("FROM bancos_padroes bp ");
         sql.append("WHERE NOT EXISTS (SELECT 1 FROM bancos b WHERE b.fk_banco_padrao_id = bp.id AND b.cnpj_empresa = :cnpjEmpresa) ");
         if(filtro.getDescricao() != null && !filtro.getDescricao().equals(""))
-            sql.append("AND bp.descricao LIKE(:descricao) ");
+            sql.append("AND bp.descricao LIKE :descricao ");
         if(filtro.getCodigoBanco() != null)
             sql.append("AND bp.codigo_banco LIKE(:codBanco) ");
         sql.append("ORDER BY bp.codigo_banco");
