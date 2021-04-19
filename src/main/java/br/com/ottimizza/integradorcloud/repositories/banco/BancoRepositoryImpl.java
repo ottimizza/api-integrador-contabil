@@ -58,7 +58,7 @@ public class BancoRepositoryImpl implements BancoRepositoryCustom {
         sql.append("FROM bancos_padroes bp ");
         sql.append("WHERE NOT EXISTS (SELECT 1 FROM bancos b WHERE b.fk_banco_padrao_id = bp.id AND b.cnpj_empresa = :cnpjEmpresa) ");
         if(filtro.getDescricao() != null && !filtro.getDescricao().equals(""))
-            sql.append("AND bp.descricao LIKE :descricao ");
+            sql.append("AND bp.descricao ILIKE :descricao ");
         if(filtro.getCodigoBanco() != null)
             sql.append("AND bp.codigo_banco LIKE(:codBanco) ");
         sql.append("ORDER BY bp.codigo_banco");
@@ -67,7 +67,7 @@ public class BancoRepositoryImpl implements BancoRepositoryCustom {
         query.setParameter("cnpjEmpresa", filtro.getCnpjEmpresa());
 
         if(filtro.getDescricao() != null && !filtro.getDescricao().equals(""))
-            query.setParameter("descricao","%"+filtro.getDescricao().toUpperCase()+"%");
+            query.setParameter("descricao","%"+filtro.getDescricao()+"%");
         if(filtro.getCodigoBanco() != null)
             query.setParameter("codBanco","%"+filtro.getCodigoBanco()+"%");
         
