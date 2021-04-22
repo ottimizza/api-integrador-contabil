@@ -18,6 +18,10 @@ public class SFRoteiro implements Serializable{
 	static final long serialVersionUID = 1L;
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Id")
+	private String idRoteiro;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty(value = "Empresa_a_Ser_Integrada__c")
 	private String empresaId;
 

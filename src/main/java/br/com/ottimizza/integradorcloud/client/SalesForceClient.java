@@ -61,6 +61,10 @@ public interface SalesForceClient {
 	public ResponseEntity<SFRoteiro> getRoteiro(@PathVariable("id") String chaveOic, 
 	                                            @RequestHeader("Authorization")  String authorization);
 
+	@GetMapping(value = "/api/v1/salesforce/sobjects/Roteiros__c/Name/{name}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<SFRoteiro> getRoteiroByName(@PathVariable("name") String name, 
+													  @RequestHeader("Authorization")  String authorization);
+
 	@GetMapping(value = "/api/v1/salesforce/sobjects/Contabilidade_vs_Produtos__c/Chave_OIC_30__c/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<SFProdutoContabilidade> getProdutoContabilidade(@PathVariable("id") String contabilidadeId,
 																		  @RequestHeader("Authorization")  String authorization);

@@ -205,13 +205,22 @@ public class RoteiroService {
 
 		int contador = 1;
 		StringBuilder layoutsRoteiro = new StringBuilder();
+		String roteiroAdicional = "";
 		for(LayoutPadraoDTO layout : layouts) {
-			layoutsRoteiro.append(layout.getIdSalesForce());
-			if(contador < layouts.size())
-				layoutsRoteiro.append(";");
+			if(layout.getDescricaoDocumento().startsWith("ROT"))
+				roteiroAdicional = sfClient.getRoteiroByName(layout.getDescricaoDocumento(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getIdRoteiro();
+			else{
+				layoutsRoteiro.append(layout.getIdSalesForce());
 
+				if(contador < layouts.size())
+					layoutsRoteiro.append(";");
+			}
 			contador ++;
 		}
+		
+		if(!roteiroAdicional.equals(""))
+			roteiroSF.setRoteiroCompartilhadoAdicional(roteiroAdicional);
+
 		roteiroSF.setPlanilhasPadroes(layoutsRoteiro.toString());
 		
 		sfClient.upsertRoteiro(chaveOic, roteiroSF, ServiceUtils.getAuthorizationHeader(authentication));

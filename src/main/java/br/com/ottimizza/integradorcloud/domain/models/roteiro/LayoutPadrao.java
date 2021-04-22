@@ -49,7 +49,7 @@ public class LayoutPadrao {
     @Column(name = "recebimentos")
     private Boolean recebimentos;
 
-    public static class Status  {
+    public static class TipoIntegracao  {
         public static final Short EXTRATOS = 0;
         public static final Short CARTOES = 1;
         public static final Short ERPS = 2;
