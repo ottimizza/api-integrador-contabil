@@ -202,6 +202,7 @@ public class RoteiroService {
 		String chaveOic = empresa.getCnpj()+"-"+roteiro.getTipoRoteiro();
 		SFRoteiro roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
 		roteiroSF.setChaveOic(null);
+		roteiroSF.setIdRoteiro(null);
 
 		int contador = 1;
 		StringBuilder layoutsRoteiro = new StringBuilder();
@@ -217,7 +218,7 @@ public class RoteiroService {
 			}
 			contador ++;
 		}
-		
+
 		if(!roteiroAdicional.equals(""))
 			roteiroSF.setRoteiroCompartilhadoAdicional(roteiroAdicional);
 
