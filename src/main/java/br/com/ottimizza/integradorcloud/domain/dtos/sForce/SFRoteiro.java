@@ -69,4 +69,12 @@ public class SFRoteiro implements Serializable{
 	@JsonProperty(value = "Arquivo_do_Portal__c")
 	private String arquivoDoPortal;
 
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Planilhas_Padroes__c")
+	private String planilhasPadroes;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Roteiro_Compartilhado_Adicional__c")
+	private String roteiroCompartilhadoAdicional;
+
 }
