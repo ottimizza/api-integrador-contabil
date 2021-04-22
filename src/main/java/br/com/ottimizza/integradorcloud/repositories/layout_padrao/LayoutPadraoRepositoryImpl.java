@@ -24,7 +24,6 @@ public class LayoutPadraoRepositoryImpl implements LayoutPadraoRepositoryCustom 
         sql.append("FROM layouts_padroes lp ");
 
         if(filtro.getDescricaoDocumento() != null && !filtro.getDescricaoDocumento().equals("")){
-            System.out.println("entrou");
             sql.append("WHERE lp.descricao_documento ILIKE :descricaoDocumento ");
             where =  true;
         }
