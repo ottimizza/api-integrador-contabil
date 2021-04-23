@@ -68,6 +68,14 @@ public class LivroCaixaController {
 				service.deletaPorId(id)
 			));
 	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<?> buscaPorId(@PathVariable("id") BigInteger livroCaixaId,
+										OAuth2Authentication authentication) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<>(
+				service.buscaPorId(livroCaixaId, authentication)
+			));
+	}
 	
 	@GetMapping("/sugerir/{id}")
 	public ResponseEntity<?> sugerirRegra(@PathVariable("id") BigInteger livroCaixaId,

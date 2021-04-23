@@ -96,6 +96,15 @@ public class LivroCaixaService {
 		return "Livro Caixa removido com sucesso!";
 	}
 
+	public LivroCaixaDTO buscaPorId(BigInteger livroCaixaId, OAuth2Authentication authentication) throws Exception {
+		UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+		LivroCaixa livroCaixa = repository.findById(livroCaixaId).orElseThrow(() -> new NoResultException("Livro Caixa nao encontrado!"));
+		if(!livroCaixa.getCriadoPor().equals(user.getUsername()))
+			return null;
+			
+		return LivroCaixaMapper.fromEntity(livroCaixa);
+	}
+
 	public GrupoRegraDTO sugerirRegra(BigInteger livroCaixaId, String cnpjContabilidade, String cnpjEmpresa) throws Exception {
 		try {
 			GrupoRegra regraSugerida = repository.sugerirRegra(livroCaixaId, cnpjContabilidade, cnpjEmpresa);
