@@ -128,6 +128,7 @@ public class RoteiroService {
 		try{
 			roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
 			roteiroSF.setChaveOic(null);
+			roteiroSF.setIdRoteiro(null);
 		}
 		catch(Exception ex){
 	    	roteiroSF = SFRoteiro.builder()
