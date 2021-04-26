@@ -1,12 +1,10 @@
 package br.com.ottimizza.integradorcloud.controllers.v1;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 
-import com.amazonaws.Response;
 
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -24,10 +22,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.ottimizza.integradorcloud.domain.commands.livro_caixa.ImprortacaoLivroCaixas;
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaDTO;
-import br.com.ottimizza.integradorcloud.domain.mappers.LivroCaixaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
@@ -49,9 +47,10 @@ public class LivroCaixaController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> salvaLivroCaixa(@RequestBody LivroCaixaDTO livroCaixa) throws Exception {
+	public ResponseEntity<?> salvaLivroCaixa(@RequestBody LivroCaixaDTO livroCaixa,
+											OAuth2Authentication authentication) throws Exception {
 		return ResponseEntity.ok(new GenericResponse<LivroCaixaDTO>(
-				service.salva(livroCaixa)
+				service.salva(livroCaixa, authentication)
 			));
 	}
 	
@@ -67,6 +66,14 @@ public class LivroCaixaController {
 	public ResponseEntity<?> deletaLivroCaixa(@PathVariable BigInteger id) throws Exception {
 		return ResponseEntity.ok(new GenericResponse<>(
 				service.deletaPorId(id)
+			));
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<?> buscaPorId(@PathVariable("id") BigInteger livroCaixaId,
+										OAuth2Authentication authentication) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<>(
+				service.buscaPorId(livroCaixaId, authentication)
 			));
 	}
 	
@@ -134,6 +141,13 @@ public class LivroCaixaController {
         return ResponseEntity.ok(new GenericResponse<>(
 			service.integraLivrosCaixas(cnpjEmpresa, dataMovimento, bancoId)
 		));		
+	}
+
+	@PostMapping("/importar")
+	ResponseEntity<?> importarLivrosCaixas(@RequestBody ImprortacaoLivroCaixas livroCaixas) throws Exception {
+		return ResponseEntity.ok(new GenericResponse<>(
+				service.importarLivrosCaixas(livroCaixas)
+			));
 	}
 
 }

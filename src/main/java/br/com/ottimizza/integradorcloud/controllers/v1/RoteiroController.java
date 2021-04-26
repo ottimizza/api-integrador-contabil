@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.controllers.v1;
 
 import java.math.BigInteger;
 import java.security.Principal;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
+import br.com.ottimizza.integradorcloud.domain.dtos.LayoutPadraoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.RoteiroDTO;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
@@ -54,6 +56,15 @@ public class RoteiroController {
 									 @RequestHeader("Authorization") String authorization,
 									 OAuth2Authentication authentication) throws Exception {
 		return ResponseEntity.ok(new GenericResponse<>(roteiroService.uploadPlanilha(roteiroId, salvaArquivo, arquivo, authorization, authentication)));
+	}
+
+	@PostMapping("/{roteiroId}/layouts")
+	ResponseEntity<?> salvarLayoutsPadroes(@PathVariable("roteiroId") BigInteger roteiroId,
+										   @RequestBody List<LayoutPadraoDTO> layouts,
+										   OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<>(
+				roteiroService.atualizaLayoutRoteiro(roteiroId, layouts, authentication)
+			));
 	}
 	
 	@PatchMapping("/{roteiroId}")

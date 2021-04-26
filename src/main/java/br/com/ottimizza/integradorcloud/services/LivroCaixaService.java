@@ -32,7 +32,9 @@ import br.com.ottimizza.integradorcloud.domain.mappers.LivroCaixaMapper;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
+import br.com.ottimizza.integradorcloud.domain.models.banco.BancosPadroes;
 import br.com.ottimizza.integradorcloud.domain.models.banco.SaldoBancos;
+import br.com.ottimizza.integradorcloud.repositories.BancosPadroesRepository;
 import br.com.ottimizza.integradorcloud.repositories.banco.BancoRepository;
 import br.com.ottimizza.integradorcloud.repositories.livro_caixa.LivroCaixaRepository;
 import br.com.ottimizza.integradorcloud.repositories.saldo_bancos.SaldoBancosRepository;
@@ -50,6 +52,9 @@ public class LivroCaixaService {
 	@Inject 
 	BancoRepository bancoRepository;
 	
+	@Inject
+	BancosPadroesRepository bancosPadroesRepository;
+
 	@Inject 
 	SaldoBancosRepository saldoRepository;
 
@@ -62,17 +67,22 @@ public class LivroCaixaService {
 	@Inject
 	KafkaClient kafkaClient;
 	
-	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa) throws Exception {
+	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa, OAuth2Authentication authentication) throws Exception {
+		UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
 		SaldoBancos ultimoSaldo = saldoRepository.buscaPorBancoDataMaior(livroCaixa.getBancoId(), livroCaixa.getDataMovimento());
 		if(ultimoSaldo != null) {
 			throw new IllegalArgumentException("O mês informado já foi encerrado e dados enviados a contabilidade.");
 		}
+		livroCaixa.setCriadoPor(user.getUsername());
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
 	
 	public LivroCaixaDTO patch(BigInteger id, LivroCaixaDTO livroCaixaDTO) throws Exception {
 		LivroCaixa livroCaixa = repository.findById(id).orElseThrow(() -> new NoResultException("Livro Caixa nao encontrado!"));
+		if(livroCaixa.getOrigem() == 1){
+			throw new IllegalArgumentException("Não é possível alterar este livro caixa");
+		}
 		LivroCaixa retorno = repository.save(livroCaixaDTO.patch(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
@@ -84,6 +94,15 @@ public class LivroCaixaService {
 	public String deletaPorId(BigInteger id) throws Exception {
 		repository.deleteById(id);
 		return "Livro Caixa removido com sucesso!";
+	}
+
+	public LivroCaixaDTO buscaPorId(BigInteger livroCaixaId, OAuth2Authentication authentication) throws Exception {
+		UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+		LivroCaixa livroCaixa = repository.findById(livroCaixaId).orElseThrow(() -> new NoResultException("Livro Caixa nao encontrado!"));
+		if(!livroCaixa.getCriadoPor().equals(user.getUsername()))
+			return null;
+			
+		return LivroCaixaMapper.fromEntity(livroCaixa);
 	}
 
 	public GrupoRegraDTO sugerirRegra(BigInteger livroCaixaId, String cnpjContabilidade, String cnpjEmpresa) throws Exception {
@@ -199,7 +218,19 @@ public class LivroCaixaService {
 
 	public List<LivroCaixa> importarLivrosCaixas(ImprortacaoLivroCaixas importLivrosCaixas) throws Exception {
 		List<LivroCaixa> livrosCaixas = new ArrayList<>();
-		Banco banco =  bancoRepository.findByNomeAndCnpjEmpresa(importLivrosCaixas.getBanco().toUpperCase(), importLivrosCaixas.getCnpjEmpresa());
+		Banco banco = new Banco();
+
+		banco =  bancoRepository.findByCodigoAndCnpjEmpresa(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa());
+		if(banco == null) {
+			BancosPadroes bancoPadrao = bancosPadroesRepository.findByCodigo(importLivrosCaixas.getBanco());
+			banco = bancoRepository.save(Banco.builder()
+					.cnpjEmpresa(importLivrosCaixas.getCnpjEmpresa())
+					.cnpjContabilidade(importLivrosCaixas.getCnpjContabilidade())
+					.nomeBanco(bancoPadrao.getNomeBanco())
+					.codigoBanco(bancoPadrao.getCodigoBanco())
+					.bancoPadraoId(bancoPadrao.getId())
+				.build());
+		}
 		for(LivroCaixaImportadoDTO lc : importLivrosCaixas.getLivrosCaixas()){
 			if(repository.findByIdExterno(lc.getIdExterno()) == null) {
 				LivroCaixa livro = LivroCaixa.builder()
@@ -209,8 +240,12 @@ public class LivroCaixaService {
 						.descricao(lc.getDescricao())
 						.tipoMovimento(lc.getTipoMovimento())
 						.valorOriginal(lc.getValor())
+						.valorFinal(lc.getValor())
+						.valorPago(lc.getValor())
 						.dataMovimento(lc.getData())
 						.idExterno(lc.getIdExterno())
+						.status(LivroCaixa.Status.PAGO)
+						.origem(1)
 					.build();
 				livrosCaixas.add(livro);
 			}
