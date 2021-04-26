@@ -53,8 +53,8 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		if(filtro.getTipoMovimento() != null && !filtro.getTipoMovimento().equals(""))
 			sql.append("AND lc.tipo_movimento = :tipoMovimento ");
 		
-		sql.append("ORDER BY lc.status ASC ,");
-		sql.append("		 lc.data_movimento ASC ");
+		sql.append("ORDER BY lc.data_movimento ASC ,");
+		sql.append("		 lc.status ASC ");
 		
 		Query query = em.createNativeQuery(sql.toString(), LivroCaixa.class);
 		query.setParameter("cnpjContabilidade", filtro.getCnpjContabilidade());
