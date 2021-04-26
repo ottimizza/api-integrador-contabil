@@ -32,6 +32,7 @@ import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.ArquivoS3DTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.CheckListPerguntasRespostasDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.EmailDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.LayoutPadraoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.RoteiroDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFEmpresa;
@@ -192,6 +193,39 @@ public class RoteiroService {
 		}
 
 		return RoteiroMapper.fromEntity(roteiroRetorno);
+	}
+
+	public RoteiroDTO atualizaLayoutRoteiro(BigInteger id, List<LayoutPadraoDTO> layouts, OAuth2Authentication authentication) throws Exception {
+		Roteiro roteiro = repository.findById(id).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
+		Empresa empresa = empresaRepository.buscarPorId(roteiro.getEmpresaId()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
+
+		String chaveOic = empresa.getCnpj()+"-"+roteiro.getTipoRoteiro();
+		SFRoteiro roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+		roteiroSF.setChaveOic(null);
+		roteiroSF.setIdRoteiro(null);
+
+		int contador = 1;
+		StringBuilder layoutsRoteiro = new StringBuilder();
+		String roteiroAdicional = "";
+		for(LayoutPadraoDTO layout : layouts) {
+			if(layout.getDescricaoDocumento().startsWith("ROT"))
+				roteiroAdicional = sfClient.getRoteiroByName(layout.getDescricaoDocumento(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getIdRoteiro();
+			else{
+				layoutsRoteiro.append(layout.getIdSalesForce());
+
+				if(contador < layouts.size())
+					layoutsRoteiro.append(";");
+			}
+			contador ++;
+		}
+
+		if(!roteiroAdicional.equals(""))
+			roteiroSF.setRoteiroCompartilhadoAdicional(roteiroAdicional);
+
+		roteiroSF.setPlanilhasPadroes(layoutsRoteiro.toString());
+		
+		sfClient.upsertRoteiro(chaveOic, roteiroSF, ServiceUtils.getAuthorizationHeader(authentication));
+		return RoteiroMapper.fromEntity(roteiro);
 	}
 	
 	public Page<Roteiro> busca(RoteiroDTO filtro, PageCriteria criteria) throws Exception {

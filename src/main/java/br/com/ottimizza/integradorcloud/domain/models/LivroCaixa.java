@@ -94,7 +94,7 @@ public class LivroCaixa implements Serializable {
 	@Column(name = "status")
 	private Short status;
 
-	@Column(name = "id_externo")
+	@Column(name = "id_externo", columnDefinition = "varchar(255) default ''", nullable = false)
 	private String idExterno;
 
 	@Column(name = "texto_documento", columnDefinition = "varchar(800) default ''")
@@ -116,6 +116,9 @@ public class LivroCaixa implements Serializable {
 		if(this.dataCriacao == null){
 			this.dataCriacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
 			this.integradoContabilidade = false;
+		}
+		if(this.idExterno == null) {
+			this.idExterno = "";
 		}
 
 		if(this.status == 0)

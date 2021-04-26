@@ -18,6 +18,10 @@ public class SFRoteiro implements Serializable{
 	static final long serialVersionUID = 1L;
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Id")
+	private String idRoteiro;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty(value = "Empresa_a_Ser_Integrada__c")
 	private String empresaId;
 
@@ -68,5 +72,13 @@ public class SFRoteiro implements Serializable{
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty(value = "Arquivo_do_Portal__c")
 	private String arquivoDoPortal;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Planilhas_Padroes__c")
+	private String planilhasPadroes;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	@JsonProperty(value = "Roteiro_Compartilhado_Adicional__c")
+	private String roteiroCompartilhadoAdicional;
 
 }
