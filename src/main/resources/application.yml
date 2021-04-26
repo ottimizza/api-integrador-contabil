@@ -62,11 +62,6 @@ email-sender:
     name: email-sender-service
     url: ${EMAIL_SENDER_URL:https://api-emaiil-sender.herokuapp.com}
 
-cora:
-  service:
-    name: cora-service
-    url: ${CORA_SERVER_URL:https://api.stage.cora.com.br}
-
 kafka:
   service:
     name: kafka-service
