@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PostPersist;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
@@ -123,16 +124,19 @@ public class LivroCaixa implements Serializable {
 		if(this.idExterno == null) {
 			this.idExterno = "";
 		}
-
-		if(this.status == 0)
-			this.valorFinal = this.valorOriginal;
-		else
-			this.valorFinal = this.valorPago;
 			
 		if(this.tipoMovimento.equals("PAG") && this.valorFinal > 0)
 			this.valorFinal = this.valorFinal * -1;
 		
 		this.dataAtualizacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
+	}
+
+	@PostPersist
+	public void posPersist(){
+		if(this.status == 0)
+			this.valorFinal = this.valorOriginal;
+		else
+			this.valorFinal = this.valorPago;
 	}
 
 	public static class Status  {
