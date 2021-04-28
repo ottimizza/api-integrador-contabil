@@ -3,12 +3,15 @@ package br.com.ottimizza.integradorcloud.domain.models.banco;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -41,4 +44,17 @@ public class SaldoBancos implements Serializable {
     @Column(name = "saldo")
     private Double saldo;
 
+    @Column(name = "data_criacao")
+    private LocalDateTime dataCriacao;
+
+    @Column(name = "data_atualizacao")
+	private LocalDateTime dataAtualizacao;
+
+    @PrePersist
+	public void prePersist() {
+		if(this.dataCriacao == null){
+			this.dataCriacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
+        }
+        this.dataAtualizacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
+    }
 }

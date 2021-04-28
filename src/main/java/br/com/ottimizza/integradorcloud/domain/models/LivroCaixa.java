@@ -110,6 +110,9 @@ public class LivroCaixa implements Serializable {
 	@Column(name = "data_criacao")
 	private LocalDateTime dataCriacao;
 
+	@Column(name = "data_atualizacao")
+	private LocalDateTime dataAtualizacao;
+
 	@PrePersist
 	@PreUpdate
 	public void prePersist() {
@@ -129,6 +132,7 @@ public class LivroCaixa implements Serializable {
 		if(this.tipoMovimento.equals("PAG") && this.valorFinal > 0)
 			this.valorFinal = this.valorFinal * -1;
 		
+		this.dataAtualizacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
 	}
 
 	public static class Status  {
