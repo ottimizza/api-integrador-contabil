@@ -84,9 +84,6 @@ public class LivroCaixaDTO implements Serializable {
 		if(valorPago != null)
 			livroCaixa.setValorPago(valorPago);
 
-		if(valorFinal != null)
-			livroCaixa.setValorFinal(valorFinal);
-
 		if(bancoId != null)
 			livroCaixa.setBancoId(bancoId);
 
