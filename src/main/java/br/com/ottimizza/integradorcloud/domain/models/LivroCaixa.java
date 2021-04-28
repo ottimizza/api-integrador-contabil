@@ -124,10 +124,6 @@ public class LivroCaixa implements Serializable {
 		if(this.idExterno == null) {
 			this.idExterno = "";
 		}
-			
-		if(this.tipoMovimento.equals("PAG") && this.valorFinal > 0)
-			this.valorFinal = this.valorFinal * -1;
-		
 		this.dataAtualizacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
 	}
 
@@ -137,6 +133,9 @@ public class LivroCaixa implements Serializable {
 			this.valorFinal = this.valorOriginal;
 		else
 			this.valorFinal = this.valorPago;
+
+		if(this.tipoMovimento.equals("PAG") && this.valorFinal > 0)
+			this.valorFinal = this.valorFinal * -1;
 	}
 
 	public static class Status  {
