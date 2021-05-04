@@ -11,9 +11,11 @@ import javax.persistence.NoResultException;
 import org.springframework.stereotype.Service;
 
 import br.com.ottimizza.integradorcloud.client.KafkaClient;
+import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.banco.PagRecRestantesDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.banco.SaldoBancosDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.banco.ViewSaldoBancosDTO;
+import br.com.ottimizza.integradorcloud.domain.mappers.LivroCaixaMapper;
 import br.com.ottimizza.integradorcloud.domain.mappers.SaldoBancosMapper;
 import br.com.ottimizza.integradorcloud.domain.mappers.ViewSaldoBancosMapper;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
@@ -48,10 +50,16 @@ public class SaldoBancosService {
             saldoDTO.setId(saldoBanco.getId());
         }
         SaldoBancos retorno = repository.save(SaldoBancosMapper.fromDTO(saldoDTO));
-        List<LivroCaixa> livrosCaixas = livroCaixaRepository.findByCnpjEmpresaBancoData(banco.getCnpjEmpresa(), banco.getId(), saldoDTO.getData().minusDays(1));
+        List<LivroCaixaDTO> livrosCaixas = LivroCaixaMapper.fromEntities(livroCaixaRepository.findByCnpjEmpresaBancoData(banco.getCnpjEmpresa(), banco.getId(), saldoDTO.getData().minusDays(1)));
         int qntLivros = livrosCaixas.size();
 		obj.append("[");
-		for(LivroCaixa lc : livrosCaixas){
+		BigInteger bancoLivroCaixaId = BigInteger.ZERO;
+		Banco bancoLivroCaixa = new Banco();
+		for(LivroCaixaDTO lc : livrosCaixas){
+			if(lc.getBancoId() != bancoLivroCaixaId){
+				bancoLivroCaixa = bancoRepository.findById(lc.getBancoId()).orElseThrow(() -> new NoResultException("Banco nao encontrado!"));
+			}
+			lc.setDescricaoBanco(bancoLivroCaixa.getDescricao());
 			if(contador == qntLivros){
 				obj.append(lc.toString());
 			}
@@ -59,6 +67,7 @@ public class SaldoBancosService {
 				obj.append(lc.toString()+",");
 			}
 			contador ++;
+			bancoLivroCaixaId = lc.getBancoId();
 		}
 		obj.append("]");
 		kafkaClient.integradaLivrosCaixas(obj.toString());
