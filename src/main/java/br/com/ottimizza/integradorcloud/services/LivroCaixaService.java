@@ -223,8 +223,17 @@ public class LivroCaixaService {
 
 		try {
 			banco =  bancoRepository.findByCodigoAndCnpjEmpresa(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa());
+			System.out.println(">>> >>QC "+banco.toString());
+
 		} catch (Exception e) {
-			BancosPadroes bancoPadrao = bancosPadroesRepository.findByCodigo(importLivrosCaixas.getBanco());
+			System.out.println(">>> >>QD "+e.getMessage());
+			BancosPadroes bancoPadrao = new BancosPadroes();
+			try {
+				bancoPadrao = bancosPadroesRepository.findByCodigo(importLivrosCaixas.getBanco());
+				
+			} catch (Exception e2) {
+				System.out.println(">>> >>QE "+e.getMessage());
+			}
 			banco = bancoRepository.save(Banco.builder()
 					.cnpjEmpresa(importLivrosCaixas.getCnpjEmpresa())
 					.cnpjContabilidade(importLivrosCaixas.getCnpjContabilidade())
@@ -233,7 +242,7 @@ public class LivroCaixaService {
 					.bancoPadraoId(bancoPadrao.getId())
 					.build());
 		}
-		System.out.println(">>> >>QC "+banco.toString());
+		System.out.println(">>> >>QE "+banco.toString());
 		for(LivroCaixaImportadoDTO lc : importLivrosCaixas.getLivrosCaixas()){
 			System.out.println(">>> >>QI "+lc.toString());
 			if(repository.findByIdExterno(lc.getIdExterno()) == null) {
