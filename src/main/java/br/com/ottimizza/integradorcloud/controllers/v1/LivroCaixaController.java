@@ -145,9 +145,6 @@ public class LivroCaixaController {
 
 	@PostMapping("/importar")
 	ResponseEntity<?> importarLivrosCaixas(@RequestBody ImprortacaoLivroCaixas livroCaixas) throws Exception {
-		
-		System.out.println(">>> >>QA "+livroCaixas.toString());
-		
 		return ResponseEntity.ok(new GenericResponse<>(
 				service.importarLivrosCaixas(livroCaixas)
 			));
