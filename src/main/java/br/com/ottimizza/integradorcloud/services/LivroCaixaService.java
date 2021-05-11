@@ -220,16 +220,22 @@ public class LivroCaixaService {
 		List<LivroCaixa> livrosCaixas = new ArrayList<>();
 		Banco banco = new Banco();
 
-		banco =  bancoRepository.findByCodigoAndCnpjEmpresa(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa());
-		if(banco == null) {
-			BancosPadroes bancoPadrao = bancosPadroesRepository.findByCodigo(importLivrosCaixas.getBanco());
+		try {
+			banco =  bancoRepository.findByCodigoAndCnpjEmpresa(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa());
+		} catch (Exception e) {
+			BancosPadroes bancoPadrao = new BancosPadroes();
+			try {
+				bancoPadrao = bancosPadroesRepository.findByCodigo(importLivrosCaixas.getBanco());
+			} catch (Exception e2) { 
+				System.out.println("*** Falha ao buscar banco padrao por codigo!");
+			}
 			banco = bancoRepository.save(Banco.builder()
 					.cnpjEmpresa(importLivrosCaixas.getCnpjEmpresa())
 					.cnpjContabilidade(importLivrosCaixas.getCnpjContabilidade())
 					.nomeBanco(bancoPadrao.getNomeBanco())
 					.codigoBanco(bancoPadrao.getCodigoBanco())
 					.bancoPadraoId(bancoPadrao.getId())
-				.build());
+					.build());
 		}
 		for(LivroCaixaImportadoDTO lc : importLivrosCaixas.getLivrosCaixas()){
 			if(repository.findByIdExterno(lc.getIdExterno()) == null) {
