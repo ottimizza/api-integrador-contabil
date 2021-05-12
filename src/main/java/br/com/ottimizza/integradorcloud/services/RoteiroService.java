@@ -185,7 +185,7 @@ public class RoteiroService {
 		Roteiro retorno = roteiroDTO.patch(roteiro);
 		validaRoteiro(retorno);
 		Roteiro roteiroRetorno = repository.save(retorno);
-		if(roteiroDTO.getNome() != null && !roteiroDTO.getNome().equals("")) {
+		if(roteiroDTO.getNome() != null && !roteiroDTO.getNome().equals("") && !roteiroDTO.getNome().contains("TESTE")) {
 			UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
 			Empresa empresa = empresaRepository.buscaEmpresa(roteiro.getCnpjEmpresa(), userInfo.getOrganization().getId()).orElse(null);
 

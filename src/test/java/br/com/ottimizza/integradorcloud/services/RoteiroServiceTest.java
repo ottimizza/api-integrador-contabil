@@ -109,7 +109,7 @@ class RoteiroServiceTest {
     	roteiro = RoteiroDTO.builder()
     			.status((short) 7)
     			.checkList(true)
-    			.nome("Projeto finalizado")
+    			.nome("Projeto finalizado TESTE")
     		.build();
     	
     	RoteiroDTO created = roteiroService.patch(BigInteger.ONE, roteiro, oauth2Authentication);
@@ -131,7 +131,7 @@ class RoteiroServiceTest {
 		roteiro = RoteiroDTO.builder()
     			.status((short) 7)
     			.checkList(true)
-    			.nome("Pagamentos Possamai")
+    			.nome("Pagamentos Possamai TESTE")
     		.build();
 		roteiroService.patch(BigInteger.ONE, roteiro, oauth2Authentication);
     }
@@ -158,7 +158,7 @@ class RoteiroServiceTest {
     	roteiro = RoteiroDTO.builder()
     			.status((short) 7)
     			.checkList(true)
-    			.nome("Pagamentos Possamai")
+    			.nome("Pagamentos Possamai TESTE")
     		.build();
     	
     	Assertions.assertThrows(IllegalArgumentException.class, () -> {
