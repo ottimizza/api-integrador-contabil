@@ -165,11 +165,15 @@ public class RoteiroService {
 			if(repository.buscaPorNomeEmpresaIdTipo(roteiroDTO.getNome(), roteiro.getEmpresaId(), roteiro.getTipoRoteiro()) > 0)
 				throw new IllegalArgumentException("Nome de roteiro já existente nesta empresa para este tipo de roteiro!");
 
+
+			try{
 			List<CheckListPerguntasRespostasDTO> perguntasRespostas = checklistRepository.buscaPerguntasRespostasPorRoteiroId(roteiroId);
 			for(CheckListPerguntasRespostasDTO cp : perguntasRespostas) {
 				email.append(cp.getPergunta()+": "+cp.getResposta()+", Observacao: "+cp.getObservacao()+" ");
 				email.append("<br>");
 			}
+			}
+			catch(Exception ex){}
 		}
 		if(roteiroDTO.getTipoRoteiro() != null && !roteiroDTO.getTipoRoteiro().equals("")) {
 			if(roteiroDTO.getTipoRoteiro().contains("PAG"))
