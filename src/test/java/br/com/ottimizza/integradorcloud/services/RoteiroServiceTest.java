@@ -109,7 +109,7 @@ class RoteiroServiceTest {
     	roteiro = RoteiroDTO.builder()
     			.status((short) 7)
     			.checkList(true)
-    			.nome("Finalizado")
+    			.nome("Projeto finalizado")
     		.build();
     	
     	RoteiroDTO created = roteiroService.patch(BigInteger.ONE, roteiro, oauth2Authentication);
