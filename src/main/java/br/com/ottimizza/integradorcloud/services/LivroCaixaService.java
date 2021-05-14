@@ -68,13 +68,13 @@ public class LivroCaixaService {
 	KafkaClient kafkaClient;
 	
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa, OAuth2Authentication authentication) throws Exception {
-		UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+		//UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
 		SaldoBancos ultimoSaldo = saldoRepository.buscaPorBancoDataMaior(livroCaixa.getBancoId(), livroCaixa.getDataMovimento());
 		if(ultimoSaldo != null) {
 			throw new IllegalArgumentException("O mês informado já foi encerrado e dados enviados a contabilidade.");
 		}
-		if(user.getUsername() != null && !user.getUsername().equals(""))
-			livroCaixa.setCriadoPor(user.getUsername());
+		//if(user.getUsername() != null && !user.getUsername().equals(""))
+		//	livroCaixa.setCriadoPor(user.getUsername());
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
