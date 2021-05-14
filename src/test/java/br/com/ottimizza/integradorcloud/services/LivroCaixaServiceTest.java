@@ -130,7 +130,7 @@ class LivroCaixaServiceTest {
             .cnpjEmpresa("00810852999156")
             .descricao("TESTEOTT livroCaixa")
             .complemento("apenas um teste")
-            .dataMovimento(LocalDate.of(2020, 01, 01))
+            .dataMovimento(LocalDate.of(2021, 01, 01))
             .dataPrevisaoPagamento(LocalDate.of(2020, 9, 20))
             .valorOriginal(2000.0)
             .valorPago(2000.0)
