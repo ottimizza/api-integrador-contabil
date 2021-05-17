@@ -68,14 +68,14 @@ public class LivroCaixaService {
 	KafkaClient kafkaClient;
 	
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa, OAuth2Authentication authentication) throws Exception {
-		//UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+		validaLivroCaixa(livroCaixa);
+		UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
 		SaldoBancos ultimoSaldo = saldoRepository.buscaPorBancoDataMaior(livroCaixa.getBancoId(), livroCaixa.getDataMovimento());
 		if(ultimoSaldo != null) {
 			throw new IllegalArgumentException("O mês informado já foi encerrado e dados enviados a contabilidade.");
 		}
-		//if(user.getUsername() != null && !user.getUsername().equals(""))
-		//	livroCaixa.setCriadoPor(user.getUsername());
-		validaLivroCaixa(livroCaixa);
+		if(user.getUsername() != null && !user.getUsername().equals(""))
+			livroCaixa.setCriadoPor(user.getUsername());
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
@@ -259,7 +259,7 @@ public class LivroCaixaService {
 	public Boolean validaLivroCaixa(LivroCaixaDTO livroCaixa) throws Exception {
 
 		if(livroCaixa.getCnpjContabilidade() != null && !livroCaixa.getCnpjContabilidade().equals(""))
-			throw new IllegalArgumentException("Informe o cnpj da copntabilidade!");
+			throw new IllegalArgumentException("Informe o cnpj da contabilidade!");
 
 		if(livroCaixa.getCnpjEmpresa() != null && !livroCaixa.getCnpjEmpresa().equals(""))
 			throw new IllegalArgumentException("Informe o cnpj da empresa!");
