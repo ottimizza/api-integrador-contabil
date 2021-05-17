@@ -75,6 +75,7 @@ public class LivroCaixaService {
 		}
 		//if(user.getUsername() != null && !user.getUsername().equals(""))
 		//	livroCaixa.setCriadoPor(user.getUsername());
+		validaLivroCaixa(livroCaixa);
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
@@ -253,6 +254,29 @@ public class LivroCaixaService {
 		}
 		List<LivroCaixa> retorno = repository.saveAll(livrosCaixas);
 		return retorno;
+	}
+
+	public Boolean validaLivroCaixa(LivroCaixaDTO livroCaixa) throws Exception {
+
+		if(livroCaixa.getCnpjContabilidade() != null && !livroCaixa.getCnpjContabilidade().equals(""))
+			throw new IllegalArgumentException("Informe o cnpj da copntabilidade!");
+
+		if(livroCaixa.getCnpjEmpresa() != null && !livroCaixa.getCnpjEmpresa().equals(""))
+			throw new IllegalArgumentException("Informe o cnpj da empresa!");
+		
+		if(livroCaixa.getDataMovimento() != null)
+			throw new IllegalArgumentException("Informe a data movimento!");
+
+		if(livroCaixa.getBancoId() != null)
+			throw new IllegalArgumentException("Informe o banco do lancamento!");
+		
+		if(livroCaixa.getDescricao() != null && !livroCaixa.getDescricao().equals(""))
+			throw new IllegalArgumentException("Informe a descricao do lancamento!");
+
+		if(livroCaixa.getValorOriginal() != null)
+			throw new IllegalArgumentException("Informe o valor do lancamento!");
+
+		return true;
 	}
 
 }

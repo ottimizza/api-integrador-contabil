@@ -113,6 +113,72 @@ class LivroCaixaServiceTest {
     }
 
     @Test
+    public void dadoLivroCaixaDTO_quandoSalvaLivroCaixaCnpjContabilidadeNull_entaoLancaExecao() throws Exception {
+        Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
+        livroCaixa.setCnpjContabilidade(null);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            livroCaixaService.salva(livroCaixa, oauth2Authentication);
+        });
+        livroCaixa.setCnpjContabilidade("20000000000000");
+    }
+
+    @Test
+    public void dadoLivroCaixaDTO_quandoSalvaLivroCaixaCnpjEmpresaNull_entaoLancaExecao() throws Exception {
+        Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
+        livroCaixa.setCnpjEmpresa(null);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            livroCaixaService.salva(livroCaixa, oauth2Authentication);
+        });
+        livroCaixa.setCnpjEmpresa("00810852999156");
+    }
+
+    @Test
+    public void dadoLivroCaixaDTO_quandoSalvaLivroCaixaDataMovimentoNull_entaoLancaExecao() throws Exception {
+        Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
+        livroCaixa.setDataMovimento(null);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            livroCaixaService.salva(livroCaixa, oauth2Authentication);
+        });
+        livroCaixa.setDataMovimento(LocalDate.of(2021, 01, 01));
+    }
+
+    @Test
+    public void dadoLivroCaixaDTO_quandoSalvaLivroCaixaBancoIdNull_entaoLancaExecao() throws Exception {
+        Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
+        livroCaixa.setBancoId(null);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            livroCaixaService.salva(livroCaixa, oauth2Authentication);
+        });
+        livroCaixa.setBancoId(BigInteger.ONE);
+    }
+
+    @Test
+    public void dadoLivroCaixaDTO_quandoSalvaLivroCaixaDescricaoNull_entaoLancaExecao() throws Exception {
+        Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
+        livroCaixa.setDescricao(null);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            livroCaixaService.salva(livroCaixa, oauth2Authentication);
+        });
+        livroCaixa.setDescricao("TESTEOTT livroCaixa");
+    }
+
+    @Test
+    public void dadoLivroCaixaDTO_quandoSalvaLivroCaixaValorOriginalNull_entaoLancaExecao() throws Exception {
+        Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
+        livroCaixa.setValorOriginal(null);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            livroCaixaService.salva(livroCaixa, oauth2Authentication);
+        });
+        livroCaixa.setValorOriginal(2000.0);
+    }
+
+    @Test
     public void dadoLivroCaixaDTO_quandoAtualizaLivroCaixaOrigemUm_entaoLancaExecao() throws Exception {
         Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
 
