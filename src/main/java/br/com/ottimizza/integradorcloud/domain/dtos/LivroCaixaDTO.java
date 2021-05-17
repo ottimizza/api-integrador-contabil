@@ -93,6 +93,9 @@ public class LivroCaixaDTO implements Serializable {
 		if(status != null) {
 			livroCaixa.setStatus(status);
 			
+		if(tipoMovimento != null && !tipoMovimento.equals(""))
+			livroCaixa.setTipoMovimento(tipoMovimento);
+
 		}
 		return livroCaixa;
 	}

@@ -42,14 +42,11 @@ class LivroCaixaServiceTest {
             .cnpjContabilidade("20000000000000")
             .cnpjEmpresa("00810852999156")
             .descricao("TESTEOTT livroCaixa")
-            .complemento("apenas um teste")
             .dataMovimento(LocalDate.of(2021, 01, 01))
-            .dataPrevisaoPagamento(LocalDate.of(2020, 9, 20))
             .valorOriginal(2000.0)
             .valorPago(2000.0)
             .valorFinal(2000.0)
             .tipoMovimento("PAG")
-            .linkArquivo("www.link.com")
             .origem(0)
             .integradoContabilidade(false)
             .status(Short.valueOf("1"))
@@ -69,14 +66,11 @@ class LivroCaixaServiceTest {
     	Assertions.assertNotNull(retorno.getCnpjContabilidade());
     	Assertions.assertNotNull(retorno.getCnpjEmpresa());
         Assertions.assertNotNull(retorno.getDescricao());
-        Assertions.assertNotNull(retorno.getComplemento());
         Assertions.assertNotNull(retorno.getDataMovimento());
-        Assertions.assertNotNull(retorno.getDataPrevisaoPagamento());
         Assertions.assertNotNull(retorno.getValorFinal());
         Assertions.assertNotNull(retorno.getValorPago());
         Assertions.assertNotNull(retorno.getValorOriginal());
         Assertions.assertNotNull(retorno.getTipoMovimento());
-        Assertions.assertNotNull(retorno.getLinkArquivo());
         Assertions.assertNotNull(retorno.getOrigem());
         Assertions.assertNotNull(retorno.getIntegradoContabilidade());
         Assertions.assertNotNull(retorno.getStatus());
@@ -103,14 +97,11 @@ class LivroCaixaServiceTest {
     	Assertions.assertNotNull(retorno.getCnpjContabilidade());
     	Assertions.assertNotNull(retorno.getCnpjEmpresa());
         Assertions.assertEquals("Alterando TESTEOTT", retorno.getDescricao());
-        Assertions.assertEquals("Alterando TESTEOTT", retorno.getComplemento());
         Assertions.assertNotNull(retorno.getDataMovimento());
-        Assertions.assertNotNull(retorno.getDataPrevisaoPagamento());
         Assertions.assertNotNull(retorno.getValorFinal());
         Assertions.assertNotNull(retorno.getValorPago());
         Assertions.assertEquals(20.0, retorno.getValorOriginal());
         Assertions.assertNotNull(retorno.getTipoMovimento());
-        Assertions.assertNotNull(retorno.getLinkArquivo());
         Assertions.assertNotNull(retorno.getOrigem());
         Assertions.assertNotNull(retorno.getIntegradoContabilidade());
         Assertions.assertEquals(Short.valueOf("0"), retorno.getStatus());
@@ -122,21 +113,18 @@ class LivroCaixaServiceTest {
     }
 
     @Test
-    public void dadoLivroCaixaDTO_quandoAtualizaLivroCaixaOrigemZero_entaoLancaExecao() throws Exception {
+    public void dadoLivroCaixaDTO_quandoAtualizaLivroCaixaOrigemUm_entaoLancaExecao() throws Exception {
         Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
 
         LivroCaixaDTO livroCaixa = LivroCaixaDTO.builder()
             .cnpjContabilidade("20000000000000")
             .cnpjEmpresa("00810852999156")
             .descricao("TESTEOTT livroCaixa")
-            .complemento("apenas um teste")
             .dataMovimento(LocalDate.of(2021, 01, 01))
-            .dataPrevisaoPagamento(LocalDate.of(2020, 9, 20))
             .valorOriginal(2000.0)
             .valorPago(2000.0)
             .valorFinal(2000.0)
             .tipoMovimento("PAG")
-            .linkArquivo("www.link.com")
             .origem(1)
             .integradoContabilidade(false)
             .status(Short.valueOf("1"))
