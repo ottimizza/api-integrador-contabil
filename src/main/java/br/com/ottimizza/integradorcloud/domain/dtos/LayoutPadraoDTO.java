@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.domain.dtos;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.LayoutPadrao;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,10 @@ public class LayoutPadraoDTO {
 
     private String tipoArquivo;
 
+    private String icone;
+
+    private List<String> tags;
+
     private Boolean pagamentos;
 
     private Boolean recebimentos;
@@ -32,28 +37,32 @@ public class LayoutPadraoDTO {
     public LayoutPadrao patch(LayoutPadrao layout) {
 		
 		if(idSalesForce != null && !idSalesForce.equals(""))
-            layout.setIdSalesForce(idSalesForce);
+                  layout.setIdSalesForce(idSalesForce);
 		
 		if(linkReferencia != null && !linkReferencia.equals(""))
-            layout.setLinkReferencia(linkReferencia);
+                  layout.setLinkReferencia(linkReferencia);
 		
 		if(descricaoDocumento != null && !descricaoDocumento.equals(""))
-            layout.setDescricaoDocumento(descricaoDocumento);
+                  layout.setDescricaoDocumento(descricaoDocumento);
+
+            if(icone != null && !icone.equals(""))
+                  layout.setIcone(icone);
+
+            if(tags != null && tags.size() > 0)
+                  layout.setTags(tags);
 
 		if(tipoIntegracao != null)
-            layout.setTipoIntegracao(tipoIntegracao);
+                  layout.setTipoIntegracao(tipoIntegracao);
 
 		if(tipoArquivo != null && !tipoArquivo.equals(""))
-            layout.setTipoArquivo(tipoArquivo);
+                  layout.setTipoArquivo(tipoArquivo);
 
-		if(pagamentos != null) {
+		if(pagamentos != null) 
 			layout.setPagamentos(pagamentos);
-       }
-
-        if(pagamentos != null) {
-             layout.setPagamentos(pagamentos);
-        } 
-		
+       
+            if(pagamentos != null) 
+                  layout.setPagamentos(pagamentos);
+        
 		return layout;
 	}
 

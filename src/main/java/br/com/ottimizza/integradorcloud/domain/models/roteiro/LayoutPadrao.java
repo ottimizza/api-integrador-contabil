@@ -1,8 +1,9 @@
 package br.com.ottimizza.integradorcloud.domain.models.roteiro;
 
 import java.math.BigInteger;
+import java.util.List;
 
-import javax.jdo.annotations.Column;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,11 +11,20 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.vladmihalcea.hibernate.type.array.ListArrayType;
+
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@TypeDef(
+        name = "list-array",
+        typeClass = ListArrayType.class
+)
 @Entity
 @Table(name = "layouts_padroes")
 @Data
@@ -42,6 +52,13 @@ public class LayoutPadrao {
 
     @Column(name = "tipo_arquivo")
     private String tipoArquivo;
+
+    @Column(name = "icone")
+    private String icone;
+
+    @Type(type = "list-array")
+    @Column(name = "tags", columnDefinition = "varchar[]")
+    private List<String> tags;
 
     @Column(name = "pagamentos")
     private Boolean pagamentos;

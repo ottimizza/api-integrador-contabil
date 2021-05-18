@@ -64,6 +64,9 @@ public class Roteiro implements Serializable {
 
 	@Column(name = "usuario")
 	private String usuario;
+
+	@Column(name = "layouts_padroes")
+	private String layoutsPadroes;
 	
 	@Column(name = "data_criacao")
 	private LocalDateTime dataCriacao;
