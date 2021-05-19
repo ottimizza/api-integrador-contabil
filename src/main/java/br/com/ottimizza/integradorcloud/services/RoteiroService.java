@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -200,36 +201,99 @@ public class RoteiroService {
 		return RoteiroMapper.fromEntity(roteiroRetorno);
 	}
 
-	public RoteiroDTO atualizaLayoutRoteiro(BigInteger id, List<LayoutPadraoDTO> layouts, OAuth2Authentication authentication) throws Exception {
-		Roteiro roteiro = repository.findById(id).orElseThrow(() -> new NoResultException("Roteiro nao encontrado!"));
+	public RoteiroDTO atualizaLayoutRoteiro(RoteiroDTO roteiroDTO, List<LayoutPadraoDTO> layouts, OAuth2Authentication authentication) throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		List<String> tiposRoteiro = new ArrayList<>();
+		Roteiro roteiro = repository.save(RoteiroMapper.fromDTO(roteiroDTO));
 		Empresa empresa = empresaRepository.buscarPorId(roteiro.getEmpresaId()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
+		
+		Contabilidade contabilidade = contabilidadeRepository.buscaPorCnpj(roteiro.getCnpjContabilidade());
+		SFEmpresa empresaCrm = SFEmpresa.builder()
+				.Contabilidade_Id(contabilidade.getSalesForceId())
+			.build();
+		String empresaCrmString = mapper.writeValueAsString(empresaCrm);
+		ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, ServiceUtils.getAuthorizationHeader(authentication));
 
-		String chaveOic = empresa.getCnpj()+"-"+roteiro.getTipoRoteiro();
-		SFRoteiro roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
-		roteiroSF.setChaveOic(null);
-		roteiroSF.setIdRoteiro(null);
+		SFEmpresa sfEmpresa = sfClient.getEmpresa(empresa.getNomeResumido(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
 
-		int contador = 1;
-		StringBuilder layoutsRoteiro = new StringBuilder();
-		String roteiroAdicional = "";
+		//-------------------------------------------- VALIDANDO LAYOUTS 
+
+		String layoutsRoteiroPAG = "";
+		String layoutsRoteiroREC = "";
+		String roteiroAdicionalPAG = "";
+		String roteiroAdicionalREC = "";
 		for(LayoutPadraoDTO layout : layouts) {
-			if(layout.getDescricaoDocumento().startsWith("ROT"))
-				roteiroAdicional = sfClient.getRoteiroByName(layout.getDescricaoDocumento(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getIdRoteiro();
-			else{
-				layoutsRoteiro.append(layout.getIdSalesForce());
-
-				if(contador < layouts.size())
-					layoutsRoteiro.append(";");
+			if(layout.getDescricaoDocumento().startsWith("ROT")){
+				if(layout.getPagamentos() && layout.getRecebimentos()){
+					roteiroAdicionalPAG = sfClient.getRoteiroByName(layout.getDescricaoDocumento(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getIdRoteiro();
+					roteiroAdicionalREC = roteiroAdicionalPAG;
+				}
+				else if(layout.getPagamentos())
+					roteiroAdicionalPAG = sfClient.getRoteiroByName(layout.getDescricaoDocumento(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getIdRoteiro();
+				else
+					roteiroAdicionalREC = sfClient.getRoteiroByName(layout.getDescricaoDocumento(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getIdRoteiro();
 			}
-			contador ++;
+			else{
+				if(layout.getPagamentos()) {
+					layoutsRoteiroPAG = layoutsRoteiroPAG + layout.getIdSalesForce()+";";
+				}
+				if(layout.getRecebimentos()) {
+					layoutsRoteiroREC = layoutsRoteiroREC + layout.getIdSalesForce()+";";
+				}
+			}
 		}
 
-		if(!roteiroAdicional.equals(""))
-			roteiroSF.setRoteiroCompartilhadoAdicional(roteiroAdicional);
+		int rec = layoutsRoteiroREC.lastIndexOf(";");
+		if(rec == layoutsRoteiroREC.length() - 1) {
+			layoutsRoteiroREC = layoutsRoteiroREC.substring(0, layoutsRoteiroREC.length() - 1);
+		}
+		int pag = layoutsRoteiroPAG.lastIndexOf(";");
+		if(pag == layoutsRoteiroPAG.length() - 1) {
+			layoutsRoteiroPAG = layoutsRoteiroPAG.substring(0, layoutsRoteiroPAG.length() - 1);
+		}
+		//------------------------------------
 
-		roteiroSF.setPlanilhasPadroes(layoutsRoteiro.toString());
-		
-		sfClient.upsertRoteiro(chaveOic, roteiroSF, ServiceUtils.getAuthorizationHeader(authentication));
+
+		if(roteiro.getTipoRoteiro().contains("PAG"))
+			tiposRoteiro.add("Contas PAGAS");
+
+		if(roteiro.getTipoRoteiro().contains("REC"))
+			tiposRoteiro.add("Contas RECEBIDAS");
+
+		for(String tipoRot : tiposRoteiro) {			
+			String tipoRoteiro = tipoRot.substring(tipoRot.indexOf(" ")).substring(1, 4);
+			String chaveOic = empresa.getCnpj()+"-"+tipoRoteiro;
+
+			SFRoteiro roteiroSF;
+			try{
+				roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+				roteiroSF.setChaveOic(null);
+				roteiroSF.setIdRoteiro(null);
+			}
+			catch(Exception ex){
+	    		roteiroSF = SFRoteiro.builder()
+	    			.empresaId(sfEmpresa.getIdEmpresa())
+	    			.tipoIntegracao(tipoRot)
+	    			.nomeRelatorioReferencia("Principal")
+	    			.fornecedor("-1")
+	    			.portador("-1")
+	    			.dataMovimento("-1")
+	    			.lerPlanilhasPadroes(true)
+	    		.build();
+	    	
+			}
+			if(tipoRoteiro.contains("REC")){
+				roteiroSF.setPlanilhasPadroes(layoutsRoteiroREC);
+				if(!roteiroAdicionalREC.equals(""))
+					roteiroSF.setRoteiroCompartilhadoAdicional(roteiroAdicionalREC);
+			}
+			else {
+				roteiroSF.setPlanilhasPadroes(layoutsRoteiroPAG);
+				if(!roteiroAdicionalPAG.equals(""))
+					roteiroSF.setRoteiroCompartilhadoAdicional(roteiroAdicionalPAG);
+			}
+			sfClient.upsertRoteiro(chaveOic, roteiroSF, ServiceUtils.getAuthorizationHeader(authentication));
+		}
 		return RoteiroMapper.fromEntity(roteiro);
 	}
 	
