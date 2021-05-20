@@ -63,6 +63,16 @@ public class LayoutPadraoRepositoryImpl implements LayoutPadraoRepositoryCustom 
                 sql.append("AND lp.recebimentos = :recebimentos ");
             }
         }
+
+        if(filtro.getTags() != null && filtro.getTags().size() > 0) {
+            if(!where){
+                sql.append("WHERE lp.tags = :tags ");
+                where =  true;
+            }
+            else {
+                sql.append("AND lp.tags @> :tags ");
+            }
+        }
         sql.append("ORDER BY lp.descricao_documento ASC ");
 
         Query query = em.createNativeQuery(sql.toString(), LayoutPadrao.class);
@@ -85,6 +95,10 @@ public class LayoutPadraoRepositoryImpl implements LayoutPadraoRepositoryCustom 
 
         if(filtro.getRecebimentos() != null) {
             query.setParameter("recebimentos", filtro.getRecebimentos());
+        }
+
+        if(filtro.getTags() != null && filtro.getTags().size() > 0){
+            query.setParameter("tags", filtro.getTags());
         }
 
         long totalElements = query.getResultList().size();

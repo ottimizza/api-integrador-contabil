@@ -41,10 +41,13 @@ import br.com.ottimizza.integradorcloud.domain.dtos.sForce.SFRoteiro;
 import br.com.ottimizza.integradorcloud.domain.mappers.RoteiroMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
+import br.com.ottimizza.integradorcloud.domain.models.roteiro.LayoutPadrao;
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.Roteiro;
 import br.com.ottimizza.integradorcloud.repositories.ContabilidadeRepository;
 import br.com.ottimizza.integradorcloud.repositories.EmpresaRepository;
+import br.com.ottimizza.integradorcloud.repositories.RoteiroLayoutRepository;
 import br.com.ottimizza.integradorcloud.repositories.checklist.CheckListRespostasRepository;
+import br.com.ottimizza.integradorcloud.repositories.layout_padrao.LayoutPadraoRepository;
 import br.com.ottimizza.integradorcloud.repositories.roteiro.RoteiroRepository;
 import br.com.ottimizza.integradorcloud.utils.ServiceUtils;
 
@@ -63,6 +66,12 @@ public class RoteiroService {
 	@Inject
 	CheckListRespostasRepository checklistRepository;
 	
+	@Inject
+	RoteiroLayoutRepository roteiroLayoutRepository;
+
+	@Inject
+	LayoutPadraoRepository layoutRepository;
+
 	@Inject
 	StorageS3Client s3Client;
 	
@@ -186,18 +195,28 @@ public class RoteiroService {
 		Roteiro retorno = roteiroDTO.patch(roteiro);
 		validaRoteiro(retorno);
 		Roteiro roteiroRetorno = repository.save(retorno);
-		List<BigInteger> idsLayouts = new ArrayList<>();
+		List<BigInteger> idsLayouts = null;
+		try{
+			idsLayouts = roteiroLayoutRepository.getLayoutsIdByRoteiroId(roteiroId);
+		}
+		catch(Exception ex) { }
+		SFRoteiro roteiroSF = null;
 		if(idsLayouts != null && idsLayouts.size() > 0){
-
+			String layouts = "";
 			String chaveOic = roteiro.getCnpjEmpresa()+"-"+roteiro.getTipoRoteiro();
-			SFRoteiro roteiroSF;
 			try{
 				roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
 				roteiroSF.setChaveOic(null);
 				roteiroSF.setIdRoteiro(null);
 			}
 			catch(Exception ex){ }
-			
+			for(BigInteger layoutId : idsLayouts) {
+				LayoutPadrao layout = layoutRepository.findById(layoutId).orElse(null);
+				layouts = layouts + layout.getIdSalesForce()+";";
+			}
+			layouts = layouts.substring(0, layouts.length() - 1);
+			roteiroSF.setPlanilhasPadroes(layouts);
+			sfClient.upsertRoteiro(chaveOic, roteiroSF, ServiceUtils.getAuthorizationHeader(authentication));
 		}
 		if(roteiroDTO.getNome() != null && !roteiroDTO.getNome().equals("") && !roteiroDTO.getNome().contains("TESTE")) {
 			UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
@@ -210,7 +229,6 @@ public class RoteiroService {
 				.build();
 			emailSenderClient.sendMail(mail);
 		}
-
 		return RoteiroMapper.fromEntity(roteiroRetorno);
 	}
 
