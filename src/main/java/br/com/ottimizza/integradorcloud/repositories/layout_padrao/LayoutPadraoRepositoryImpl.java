@@ -66,7 +66,7 @@ public class LayoutPadraoRepositoryImpl implements LayoutPadraoRepositoryCustom 
 
         if(filtro.getTags() != null && filtro.getTags().size() > 0) {
             if(!where){
-                sql.append("WHERE lp.tags = :tags ");
+                sql.append("WHERE lp.tags @> :tags ");
                 where =  true;
             }
             else {
