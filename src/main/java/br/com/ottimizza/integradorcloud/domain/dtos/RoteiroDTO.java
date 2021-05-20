@@ -48,8 +48,6 @@ public class RoteiroDTO implements Serializable{
 	private Boolean checkList;
 	
 	private String usuario;
-	
-	private String layoutsPadroes;
 
 	private Short tipoProjeto;
 	
@@ -85,9 +83,6 @@ public class RoteiroDTO implements Serializable{
 		
 		if(tipoProjeto != null && !tipoProjeto.equals(""))
 			roteiro.setTipoProjeto(tipoProjeto);
-			
-		if(layoutsPadroes != null && !layoutsPadroes.equals(""))
-			roteiro.setLayoutsPadroes(layoutsPadroes);
 			
 		return roteiro;
 	}

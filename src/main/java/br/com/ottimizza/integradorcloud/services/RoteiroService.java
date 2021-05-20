@@ -186,6 +186,19 @@ public class RoteiroService {
 		Roteiro retorno = roteiroDTO.patch(roteiro);
 		validaRoteiro(retorno);
 		Roteiro roteiroRetorno = repository.save(retorno);
+		List<BigInteger> idsLayouts = new ArrayList<>();
+		if(idsLayouts != null && idsLayouts.size() > 0){
+
+			String chaveOic = roteiro.getCnpjEmpresa()+"-"+roteiro.getTipoRoteiro();
+			SFRoteiro roteiroSF;
+			try{
+				roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+				roteiroSF.setChaveOic(null);
+				roteiroSF.setIdRoteiro(null);
+			}
+			catch(Exception ex){ }
+			
+		}
 		if(roteiroDTO.getNome() != null && !roteiroDTO.getNome().equals("") && !roteiroDTO.getNome().contains("TESTE")) {
 			UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
 			Empresa empresa = empresaRepository.buscaEmpresa(roteiro.getCnpjEmpresa(), userInfo.getOrganization().getId()).orElse(null);
@@ -201,19 +214,18 @@ public class RoteiroService {
 		return RoteiroMapper.fromEntity(roteiroRetorno);
 	}
 
-	public RoteiroDTO atualizaLayoutRoteiro(RoteiroDTO roteiroDTO, List<LayoutPadraoDTO> layouts, OAuth2Authentication authentication) throws Exception {
+	public List<RoteiroDTO> salvarRoteiroLayouts(RoteiroDTO roteiroDTO, List<LayoutPadraoDTO> layouts, OAuth2Authentication authentication) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		List<String> tiposRoteiro = new ArrayList<>();
-		Roteiro roteiro = repository.save(RoteiroMapper.fromDTO(roteiroDTO));
-		Empresa empresa = empresaRepository.buscarPorId(roteiro.getEmpresaId()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
+		Empresa empresa = empresaRepository.buscarPorId(roteiroDTO.getEmpresaId()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
 		
-		Contabilidade contabilidade = contabilidadeRepository.buscaPorCnpj(roteiro.getCnpjContabilidade());
+		Contabilidade contabilidade = contabilidadeRepository.buscaPorCnpj(roteiroDTO.getCnpjContabilidade());
 		SFEmpresa empresaCrm = SFEmpresa.builder()
 				.Contabilidade_Id(contabilidade.getSalesForceId())
 			.build();
 		String empresaCrmString = mapper.writeValueAsString(empresaCrm);
 		ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, ServiceUtils.getAuthorizationHeader(authentication));
-
+		
 		SFEmpresa sfEmpresa = sfClient.getEmpresa(empresa.getNomeResumido(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
 
 		//-------------------------------------------- VALIDANDO LAYOUTS 
@@ -243,25 +255,32 @@ public class RoteiroService {
 			}
 		}
 
-		int rec = layoutsRoteiroREC.lastIndexOf(";");
-		if(rec == layoutsRoteiroREC.length() - 1) {
-			layoutsRoteiroREC = layoutsRoteiroREC.substring(0, layoutsRoteiroREC.length() - 1);
+		if(layoutsRoteiroREC != null && !layoutsRoteiroREC.equals("")){
+			int rec = layoutsRoteiroREC.lastIndexOf(";");
+			if(rec == layoutsRoteiroREC.length() - 1) {
+				layoutsRoteiroREC = layoutsRoteiroREC.substring(0, layoutsRoteiroREC.length() - 1);
+			} 
 		}
-		int pag = layoutsRoteiroPAG.lastIndexOf(";");
-		if(pag == layoutsRoteiroPAG.length() - 1) {
-			layoutsRoteiroPAG = layoutsRoteiroPAG.substring(0, layoutsRoteiroPAG.length() - 1);
+		if(layoutsRoteiroPAG != null && !layoutsRoteiroPAG.equals("")){
+			int pag = layoutsRoteiroPAG.lastIndexOf(";");
+			if(pag == layoutsRoteiroPAG.length() - 1) {
+				layoutsRoteiroPAG = layoutsRoteiroPAG.substring(0, layoutsRoteiroPAG.length() - 1);
+			}
 		}
-		//------------------------------------
 
-
-		if(roteiro.getTipoRoteiro().contains("PAG"))
+		if(roteiroDTO.getTipoRoteiro().contains("PAG"))
 			tiposRoteiro.add("Contas PAGAS");
 
-		if(roteiro.getTipoRoteiro().contains("REC"))
+		if(roteiroDTO.getTipoRoteiro().contains("REC"))
 			tiposRoteiro.add("Contas RECEBIDAS");
 
+		//------------------------------------
+		List<RoteiroDTO> retorno = new ArrayList<>();
+		Roteiro roteiro = null;
 		for(String tipoRot : tiposRoteiro) {			
 			String tipoRoteiro = tipoRot.substring(tipoRot.indexOf(" ")).substring(1, 4);
+			roteiroDTO.setTipoRoteiro(tipoRoteiro);
+			roteiro = repository.save(RoteiroMapper.fromDTO(roteiroDTO));
 			String chaveOic = empresa.getCnpj()+"-"+tipoRoteiro;
 
 			SFRoteiro roteiroSF;
@@ -293,8 +312,9 @@ public class RoteiroService {
 					roteiroSF.setRoteiroCompartilhadoAdicional(roteiroAdicionalPAG);
 			}
 			sfClient.upsertRoteiro(chaveOic, roteiroSF, ServiceUtils.getAuthorizationHeader(authentication));
+			retorno.add(RoteiroMapper.fromEntity(roteiro));
 		}
-		return RoteiroMapper.fromEntity(roteiro);
+		return retorno;
 	}
 	
 	public Page<Roteiro> busca(RoteiroDTO filtro, PageCriteria criteria) throws Exception {

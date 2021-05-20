@@ -10,10 +10,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+
 @NoArgsConstructor 
 @AllArgsConstructor
-@Builder
+@Data
+@Builder(toBuilder = true)
 public class CheckListPerguntasDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;

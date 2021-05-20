@@ -59,11 +59,11 @@ public class RoteiroController {
 		return ResponseEntity.ok(new GenericResponse<>(roteiroService.uploadPlanilha(roteiroId, salvaArquivo, arquivo, authorization, authentication)));
 	}
 
-	@PostMapping("/{roteiroId}/layouts")
+	@PostMapping("/layouts")
 	ResponseEntity<?> salvarLayoutsPadroes(@RequestBody SalvaRoteiroLayout roteiro,
 										   OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(new GenericResponse<>(
-				roteiroService.atualizaLayoutRoteiro(roteiro.getRoteiro(), roteiro.getLayouts(), authentication)
+				roteiroService.salvarRoteiroLayouts(roteiro.getRoteiro(), roteiro.getLayouts(), authentication)
 			));
 	}
 	
