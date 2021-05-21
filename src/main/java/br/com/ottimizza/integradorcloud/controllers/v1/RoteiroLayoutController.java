@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ottimizza.integradorcloud.domain.models.roteiro_layouts.RoteiroLayout;
+import br.com.ottimizza.integradorcloud.domain.dtos.RoteiroLayoutDTO;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.RoteiroLayoutService;
 
@@ -24,7 +24,7 @@ public class RoteiroLayoutController {
     RoteiroLayoutService service;
 
     @PostMapping
-    public ResponseEntity<?> salva(@RequestBody RoteiroLayout roteiroLayout) throws Exception {
+    public ResponseEntity<?> salva(@RequestBody RoteiroLayoutDTO roteiroLayout) throws Exception {
         return ResponseEntity.ok(new GenericResponse<>(
                 service.salva(roteiroLayout)
             ));
