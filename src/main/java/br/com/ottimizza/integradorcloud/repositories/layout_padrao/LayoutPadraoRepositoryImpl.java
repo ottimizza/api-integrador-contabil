@@ -1,5 +1,9 @@
 package br.com.ottimizza.integradorcloud.repositories.layout_padrao;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -64,13 +68,14 @@ public class LayoutPadraoRepositoryImpl implements LayoutPadraoRepositoryCustom 
             }
         }
 
-        if(filtro.getTags() != null && filtro.getTags().size() > 0) {
+        if(filtro.getPalavras_chave() != null && !filtro.getPalavras_chave().equals("")){
+            String tags = "'{"+filtro.getPalavras_chave()+"}'";
             if(!where){
-                sql.append("WHERE lp.tags @> :tags ");
+                sql.append("WHERE lp.tags @> "+tags+" ");
                 where =  true;
             }
             else {
-                sql.append("AND lp.tags @> :tags ");
+                sql.append("AND lp.tags @> "+tags+" ");
             }
         }
         sql.append("ORDER BY lp.descricao_documento ASC ");
@@ -95,10 +100,6 @@ public class LayoutPadraoRepositoryImpl implements LayoutPadraoRepositoryCustom 
 
         if(filtro.getRecebimentos() != null) {
             query.setParameter("recebimentos", filtro.getRecebimentos());
-        }
-
-        if(filtro.getTags() != null && filtro.getTags().size() > 0){
-            query.setParameter("tags", filtro.getTags());
         }
 
         long totalElements = query.getResultList().size();

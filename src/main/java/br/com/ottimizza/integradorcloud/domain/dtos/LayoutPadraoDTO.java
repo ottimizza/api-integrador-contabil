@@ -3,6 +3,9 @@ package br.com.ottimizza.integradorcloud.domain.dtos;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import br.com.ottimizza.integradorcloud.domain.models.roteiro.LayoutPadrao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +36,8 @@ public class LayoutPadraoDTO {
     private Boolean pagamentos;
 
     private Boolean recebimentos;
+
+    private String palavras_chave;
 
     public LayoutPadrao patch(LayoutPadrao layout) {
 		
