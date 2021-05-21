@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import com.amazonaws.auth.policy.Principal;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -37,8 +38,13 @@ class LivroCaixaServiceTest {
     
     @Autowired
     LivroCaixaService livroCaixaService;
+    
+    @Test
+    @Order(1)
+    public void dadoLivroCaixaDTO_quandoSalvaLivroCaixa_entaoOk() throws Exception {
+        Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
 
-    LivroCaixaDTO livroCaixa = LivroCaixaDTO.builder()
+        LivroCaixaDTO livroCaixa = LivroCaixaDTO.builder()
             .cnpjContabilidade("20000000000000")
             .cnpjEmpresa("00810852999156")
             .descricao("TESTEOTT livroCaixa")
@@ -54,11 +60,6 @@ class LivroCaixaServiceTest {
             .categoriaId(BigInteger.ONE)
             .criadoPor("Robo de testes")
         .build();
-
-    
-    @Test
-    public void dadoLivroCaixaDTO_quandoSalvaLivroCaixa_entaoOk() throws Exception {
-        Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
 
         LivroCaixaDTO retorno = livroCaixaService.salva(livroCaixa, oauth2Authentication);
     	Assertions.assertNotNull(retorno);
@@ -81,17 +82,18 @@ class LivroCaixaServiceTest {
     }
 
     @Test
+    @Order(2)
     public void dadoLivroCaixaDTO_quandoAtualizaLivroCaixa_entaoOk() throws Exception {
         Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
 
-        LivroCaixaDTO livroCaixa = LivroCaixaDTO.builder()
+        LivroCaixaDTO livroCaixaDTO = LivroCaixaDTO.builder()
                 .descricao("Alterando TESTEOTT")
                 .complemento("Alterando TESTEOTT")
                 .valorOriginal(20.0)
                 .status(Short.valueOf("0"))
             .build();
 
-        LivroCaixaDTO retorno = livroCaixaService.patch(BigInteger.ONE, livroCaixa);
+        LivroCaixaDTO retorno = livroCaixaService.patch(BigInteger.ONE, livroCaixaDTO);
         Assertions.assertNotNull(retorno);
     	Assertions.assertNotNull(retorno.getId());
     	Assertions.assertNotNull(retorno.getCnpjContabilidade());
