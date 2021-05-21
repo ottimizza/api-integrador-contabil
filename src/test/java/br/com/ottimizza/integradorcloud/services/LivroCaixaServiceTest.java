@@ -115,40 +115,99 @@ class LivroCaixaServiceTest {
     @Test
     public void dadoLivroCaixaDTO_quandoSalvaLivroCaixaCnpjContabilidadeNull_entaoLancaExecao() throws Exception {
         Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
-        livroCaixa.setCnpjContabilidade(null);
+
+        LivroCaixaDTO livroCaixa = LivroCaixaDTO.builder()
+            .cnpjContabilidade(null)
+            .cnpjEmpresa("00810852999156")
+            .descricao("TESTEOTT livroCaixa")
+            .dataMovimento(LocalDate.of(2021, 01, 01))
+            .valorOriginal(2000.0)
+            .valorPago(2000.0)
+            .valorFinal(2000.0)
+            .tipoMovimento("PAG")
+            .origem(0)
+            .integradoContabilidade(false)
+            .status(Short.valueOf("1"))
+            .bancoId(BigInteger.ONE)
+            .categoriaId(BigInteger.ONE)
+            .criadoPor("Robo de testes")
+        .build();
+
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             livroCaixaService.salva(livroCaixa, oauth2Authentication);
         });
-        livroCaixa.setCnpjContabilidade("20000000000000");
     }
 
     @Test
     public void dadoLivroCaixaDTO_quandoSalvaLivroCaixaCnpjEmpresaNull_entaoLancaExecao() throws Exception {
         Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
-        livroCaixa.setCnpjEmpresa(null);
+        LivroCaixaDTO livroCaixa = LivroCaixaDTO.builder()
+            .cnpjContabilidade("20000000000000")
+            .cnpjEmpresa(null)
+            .descricao("TESTEOTT livroCaixa")
+            .dataMovimento(LocalDate.of(2021, 01, 01))
+            .valorOriginal(2000.0)
+            .valorPago(2000.0)
+            .valorFinal(2000.0)
+            .tipoMovimento("PAG")
+            .origem(0)
+            .integradoContabilidade(false)
+            .status(Short.valueOf("1"))
+            .bancoId(BigInteger.ONE)
+            .categoriaId(BigInteger.ONE)
+            .criadoPor("Robo de testes")
+        .build();
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             livroCaixaService.salva(livroCaixa, oauth2Authentication);
         });
-        livroCaixa.setCnpjEmpresa("00810852999156");
     }
 
     @Test
     public void dadoLivroCaixaDTO_quandoSalvaLivroCaixaDataMovimentoNull_entaoLancaExecao() throws Exception {
         Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
-        livroCaixa.setDataMovimento(null);
+        LivroCaixaDTO livroCaixa = LivroCaixaDTO.builder()
+            .cnpjContabilidade("20000000000000")
+            .cnpjEmpresa("00810852999156")
+            .descricao("TESTEOTT livroCaixa")
+            .dataMovimento(null)
+            .valorOriginal(2000.0)
+            .valorPago(2000.0)
+            .valorFinal(2000.0)
+            .tipoMovimento("PAG")
+            .origem(0)
+            .integradoContabilidade(false)
+            .status(Short.valueOf("1"))
+            .bancoId(BigInteger.ONE)
+            .categoriaId(BigInteger.ONE)
+            .criadoPor("Robo de testes")
+        .build();
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             livroCaixaService.salva(livroCaixa, oauth2Authentication);
         });
-        livroCaixa.setDataMovimento(LocalDate.of(2021, 01, 01));
     }
 
     @Test
     public void dadoLivroCaixaDTO_quandoSalvaLivroCaixaBancoIdNull_entaoLancaExecao() throws Exception {
         Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
-        livroCaixa.setBancoId(null);
+        LivroCaixaDTO livroCaixa = LivroCaixaDTO.builder()
+            .cnpjContabilidade("20000000000000")
+            .cnpjEmpresa("00810852999156")
+            .descricao("TESTEOTT livroCaixa")
+            .dataMovimento(LocalDate.of(2021, 01, 01))
+            .valorOriginal(2000.0)
+            .valorPago(2000.0)
+            .valorFinal(2000.0)
+            .tipoMovimento("PAG")
+            .origem(0)
+            .integradoContabilidade(false)
+            .status(Short.valueOf("1"))
+            .bancoId(null)
+            .categoriaId(BigInteger.ONE)
+            .criadoPor("Robo de testes")
+        .build();
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             livroCaixaService.salva(livroCaixa, oauth2Authentication);
@@ -159,18 +218,47 @@ class LivroCaixaServiceTest {
     @Test
     public void dadoLivroCaixaDTO_quandoSalvaLivroCaixaDescricaoNull_entaoLancaExecao() throws Exception {
         Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
-        livroCaixa.setDescricao(null);
+        LivroCaixaDTO livroCaixa = LivroCaixaDTO.builder()
+            .cnpjContabilidade("20000000000000")
+            .cnpjEmpresa("00810852999156")
+            .descricao(null)
+            .dataMovimento(LocalDate.of(2021, 01, 01))
+            .valorOriginal(2000.0)
+            .valorPago(2000.0)
+            .valorFinal(2000.0)
+            .tipoMovimento("PAG")
+            .origem(0)
+            .integradoContabilidade(false)
+            .status(Short.valueOf("1"))
+            .bancoId(BigInteger.ONE)
+            .categoriaId(BigInteger.ONE)
+            .criadoPor("Robo de testes")
+        .build();
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             livroCaixaService.salva(livroCaixa, oauth2Authentication);
         });
-        livroCaixa.setDescricao("TESTEOTT livroCaixa");
     }
 
     @Test
     public void dadoLivroCaixaDTO_quandoSalvaLivroCaixaValorOriginalNull_entaoLancaExecao() throws Exception {
         Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
-        livroCaixa.setValorOriginal(null);
+        LivroCaixaDTO livroCaixa = LivroCaixaDTO.builder()
+            .cnpjContabilidade("20000000000000")
+            .cnpjEmpresa("00810852999156")
+            .descricao("TESTEOTT livroCaixa")
+            .dataMovimento(LocalDate.of(2021, 01, 01))
+            .valorOriginal(null)
+            .valorPago(null)
+            .valorFinal(null)
+            .tipoMovimento("PAG")
+            .origem(0)
+            .integradoContabilidade(false)
+            .status(Short.valueOf("1"))
+            .bancoId(BigInteger.ONE)
+            .categoriaId(BigInteger.ONE)
+            .criadoPor("Robo de testes")
+        .build();
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             livroCaixaService.salva(livroCaixa, oauth2Authentication);
@@ -210,7 +298,5 @@ class LivroCaixaServiceTest {
          });
         
     }
-
-    
 
 }

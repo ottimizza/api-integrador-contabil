@@ -279,4 +279,8 @@ public class LivroCaixaService {
 		return true;
 	}
 
+	public void deletaTestesOTT() throws Exception {
+		repository.deleteTestes();
+	}
+
 }
