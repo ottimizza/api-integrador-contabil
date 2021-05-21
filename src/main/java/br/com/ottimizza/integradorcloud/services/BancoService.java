@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -20,7 +21,9 @@ import br.com.ottimizza.integradorcloud.domain.dtos.banco.BancoDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.BancoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
 import br.com.ottimizza.integradorcloud.domain.models.banco.BancosPadroes;
+import br.com.ottimizza.integradorcloud.domain.models.banco.SaldoBancos;
 import br.com.ottimizza.integradorcloud.repositories.banco.BancoRepository;
+import br.com.ottimizza.integradorcloud.repositories.saldo_bancos.SaldoBancosRepository;
 
 @Service
 public class BancoService {
@@ -30,9 +33,18 @@ public class BancoService {
 	
 	@Inject
 	BancoRepository bancoRepository;
+
+	@Inject
+	SaldoBancosRepository saldoBancosRepository;
 	
 	public BancoDTO salvar(BancoDTO bancoDto, OAuth2Authentication authentication) {
-		return BancoMapper.fromEntity(bancoRepository.save(BancoMapper.fromDto(bancoDto)));
+		BancoDTO banco = BancoMapper.fromEntity(bancoRepository.save(BancoMapper.fromDto(bancoDto)));
+		saldoBancosRepository.save(SaldoBancos.builder()
+										.bancoId(banco.getId())
+										.data(LocalDate.of(2021, 01, 01))
+										.saldo(0.0)
+									.build());
+		return banco;
 	}
 
 	public Page<Banco> buscarBancos(@Valid BancoDTO filter, 

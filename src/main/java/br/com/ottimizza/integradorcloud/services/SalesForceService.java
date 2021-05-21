@@ -52,7 +52,7 @@ public class SalesForceService {
 	}
 	
 	public List<BigInteger> getGrupoRegraIds(GrupoRegraDTO filtro) throws Exception {
-		return grupoRegraRepository.findId(filtro.getCnpjEmpresa(), filtro.getTipoLancamento());
+		return grupoRegraRepository.findId(filtro.getCnpjEmpresa(), filtro.getCnpjContabilidade(), filtro.getTipoLancamento());
 	}
 	
 	public String upsertHistorico(BigInteger historicoId, HistoricoDTO historico, String authorization) throws Exception {
