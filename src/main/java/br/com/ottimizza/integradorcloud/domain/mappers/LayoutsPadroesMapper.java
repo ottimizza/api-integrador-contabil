@@ -17,6 +17,8 @@ public class LayoutsPadroesMapper {
                 .descricaoDocumento(layout.getDescricaoDocumento())
                 .tipoIntegracao(layout.getTipoIntegracao())
                 .tipoArquivo(layout.getTipoArquivo())
+                .tags(layout.getTags())
+                .icone(layout.getIcone())
                 .pagamentos(layout.getPagamentos())
                 .recebimentos(layout.getRecebimentos())
             .build();
@@ -30,6 +32,8 @@ public class LayoutsPadroesMapper {
                 .descricaoDocumento(layout.getDescricaoDocumento())
                 .tipoIntegracao(layout.getTipoIntegracao())
                 .tipoArquivo(layout.getTipoArquivo())
+                .tags(layout.getTags())
+                .icone(layout.getIcone())
                 .pagamentos(layout.getPagamentos())
                 .recebimentos(layout.getRecebimentos())
             .build();

@@ -48,7 +48,7 @@ public class RoteiroDTO implements Serializable{
 	private Boolean checkList;
 	
 	private String usuario;
-	
+
 	private Short tipoProjeto;
 	
 	private LocalDateTime dataCriacao;
