@@ -69,7 +69,7 @@ public class LayoutPadraoRepositoryImpl implements LayoutPadraoRepositoryCustom 
         }
 
         if(filtro.getPalavras_chave() != null && !filtro.getPalavras_chave().equals("")){
-            String tags = "'{"+filtro.getPalavras_chave()+"}'";
+            String tags = "'{"+filtro.getPalavras_chave().toUpperCase()+"}'";
             if(!where){
                 sql.append("WHERE lp.tags @> "+tags+" ");
                 where =  true;
