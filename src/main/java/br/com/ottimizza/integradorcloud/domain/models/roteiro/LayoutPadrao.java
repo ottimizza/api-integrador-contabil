@@ -2,12 +2,15 @@ package br.com.ottimizza.integradorcloud.domain.models.roteiro;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -70,6 +73,12 @@ public class LayoutPadrao {
         public static final Short EXTRATOS = 0;
         public static final Short CARTOES = 1;
         public static final Short ERPS = 2;
+	}
+
+    @PrePersist
+	@PreUpdate 
+	public void prePersist() {
+        this.tags = this.tags.stream().map((t) -> t.toUpperCase()).collect(Collectors.toList());
 	}
 
 }
