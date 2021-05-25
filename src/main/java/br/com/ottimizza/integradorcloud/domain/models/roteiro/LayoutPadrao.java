@@ -78,7 +78,7 @@ public class LayoutPadrao {
     @PrePersist
 	@PreUpdate 
 	public void prePersist() {
-        this.tags = this.tags.stream().map((t) -> t.toUpperCase()).collect(Collectors.toList());
+        this.tags = this.tags.stream().map((t) -> t.toLowerCase()).collect(Collectors.toList());
 	}
 
 }
