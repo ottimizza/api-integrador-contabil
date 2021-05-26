@@ -263,7 +263,7 @@ public class LivroCaixaService {
 	}
 
 	public Boolean validaLivroCaixa(LivroCaixaDTO livroCaixa) throws Exception {
-
+		System.out.println(livroCaixa.toString());
 		if(livroCaixa.getCnpjContabilidade() != null && !livroCaixa.getCnpjContabilidade().equals(""))
 			throw new IllegalArgumentException("Informe o cnpj da contabilidade!");
 
