@@ -264,22 +264,22 @@ public class LivroCaixaService {
 
 	public Boolean validaLivroCaixa(LivroCaixaDTO livroCaixa) throws Exception {
 		System.out.println(livroCaixa.toString());
-		if(livroCaixa.getCnpjContabilidade() != null && !livroCaixa.getCnpjContabilidade().equals(""))
+		if(livroCaixa.getCnpjContabilidade() == null || livroCaixa.getCnpjContabilidade().equals(""))
 			throw new IllegalArgumentException("Informe o cnpj da contabilidade!");
 
-		if(livroCaixa.getCnpjEmpresa() != null && !livroCaixa.getCnpjEmpresa().equals(""))
+		if(livroCaixa.getCnpjEmpresa() == null || livroCaixa.getCnpjEmpresa().equals(""))
 			throw new IllegalArgumentException("Informe o cnpj da empresa!");
 		
-		if(livroCaixa.getDataMovimento() != null)
+		if(livroCaixa.getDataMovimento() == null)
 			throw new IllegalArgumentException("Informe a data movimento!");
 
-		if(livroCaixa.getBancoId() != null)
+		if(livroCaixa.getBancoId() == null)
 			throw new IllegalArgumentException("Informe o banco do lancamento!");
 		
-		if(livroCaixa.getDescricao() != null && !livroCaixa.getDescricao().equals(""))
+		if(livroCaixa.getDescricao() == null && !livroCaixa.getDescricao().equals(""))
 			throw new IllegalArgumentException("Informe a descricao do lancamento!");
 
-		if(livroCaixa.getValorOriginal() != null)
+		if(livroCaixa.getValorOriginal() == null)
 			throw new IllegalArgumentException("Informe o valor do lancamento!");
 
 		return true;
