@@ -70,15 +70,16 @@ public class LivroCaixaService {
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa, OAuth2Authentication authentication) throws Exception {
 		validaLivroCaixa(livroCaixa);
 		if(!livroCaixa.getDescricao().contains("TESTEOTT")) {
-		UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+			UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+			if(user.getUsername() != null && !user.getUsername().equals(""))
+				livroCaixa.setCriadoPor(user.getUsername());
+		}
 		SaldoBancos ultimoSaldo = saldoRepository.buscaPorBancoDataMaior(livroCaixa.getBancoId(), livroCaixa.getDataMovimento());
 		if(ultimoSaldo != null) {
 			throw new IllegalArgumentException("O mês informado já foi encerrado e dados enviados a contabilidade.");
 		}
+
 		
-			if(user.getUsername() != null && !user.getUsername().equals(""))
-				livroCaixa.setCriadoPor(user.getUsername());
-		}
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
@@ -266,7 +267,7 @@ public class LivroCaixaService {
 	}
 
 	public Boolean validaLivroCaixa(LivroCaixaDTO livroCaixa) throws Exception {
-		System.out.println(livroCaixa.toString());
+
 		if(livroCaixa.getCnpjContabilidade() == null || livroCaixa.getCnpjContabilidade().equals(""))
 			throw new IllegalArgumentException("Informe o cnpj da contabilidade!");
 
@@ -279,7 +280,7 @@ public class LivroCaixaService {
 		if(livroCaixa.getBancoId() == null)
 			throw new IllegalArgumentException("Informe o banco do lancamento!");
 		
-		if(livroCaixa.getDescricao() == null && !livroCaixa.getDescricao().equals(""))
+		if(livroCaixa.getDescricao() == null || !livroCaixa.getDescricao().equals(""))
 			throw new IllegalArgumentException("Informe a descricao do lancamento!");
 
 		if(livroCaixa.getValorOriginal() == null)
