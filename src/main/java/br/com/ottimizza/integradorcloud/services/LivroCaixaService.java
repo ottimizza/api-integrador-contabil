@@ -69,12 +69,13 @@ public class LivroCaixaService {
 	
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa, OAuth2Authentication authentication) throws Exception {
 		validaLivroCaixa(livroCaixa);
+		if(!livroCaixa.getDescricao().contains("TESTEOTT")) {
 		UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
 		SaldoBancos ultimoSaldo = saldoRepository.buscaPorBancoDataMaior(livroCaixa.getBancoId(), livroCaixa.getDataMovimento());
 		if(ultimoSaldo != null) {
 			throw new IllegalArgumentException("O mês informado já foi encerrado e dados enviados a contabilidade.");
 		}
-		if(!livroCaixa.getDescricao().contains("TESTEOTT")){
+		
 			if(user.getUsername() != null && !user.getUsername().equals(""))
 				livroCaixa.setCriadoPor(user.getUsername());
 		}
