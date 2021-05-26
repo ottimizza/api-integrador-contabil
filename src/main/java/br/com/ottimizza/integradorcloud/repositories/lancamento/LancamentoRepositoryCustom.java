@@ -23,6 +23,6 @@ public interface LancamentoRepositoryCustom { // @formatter:off LancamentoReposi
     
     @Modifying
     @Transactional
-    int atualizaLancamentosPorRegraNative(List<Regra> regras, String cnpjEmpresa, String cnpjContabilidade, String contaMovimento, BigInteger regraId, Short sugerir, BigInteger regraSugerida);
+    int atualizaLancamentosPorRegraNative(List<Regra> regras, String cnpjEmpresa, String cnpjContabilidade, String contaMovimento, BigInteger regraId, Short sugerir, BigInteger regraSugerida, String tipoMovimento);
     
 }

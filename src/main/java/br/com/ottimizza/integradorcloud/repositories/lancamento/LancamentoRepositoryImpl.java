@@ -97,7 +97,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
     }
     
     @Override
-	public int atualizaLancamentosPorRegraNative(List<Regra> regras, String cnpjEmpresa, String cnpjContabilidade,  String contaMovimento, BigInteger regraId, Short sugerir, BigInteger regraSugerida) {
+	public int atualizaLancamentosPorRegraNative(List<Regra> regras, String cnpjEmpresa, String cnpjContabilidade,  String contaMovimento, BigInteger regraId, Short sugerir, BigInteger regraSugerida, String tipoMovimento) {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("UPDATE lancamentos l "); 
@@ -105,6 +105,8 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 		sb.append("	   tipo_conta = 2, "); 
         sb.append("	   fk_regras_id = :regraId ");
         sb.append("WHERE l.cnpj_empresa = :cnpjEmpresa ");
+        sb.append("AND l.cnpj_contabilidade = :cnpjContabilidade ");
+        sb.append("AND l.tipo_movimento = :tipoMovimento ");
 		for(Regra regra : regras) {
 			switch (regra.getCondicao()) {
 				case Regra.Condicao.CONTEM:
@@ -140,13 +142,15 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 		query.setParameter("contaMovimento", contaMovimento);
 		query.setParameter("regraId", regraId);
 		query.setParameter("cnpjEmpresa", cnpjEmpresa);
+        query.setParameter("cnpjContabilidade", cnpjContabilidade);
+        query.setParameter("tipoMovimento", tipoMovimento);
 		if(sugerir == 0 || sugerir == 1 ) {
 			if(regraSugerida != null) {
 				query.setParameter("regraSugerida", regraSugerida);
 				query.setParameter("regraCriada", regraId);
-				if(sugerir == 1)
-					query.setParameter("cnpjContabilidade", cnpjContabilidade);
-				}
+				//if(sugerir == 1)
+				//	query.setParameter("cnpjContabilidade", cnpjContabilidade);
+			}
 		}
 		return query.executeUpdate();
 	}
