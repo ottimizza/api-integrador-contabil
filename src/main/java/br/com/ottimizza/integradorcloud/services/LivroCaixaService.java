@@ -280,7 +280,7 @@ public class LivroCaixaService {
 		if(livroCaixa.getBancoId() == null)
 			throw new IllegalArgumentException("Informe o banco do lancamento!");
 		
-		if(livroCaixa.getDescricao() == null || !livroCaixa.getDescricao().equals(""))
+		if(livroCaixa.getDescricao() == null || livroCaixa.getDescricao().equals(""))
 			throw new IllegalArgumentException("Informe a descricao do lancamento!");
 
 		if(livroCaixa.getValorOriginal() == null)
