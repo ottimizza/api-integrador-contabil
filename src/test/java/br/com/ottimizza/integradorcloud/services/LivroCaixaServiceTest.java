@@ -44,7 +44,7 @@ class LivroCaixaServiceTest {
     public void dadoLivroCaixaDTO_quandoSalvaLivroCaixa_entaoOk() throws Exception {
         Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
 
-        LivroCaixaDTO livroCaixa = LivroCaixaDTO.builder()
+        LivroCaixaDTO livroCaixa1 = LivroCaixaDTO.builder()
             .cnpjContabilidade("20000000000000")
             .cnpjEmpresa("00810852999156")
             .descricao("TESTEOTT livroCaixa")
@@ -61,7 +61,7 @@ class LivroCaixaServiceTest {
             .criadoPor("Robo de testes")
         .build();
 
-        LivroCaixaDTO retorno = livroCaixaService.salva(livroCaixa, oauth2Authentication);
+        LivroCaixaDTO retorno = livroCaixaService.salva(livroCaixa1, oauth2Authentication);
     	Assertions.assertNotNull(retorno);
     	Assertions.assertNotNull(retorno.getId());
     	Assertions.assertNotNull(retorno.getCnpjContabilidade());
@@ -214,7 +214,6 @@ class LivroCaixaServiceTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             livroCaixaService.salva(livroCaixa, oauth2Authentication);
         });
-        livroCaixa.setBancoId(BigInteger.ONE);
     }
 
     @Test
@@ -265,14 +264,13 @@ class LivroCaixaServiceTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             livroCaixaService.salva(livroCaixa, oauth2Authentication);
         });
-        livroCaixa.setValorOriginal(2000.0);
     }
 
     @Test
     public void dadoLivroCaixaDTO_quandoAtualizaLivroCaixaOrigemUm_entaoLancaExecao() throws Exception {
         Mockito.when(oauth2Authentication.getName()).thenReturn(ADMINISTRATOR);
 
-        LivroCaixaDTO livroCaixa = LivroCaixaDTO.builder()
+        LivroCaixaDTO livroCaixa2 = LivroCaixaDTO.builder()
             .cnpjContabilidade("20000000000000")
             .cnpjEmpresa("00810852999156")
             .descricao("TESTEOTT livroCaixa")
@@ -289,7 +287,7 @@ class LivroCaixaServiceTest {
             .criadoPor("Robo de testes")
         .build();
 
-        LivroCaixaDTO retorno = livroCaixaService.salva(livroCaixa, oauth2Authentication);
+        LivroCaixaDTO retorno = livroCaixaService.salva(livroCaixa2, oauth2Authentication);
 
         LivroCaixaDTO livroCaixaDTO = LivroCaixaDTO.builder()
                 .descricao("Alterando TESTEOTT")
