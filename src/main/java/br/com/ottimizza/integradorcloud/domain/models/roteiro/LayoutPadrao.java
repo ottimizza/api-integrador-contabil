@@ -1,20 +1,33 @@
 package br.com.ottimizza.integradorcloud.domain.models.roteiro;
 
 import java.math.BigInteger;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.jdo.annotations.Column;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import com.vladmihalcea.hibernate.type.array.ListArrayType;
+
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@TypeDef(
+        name = "list-array",
+        typeClass = ListArrayType.class
+)
 @Entity
 @Table(name = "layouts_padroes")
 @Data
@@ -43,6 +56,13 @@ public class LayoutPadrao {
     @Column(name = "tipo_arquivo")
     private String tipoArquivo;
 
+    @Column(name = "icone")
+    private String icone;
+
+    @Type(type = "list-array")
+    @Column(name = "tags", columnDefinition = "varchar[]")
+    private List<String> tags;
+
     @Column(name = "pagamentos")
     private Boolean pagamentos;
 
@@ -53,6 +73,12 @@ public class LayoutPadrao {
         public static final Short EXTRATOS = 0;
         public static final Short CARTOES = 1;
         public static final Short ERPS = 2;
+	}
+
+    @PrePersist
+	@PreUpdate 
+	public void prePersist() {
+        this.tags = this.tags.stream().map((t) -> t.toLowerCase()).collect(Collectors.toList());
 	}
 
 }

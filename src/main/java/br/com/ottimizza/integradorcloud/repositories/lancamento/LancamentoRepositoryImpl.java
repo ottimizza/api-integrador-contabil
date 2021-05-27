@@ -100,7 +100,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 	public int atualizaLancamentosPorRegraNative(List<Regra> regras, String cnpjEmpresa, String cnpjContabilidade,  String contaMovimento, BigInteger regraId, Short sugerir, BigInteger regraSugerida) {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("UPDATE lancamentos l "); 
+        sb.append("UPDATE lancamentos l "); 
 		sb.append("SET conta_movimento = :contaMovimento, "); 
 		sb.append("	   tipo_conta = 2, "); 
         sb.append("	   fk_regras_id = :regraId ");
@@ -148,7 +148,8 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 				query.setParameter("regraCriada", regraId);
 				//if(sugerir == 1)
 				//	query.setParameter("cnpjContabilidade", cnpjContabilidade);
-				}
+
+			}
 		}
 		return query.executeUpdate();
 	}

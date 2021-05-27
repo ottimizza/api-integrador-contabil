@@ -1,6 +1,7 @@
 package br.com.ottimizza.integradorcloud.controllers.v1;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.LayoutPadraoDTO;
+import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericResponse;
 import br.com.ottimizza.integradorcloud.services.LayoutPadraoService;
 
@@ -30,7 +32,7 @@ public class LayoutPadraoController {
     @GetMapping
     ResponseEntity<?> buscaComFiltro(@Valid LayoutPadraoDTO filtro,
                                      @Valid PageCriteria criteria) throws Exception {
-        return ResponseEntity.ok(new GenericResponse<>(
+        return ResponseEntity.ok(new GenericPageableResponse<>(
                 service.buscaComFiltro(filtro, criteria)
             ));
     }
