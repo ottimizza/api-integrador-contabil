@@ -97,7 +97,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
     }
     
     @Override
-	public int atualizaLancamentosPorRegraNative(List<Regra> regras, String cnpjEmpresa, String cnpjContabilidade,  String contaMovimento, BigInteger regraId, Short sugerir, BigInteger regraSugerida, String tipoMovimento) {
+	public int atualizaLancamentosPorRegraNative(List<Regra> regras, String cnpjEmpresa, String cnpjContabilidade,  String contaMovimento, BigInteger regraId, Short sugerir, BigInteger regraSugerida) {
 		StringBuilder sb = new StringBuilder();
 		
         sb.append("UPDATE lancamentos l "); 
