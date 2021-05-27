@@ -214,7 +214,6 @@ class LivroCaixaServiceTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             livroCaixaService.salva(livroCaixa, oauth2Authentication);
         });
-        livroCaixa.setBancoId(BigInteger.ONE);
     }
 
     @Test
@@ -265,7 +264,6 @@ class LivroCaixaServiceTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             livroCaixaService.salva(livroCaixa, oauth2Authentication);
         });
-        livroCaixa.setValorOriginal(2000.0);
     }
 
     @Test

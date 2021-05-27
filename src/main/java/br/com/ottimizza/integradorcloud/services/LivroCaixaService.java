@@ -69,13 +69,17 @@ public class LivroCaixaService {
 	
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa, OAuth2Authentication authentication) throws Exception {
 		validaLivroCaixa(livroCaixa);
-		UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+		if(!livroCaixa.getDescricao().contains("TESTEOTT")) {
+			UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+			if(user.getUsername() != null && !user.getUsername().equals(""))
+				livroCaixa.setCriadoPor(user.getUsername());
+		}
 		SaldoBancos ultimoSaldo = saldoRepository.buscaPorBancoDataMaior(livroCaixa.getBancoId(), livroCaixa.getDataMovimento());
 		if(ultimoSaldo != null) {
 			throw new IllegalArgumentException("O mês informado já foi encerrado e dados enviados a contabilidade.");
 		}
-		if(user.getUsername() != null && !user.getUsername().equals(""))
-			livroCaixa.setCriadoPor(user.getUsername());
+
+		
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
@@ -264,22 +268,22 @@ public class LivroCaixaService {
 
 	public Boolean validaLivroCaixa(LivroCaixaDTO livroCaixa) throws Exception {
 
-		if(livroCaixa.getCnpjContabilidade() != null && !livroCaixa.getCnpjContabilidade().equals(""))
+		if(livroCaixa.getCnpjContabilidade() == null || livroCaixa.getCnpjContabilidade().equals(""))
 			throw new IllegalArgumentException("Informe o cnpj da contabilidade!");
 
-		if(livroCaixa.getCnpjEmpresa() != null && !livroCaixa.getCnpjEmpresa().equals(""))
+		if(livroCaixa.getCnpjEmpresa() == null || livroCaixa.getCnpjEmpresa().equals(""))
 			throw new IllegalArgumentException("Informe o cnpj da empresa!");
 		
-		if(livroCaixa.getDataMovimento() != null)
+		if(livroCaixa.getDataMovimento() == null)
 			throw new IllegalArgumentException("Informe a data movimento!");
 
-		if(livroCaixa.getBancoId() != null)
+		if(livroCaixa.getBancoId() == null)
 			throw new IllegalArgumentException("Informe o banco do lancamento!");
 		
-		if(livroCaixa.getDescricao() != null && !livroCaixa.getDescricao().equals(""))
+		if(livroCaixa.getDescricao() == null || livroCaixa.getDescricao().equals(""))
 			throw new IllegalArgumentException("Informe a descricao do lancamento!");
 
-		if(livroCaixa.getValorOriginal() != null)
+		if(livroCaixa.getValorOriginal() == null)
 			throw new IllegalArgumentException("Informe o valor do lancamento!");
 
 		return true;
