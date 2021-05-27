@@ -117,14 +117,16 @@ public class RegraService {
         if(!regraSugerida.equals("") && !regraSugerida.equals("null"))
         	regraId = BigInteger.valueOf(Integer.parseInt(regraSugerida));
         
+		for(Regra r : regrasSalvas) {
+			if(r.getCampo().equals("tipoMovimento"))
+				tipoMovimento = r.getValor();
+		}
+
         lancamentoRepository.atualizaLancamentosPorRegraNative(
-            regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getContaMovimento(), grupoRegra.getId(), sugerir, regraId);
+            regrasSalvas, grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getContaMovimento(), grupoRegra.getId(), sugerir, regraId, tipoMovimento);
 
         grupoRegraRepository.ajustePosicao(grupoRegraDTO.getCnpjEmpresa(), grupoRegraDTO.getCnpjContabilidade(), grupoRegraDTO.getTipoLancamento());
-        for(Regra r : regrasSalvas) {
-        	if(r.getCampo().equals("tipoMovimento"))
-        		tipoMovimento = r.getValor();
-        }
+        
 		Long lancamentosRestantes = lancamentoRepository.contarLancamentosRestantesEmpresa(grupoRegra.getCnpjEmpresa(), grupoRegra.getCnpjContabilidade(), tipoMovimento);
         if(lancamentosRestantes == 0) {
         	StringBuilder sb = new StringBuilder();
