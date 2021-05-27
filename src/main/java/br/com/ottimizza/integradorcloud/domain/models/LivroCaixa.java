@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -104,6 +105,9 @@ public class LivroCaixa implements Serializable {
     @Column(name = "termos", columnDefinition = "varchar[]")
     private List<String> termos;
 
+	@Column(name = "conta_movimento")
+	private String contaMovimento;
+
 	@Column(name = "criado_por")
 	private String criadoPor;
 
@@ -124,6 +128,8 @@ public class LivroCaixa implements Serializable {
 			this.idExterno = "";
 		}
 	
+		this.termos = Arrays.asList(descricao.split(" "));
+
 		this.valorFinal = this.valorOriginal;
 			
 		if(this.tipoMovimento.equals("PAG") && this.valorFinal > 0)

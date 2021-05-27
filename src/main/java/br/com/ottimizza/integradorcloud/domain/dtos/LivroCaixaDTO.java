@@ -60,9 +60,13 @@ public class LivroCaixaDTO implements Serializable {
 
     private List<String> termos;
 
+	private String contaMovimento;
+
 	private String criadoPor;
 
 	private LocalDateTime dataCriacao;
+
+	private LocalDateTime dataAtualizacao;
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String dataString;
