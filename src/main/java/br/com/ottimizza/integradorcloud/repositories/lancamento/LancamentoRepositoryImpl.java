@@ -148,6 +148,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryCustom {
 				query.setParameter("regraCriada", regraId);
 				//if(sugerir == 1)
 				//	query.setParameter("cnpjContabilidade", cnpjContabilidade);
+
 			}
 		}
 		return query.executeUpdate();
