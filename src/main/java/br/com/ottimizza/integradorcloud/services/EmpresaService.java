@@ -81,8 +81,12 @@ public class EmpresaService {
     	String empresaOauthString = "";
     	String nomeResumido = empresaDTO.getNomeResumido().trim();
         nomeResumido = nomeResumido.replaceFirst(nomeResumido.substring(0, 1), nomeResumido.substring(0, 1).toUpperCase());
-
-        SFEmpresa empresaCRM = salesForceClient.getEmpresa(nomeResumido, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+        
+        SFEmpresa empresaCRM = null;
+        try{
+            empresaCRM = salesForceClient.getEmpresa(nomeResumido, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+        }
+        catch(Exception ex) { }
         if(empresaCRM != null && !empresaCRM.getCnpj().equals(empresaDTO.getCnpj()))
             throw new IllegalArgumentException("Nome resumido já encontrado, informe outro!");
 
