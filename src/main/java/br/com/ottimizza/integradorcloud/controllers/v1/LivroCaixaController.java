@@ -78,7 +78,7 @@ public class LivroCaixaController {
 	}
 	
 	@GetMapping("/sugerir/{id}")
-	public ResponseEntity<?> sugerirRegra(@PathVariable("id") BigInteger livroCaixaId,
+	public ResponseEntity<?> sugerirContaMovimento(@PathVariable("id") BigInteger livroCaixaId,
 										  @Valid String cnpjContabilidade,
 										  @Valid String cnpjEmpresa,
 										  OAuth2Authentication authentication) throws Exception {

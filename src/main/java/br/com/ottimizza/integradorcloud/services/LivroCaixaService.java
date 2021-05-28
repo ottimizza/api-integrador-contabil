@@ -130,8 +130,10 @@ public class LivroCaixaService {
 					livroCaixa.setContaMovimento(dePara.getContaCredito());
 				else
 					livroCaixa.setContaMovimento(dePara.getContaDebito());
+
+				return LivroCaixaMapper.fromEntity(repository.save(livroCaixa));
 			}
-			return LivroCaixaMapper.fromEntity(repository.save(livroCaixa));
+			return LivroCaixaMapper.fromEntity(livroCaixa);
 		}
 	}
 	
@@ -241,7 +243,7 @@ public class LivroCaixaService {
 		Banco banco = new Banco();
 
 		try {
-			banco =  bancoRepository.findByCodigoAndCnpjEmpresa(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa());
+			banco =  bancoRepository.findByCodigoAndCnpjs(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa(), importLivrosCaixas.getCnpjContabilidade());
 		} catch (Exception e) {
 			BancosPadroes bancoPadrao = new BancosPadroes();
 			try {

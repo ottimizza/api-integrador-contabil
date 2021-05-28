@@ -46,6 +46,16 @@ public class SaldoBancosController {
             ));
     }
 
+    @PostMapping("/{cnpjEmpresa}/{cnpjContabilidade}")
+    public ResponseEntity<?> salvaSaldoPorCodigoBanco(@PathVariable("cnpjEmpresa") String cnpjEmpresa,
+                                                      @PathVariable("cnpjContabilidade") String cnpjContabilidade,
+                                                      @Valid String codigoBanco,
+                                                      @RequestBody SaldoBancosDTO saldoBancosDto) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<>(
+                service.salvaSaldoPorCodigoBanco(codigoBanco, cnpjEmpresa, cnpjContabilidade, saldoBancosDto)
+            ));
+    }
+
     @GetMapping("/{cnpjEmpresa}")
     public ResponseEntity<?> buscaSaldo(@PathVariable String cnpjEmpresa) throws Exception {
         return ResponseEntity.ok(new GenericResponse<>(

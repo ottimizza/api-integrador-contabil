@@ -15,8 +15,8 @@ import feign.Param;
 public interface BancoRepository extends JpaRepository<Banco, BigInteger>, BancoRepositoryCustom{
 
 
-    @Query(value = "SELECT b.* FROM bancos b WHERE b.codigo_banco = :codigo AND cnpj_empresa = :cnpjEmpresa ", nativeQuery = true)
-    Banco findByCodigoAndCnpjEmpresa(@Param("codigo") String codigo, @Param("cnpjEmpresa") String cnpjEmpresa);
+    @Query(value = "SELECT b.* FROM bancos b WHERE b.codigo_banco = :codigo AND cnpj_empresa = :cnpjEmpresa AND cnpj_contabilidade = :cnpjContabilidade", nativeQuery = true)
+    Banco findByCodigoAndCnpjs(@Param("codigo") String codigo, @Param("cnpjEmpresa") String cnpjEmpresa, @Param("cnpjContabilidade") String cnpjContabilidade);
 
     @Query(value = "SELECT b.* FROM bancos b WHERE b.cnpj_empresa = :cnpj AND b.fk_banco_padrao_id = :bancoId", nativeQuery = true)
     Banco findByCnpjAndBancoPadraoId(@Param("cnpj") String cnpj, @Param("bancoId") BigInteger bancoId);

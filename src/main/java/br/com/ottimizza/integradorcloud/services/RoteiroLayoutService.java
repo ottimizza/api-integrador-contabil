@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.RoteiroLayoutDTO;
-import br.com.ottimizza.integradorcloud.domain.models.roteiro_layouts.RoteiroLayout;
 import br.com.ottimizza.integradorcloud.repositories.RoteiroLayoutRepository;
 
 @Service
