@@ -83,7 +83,7 @@ public class EmpresaService {
         nomeResumido = nomeResumido.replaceFirst(nomeResumido.substring(0, 1), nomeResumido.substring(0, 1).toUpperCase());
 
         SFEmpresa empresaCRM = salesForceClient.getEmpresa(nomeResumido, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
-        if(empresaCRM != null && empresaCRM.getCnpj().equals(empresaDTO.getCnpj()))
+        if(empresaCRM != null && !empresaCRM.getCnpj().equals(empresaDTO.getCnpj()))
             throw new IllegalArgumentException("Nome resumido já encontrado, informe outro!");
 
     	try {
