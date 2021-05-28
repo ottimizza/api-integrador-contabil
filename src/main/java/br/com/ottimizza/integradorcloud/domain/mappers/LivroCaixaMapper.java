@@ -31,8 +31,10 @@ public class LivroCaixaMapper {
 				.status(livroCaixa.getStatus())
 				.textoDocumento(livroCaixa.getTextoDocumento())
 				.termos(livroCaixa.getTermos())
+				.contaMovimento(livroCaixa.getContaMovimento())
 				.criadoPor(livroCaixa.getCriadoPor())
 				.dataCriacao(livroCaixa.getDataCriacao())
+				.dataAtualizacao(livroCaixa.getDataAtualizacao())
 			.build();
 	}
 	
@@ -59,8 +61,10 @@ public class LivroCaixaMapper {
 				.status(livroCaixa.getStatus())
 				.textoDocumento(livroCaixa.getTextoDocumento())
 				.termos(livroCaixa.getTermos())
+				.contaMovimento(livroCaixa.getContaMovimento())
 				.criadoPor(livroCaixa.getCriadoPor())
 				.dataCriacao(livroCaixa.getDataCriacao())
+				.dataAtualizacao(livroCaixa.getDataAtualizacao())
 			.build();
 	}
 	

@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.ottimizza.integradorcloud.client.DeParaClient;
 import br.com.ottimizza.integradorcloud.client.KafkaClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.client.StorageS3Client;
@@ -23,6 +24,7 @@ import br.com.ottimizza.integradorcloud.domain.commands.livro_caixa.ImprortacaoL
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.ArquivoS3DTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.DeParaContaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaImportadoDTO;
@@ -66,6 +68,9 @@ public class LivroCaixaService {
 
 	@Inject
 	KafkaClient kafkaClient;
+
+	@Inject
+	DeParaClient deParaClient;
 	
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa, OAuth2Authentication authentication) throws Exception {
 		validaLivroCaixa(livroCaixa);
@@ -111,13 +116,24 @@ public class LivroCaixaService {
 		return LivroCaixaMapper.fromEntity(livroCaixa);
 	}
 
-	public GrupoRegraDTO sugerirRegra(BigInteger livroCaixaId, String cnpjContabilidade, String cnpjEmpresa) throws Exception {
+	public LivroCaixaDTO sugerirContaMovimento(BigInteger livroCaixaId, String cnpjContabilidade, String cnpjEmpresa, OAuth2Authentication authentication) throws Exception {
+		LivroCaixa livroCaixa = repository.findById(livroCaixaId).orElseThrow(() -> new NoResultException("Livro Caixa nao encontrado!"));
 		try {
 			GrupoRegra regraSugerida = repository.sugerirRegra(livroCaixaId, cnpjContabilidade, cnpjEmpresa);
-			return GrupoRegraMapper.fromEntity(regraSugerida);
+			livroCaixa.setContaMovimento(regraSugerida.getContaMovimento());
+			return LivroCaixaMapper.fromEntity(repository.save(livroCaixa));
 		}
 		catch(Exception ex) {
-			return null;
+			DeParaContaDTO dePara = (DeParaContaDTO) deParaClient.buscaDePara(livroCaixa.getDescricao(), cnpjEmpresa, cnpjContabilidade, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+			if(dePara != null) {
+				if(dePara.getContaCredito() != null && !dePara.getContaCredito().equals(""))
+					livroCaixa.setContaMovimento(dePara.getContaCredito());
+				else
+					livroCaixa.setContaMovimento(dePara.getContaDebito());
+
+				return LivroCaixaMapper.fromEntity(repository.save(livroCaixa));
+			}
+			return LivroCaixaMapper.fromEntity(livroCaixa);
 		}
 	}
 	
@@ -227,7 +243,7 @@ public class LivroCaixaService {
 		Banco banco = new Banco();
 
 		try {
-			banco =  bancoRepository.findByCodigoAndCnpjEmpresa(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa());
+			banco =  bancoRepository.findByCodigoAndCnpjs(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa(), importLivrosCaixas.getCnpjContabilidade());
 		} catch (Exception e) {
 			BancosPadroes bancoPadrao = new BancosPadroes();
 			try {
