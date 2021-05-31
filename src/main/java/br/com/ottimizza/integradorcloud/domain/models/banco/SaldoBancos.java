@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -51,6 +52,7 @@ public class SaldoBancos implements Serializable {
 	private LocalDateTime dataAtualizacao;
 
     @PrePersist
+    @PreUpdate
 	public void prePersist() {
 		if(this.dataCriacao == null){
 			this.dataCriacao = LocalDateTime.now(ZoneId.of("Brazil/East"));

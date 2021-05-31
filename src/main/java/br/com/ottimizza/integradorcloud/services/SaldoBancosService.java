@@ -129,6 +129,7 @@ public class SaldoBancosService {
         SaldoBancos saldoBancoOld = repository.buscaPorBancoData(bancoEmpresa.getId(), saldoBancoDto.getData());
         if(saldoBancoOld != null) {
             saldoBanco.setId(saldoBancoOld.getId());
+            saldoBanco.setDataCriacao(saldoBancoOld.getDataCriacao());
         }
         SaldoBancosDTO retorno = SaldoBancosMapper.fromEntity(repository.save(saldoBanco));
 
