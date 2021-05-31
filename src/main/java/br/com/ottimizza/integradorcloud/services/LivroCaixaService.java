@@ -278,6 +278,7 @@ public class LivroCaixaService {
 						.valorPago(lc.getValor())
 						.dataMovimento(lc.getData())
 						.idExterno(lc.getIdExterno())
+						.criadoPor(lc.getCriadoPor())
 						.status(LivroCaixa.Status.PAGO)
 						.origem(1)
 					.build();
