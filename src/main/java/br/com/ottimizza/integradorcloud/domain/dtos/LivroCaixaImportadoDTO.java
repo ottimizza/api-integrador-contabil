@@ -23,4 +23,6 @@ public class LivroCaixaImportadoDTO {
 
     private LocalDate data;
 
+    private String criadoPor;
+
 }
