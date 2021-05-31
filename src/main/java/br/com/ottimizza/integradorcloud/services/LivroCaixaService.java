@@ -244,7 +244,7 @@ public class LivroCaixaService {
 	public List<LivroCaixa> importarLivrosCaixas(ImprortacaoLivroCaixas importLivrosCaixas) throws Exception {
 		List<LivroCaixa> livrosCaixas = new ArrayList<>();
 		Banco banco = new Banco();
-
+		System.out.println("IMPORTANDO LIVROS CAIXAS -> "+importLivrosCaixas.toString());
 		try {
 			banco =  bancoRepository.findByCodigoAndCnpjs(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa(), importLivrosCaixas.getCnpjContabilidade());
 		} catch (Exception e) {
