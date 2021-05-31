@@ -244,10 +244,10 @@ public class LivroCaixaService {
 	public List<LivroCaixa> importarLivrosCaixas(ImprortacaoLivroCaixas importLivrosCaixas) throws Exception {
 		List<LivroCaixa> livrosCaixas = new ArrayList<>();
 		Banco banco = new Banco();
-
+		
 		try {
 			banco =  bancoRepository.findByCodigoAndCnpjs(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa(), importLivrosCaixas.getCnpjContabilidade());
-		} catch (Exception e) { System.out.println("*** Falaha ao buscar banco empresa por cnpjs!"); 
+		} catch (Exception e) { System.out.println("*** Falaha ao buscar banco empresa por cnpjs!"); }
 		
 		if(banco == null) {
 			BancosPadroes bancoPadrao = new BancosPadroes();
