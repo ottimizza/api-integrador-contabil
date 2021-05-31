@@ -14,6 +14,8 @@ public class SaldoBancosMapper {
                 .bancoId(saldo.getBancoId())
                 .data(saldo.getData())
                 .saldo(saldo.getSaldo())
+                .dataCriacao(saldo.getDataCriacao())
+                .dataAtualizacao(saldo.getDataAtualizacao())
             .build();
     }
 
@@ -23,6 +25,8 @@ public class SaldoBancosMapper {
                 .bancoId(saldo.getBancoId())
                 .data(saldo.getData())
                 .saldo(saldo.getSaldo())
+                .dataCriacao(saldo.getDataCriacao())
+                .dataAtualizacao(saldo.getDataAtualizacao())
             .build();
     }
 

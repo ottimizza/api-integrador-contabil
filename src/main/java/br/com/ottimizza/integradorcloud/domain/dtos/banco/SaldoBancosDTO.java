@@ -3,6 +3,7 @@ package br.com.ottimizza.integradorcloud.domain.dtos.banco;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,4 +24,8 @@ public class SaldoBancosDTO implements Serializable {
     private LocalDate data;
 
     private Double saldo;
+
+    private LocalDateTime dataCriacao;
+
+	private LocalDateTime dataAtualizacao;
 }
