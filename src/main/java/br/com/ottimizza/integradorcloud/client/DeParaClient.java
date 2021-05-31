@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.ottimizza.integradorcloud.domain.dtos.DeParaContaDTO;
+import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 
 @FeignClient(name = "${depara.service.name}", url = "${depara.service.url}")
 public interface DeParaClient {
@@ -21,7 +22,7 @@ public interface DeParaClient {
                                 
 
     @GetMapping("/api/v1/depara_contas")
-    public HttpEntity<?> buscaDePara(@RequestParam("descricao") String descricao,
+    public HttpEntity<GenericPageableResponse<DeParaContaDTO>> buscaDePara(@RequestParam("descricao") String descricao,
                                      @RequestParam("cnpjEmpresa") String cnpjEmpresa,
                                      @RequestParam("cnpjContabilidade") String cnpjContabilidade,
                                      @RequestHeader("Authorization") String authorization);
