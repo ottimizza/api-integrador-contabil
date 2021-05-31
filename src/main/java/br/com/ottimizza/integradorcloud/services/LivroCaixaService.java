@@ -124,7 +124,10 @@ public class LivroCaixaService {
 			return LivroCaixaMapper.fromEntity(repository.save(livroCaixa));
 		}
 		catch(Exception ex) {
-			DeParaContaDTO dePara = (DeParaContaDTO) deParaClient.buscaDePara(livroCaixa.getDescricao(), cnpjEmpresa, cnpjContabilidade, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+			List<DeParaContaDTO> deParaList = deParaClient.buscaDePara(livroCaixa.getDescricao(), cnpjEmpresa, cnpjContabilidade, ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecords();
+			DeParaContaDTO dePara = null;
+			if(deParaList.size() > 0)
+				dePara = deParaList.get(0);
 			if(dePara != null) {
 				if(dePara.getContaCredito() != null && !dePara.getContaCredito().equals(""))
 					livroCaixa.setContaMovimento(dePara.getContaCredito());
