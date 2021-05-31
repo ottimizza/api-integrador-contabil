@@ -246,14 +246,18 @@ public class LivroCaixaService {
 		Banco banco = new Banco();
 		System.out.println("IMPORTANDO LIVROS CAIXAS -> "+importLivrosCaixas.toString());
 		try {
+			System.out.println("entrou 1 try");
 			banco =  bancoRepository.findByCodigoAndCnpjs(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa(), importLivrosCaixas.getCnpjContabilidade());
 		} catch (Exception e) {
+			System.out.println("caiu 1 catch");
 			BancosPadroes bancoPadrao = new BancosPadroes();
 			try {
+				System.out.println("entrou 2 try");
 				bancoPadrao = bancosPadroesRepository.findByCodigo(importLivrosCaixas.getBanco());
 			} catch (Exception e2) { 
 				System.out.println("*** Falha ao buscar banco padrao por codigo!");
 			}
+			System.out.println("saiu 2 tryCatch");
 			banco = bancoRepository.save(Banco.builder()
 					.cnpjEmpresa(importLivrosCaixas.getCnpjEmpresa())
 					.cnpjContabilidade(importLivrosCaixas.getCnpjContabilidade())
