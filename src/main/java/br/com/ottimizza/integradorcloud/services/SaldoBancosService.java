@@ -125,6 +125,12 @@ public class SaldoBancosService {
                 .data(saldoBancoDto.getData())
                 .saldo(saldoBancoDto.getSaldo())
             .build();
+
+        SaldoBancos saldoBancoOld = repository.buscaPorBancoData(bancoEmpresa.getId(), saldoBancoDto.getData());
+        if(saldoBancoOld != null) {
+            saldoBanco.setId(saldoBancoOld.getId());
+            saldoBanco.setDataCriacao(saldoBancoOld.getDataCriacao());
+        }
         SaldoBancosDTO retorno = SaldoBancosMapper.fromEntity(repository.save(saldoBanco));
 
         List<LivroCaixaDTO> livrosCaixas = LivroCaixaMapper.fromEntities(livroCaixaRepository.findByCnpjEmpresaBancoData(bancoEmpresa.getCnpjEmpresa(), bancoEmpresa.getId(), retorno.getData().minusDays(1)));
