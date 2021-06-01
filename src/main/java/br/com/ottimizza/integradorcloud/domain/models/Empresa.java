@@ -40,7 +40,6 @@ public class Empresa implements Serializable {
 	@Column(name = "nome_resumido")
 	private String nomeResumido;
 
-    
     private String razaoSocial;
 
     private String codigoERP;
@@ -50,6 +49,8 @@ public class Empresa implements Serializable {
     private BigInteger organizationId;
 
     private BigInteger accountingId;
+
+    private Boolean possuiOmc;
 
     @PrePersist @PreUpdate
     public void prePersist() {
