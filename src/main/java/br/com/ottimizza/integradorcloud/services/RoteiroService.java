@@ -163,6 +163,7 @@ public class RoteiroService {
 	    			.fornecedor("-1")
 	    			.portador("-1")
 	    			.dataMovimento("-1")
+					.valorDocumento("-1")
 	    			.lerPlanilhasPadroes(true)
 	    		.build();
 	    	
@@ -251,11 +252,18 @@ public class RoteiroService {
 		ObjectMapper mapper = new ObjectMapper();
 		List<String> tiposRoteiro = new ArrayList<>();
 		Empresa empresa = empresaRepository.buscarPorId(roteiroDTO.getEmpresaId()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
-		
+
 		Contabilidade contabilidade = contabilidadeRepository.buscaPorCnpj(roteiroDTO.getCnpjContabilidade());
 		SFEmpresa empresaCrm = SFEmpresa.builder()
 				.Contabilidade_Id(contabilidade.getSalesForceId())
 			.build();
+
+		if(roteiroDTO.getUtilizaOMC()){
+			empresaCrm.setPossui_OMC__c("true");
+			
+			empresa.setPossuiOmc(true);
+			empresaRepository.save(empresa);
+		}			
 		String empresaCrmString = mapper.writeValueAsString(empresaCrm);
 		ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, ServiceUtils.getAuthorizationHeader(authentication));
 		
@@ -268,17 +276,17 @@ public class RoteiroService {
 		String roteiroAdicionalPAG = "";
 		String roteiroAdicionalREC = "";
 		for(LayoutPadraoDTO layout : layouts) {
-			if(layout.getDescricaoDocumento().startsWith("ROT")){
+			if(layout.getIdSalesForce().startsWith("ROT") && layout.getTipoIntegracao() == LayoutPadrao.TipoIntegracao.ERPS) {
 				if(layout.getPagamentos() && layout.getRecebimentos()){
-					roteiroAdicionalPAG = sfClient.getRoteiroByName(layout.getDescricaoDocumento(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getIdRoteiro();
+					roteiroAdicionalPAG = sfClient.getRoteiroByName(layout.getIdSalesForce(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getIdRoteiro();
 					roteiroAdicionalREC = roteiroAdicionalPAG;
 				}
 				else if(layout.getPagamentos())
-					roteiroAdicionalPAG = sfClient.getRoteiroByName(layout.getDescricaoDocumento(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getIdRoteiro();
+					roteiroAdicionalPAG = sfClient.getRoteiroByName(layout.getIdSalesForce(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getIdRoteiro();
 				else
-					roteiroAdicionalREC = sfClient.getRoteiroByName(layout.getDescricaoDocumento(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getIdRoteiro();
+					roteiroAdicionalREC = sfClient.getRoteiroByName(layout.getIdSalesForce(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getIdRoteiro();
 			}
-			else{
+			else if(!layout.getIdSalesForce().startsWith("ROT")){
 				if(layout.getPagamentos()) {
 					layoutsRoteiroPAG = layoutsRoteiroPAG + layout.getIdSalesForce()+";";
 				}
@@ -330,6 +338,7 @@ public class RoteiroService {
 	    			.fornecedor("-1")
 	    			.portador("-1")
 	    			.dataMovimento("-1")
+					.valorDocumento("-1")
 	    			.lerPlanilhasPadroes(true)
 	    		.build();
 	    	
