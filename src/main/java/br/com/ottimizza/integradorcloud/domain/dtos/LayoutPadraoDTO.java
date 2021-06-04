@@ -65,8 +65,8 @@ public class LayoutPadraoDTO {
 		if(pagamentos != null) 
 			layout.setPagamentos(pagamentos);
        
-            if(pagamentos != null) 
-                  layout.setPagamentos(pagamentos);
+            if(recebimentos != null) 
+                  layout.setRecebimentos(recebimentos);
         
 		return layout;
 	}
