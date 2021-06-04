@@ -33,6 +33,8 @@ public class EmpresaDTO implements Serializable {
     private BigInteger organizationId;
 
     private BigInteger accountingId;
+
+    private Boolean possuiOmc;
     
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String contabilidadeCrmId;

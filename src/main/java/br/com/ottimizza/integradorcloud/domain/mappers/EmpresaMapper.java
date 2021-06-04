@@ -30,6 +30,7 @@ public class EmpresaMapper {
                 .nomeResumido(empresaDTO.getNomeResumido())
                 .organizationId(empresaDTO.getOrganizationId())
                 .accountingId(empresaDTO.getAccountingId())
+                .possuiOmc(empresaDTO.getPossuiOmc())
             .build(); 
     }
 
@@ -49,6 +50,7 @@ public class EmpresaMapper {
                 .nomeResumido(empresa.getNomeResumido())
                 .organizationId(empresa.getOrganizationId())
                 .accountingId(empresa.getAccountingId())
+                .possuiOmc(empresa.getPossuiOmc())
             .build(); 
     }
 

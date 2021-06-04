@@ -97,6 +97,21 @@ public class RoteiroService {
 	public RoteiroDTO salva(RoteiroDTO roteiroDTO, OAuth2Authentication authentication) throws Exception {
 		roteiroDTO.setUsuario(authentication.getName());
 		
+		if(roteiroDTO.getUtilizaOMC()){
+			ObjectMapper mapper = new ObjectMapper();
+			Empresa empresa = empresaRepository.buscarPorCNPJ(roteiroDTO.getCnpjEmpresa()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
+			SFEmpresa empresaSf = sfClient.getEmpresa(empresa.getNomeResumido(), ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+			empresaSf.setIdEmpresa(null);
+			empresaSf.setNome_Resumido(null);
+			empresaSf.setPossui_OMC__c("true");
+
+			String empresaCrmString = mapper.writeValueAsString(empresaSf);
+			ServiceUtils.defaultPatch(SF_SERVICE_URL+"/api/v1/salesforce/sobjects/Empresa__c/Nome_Resumido__c/"+empresa.getNomeResumido(), empresaCrmString, ServiceUtils.getAuthorizationHeader(authentication));
+
+			empresa.setPossuiOmc(true);
+			empresaRepository.save(empresa);
+		}
+
 		Roteiro roteiro = RoteiroMapper.fromDTO(roteiroDTO);
 		validaRoteiro(roteiro);
 		return RoteiroMapper.fromEntity(repository.save(roteiro));
