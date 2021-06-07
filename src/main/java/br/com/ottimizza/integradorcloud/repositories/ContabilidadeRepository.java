@@ -14,5 +14,8 @@ public interface ContabilidadeRepository extends JpaRepository<Contabilidade, Bi
 
 	@Query("SELECT c FROM Contabilidade c WHERE c.cnpj = :cnpj")
 	Contabilidade buscaPorCnpj(@Param("cnpj") String cnpj);
+
+	@Query("SELECT c FROM Contabilidade c WHERE c.ouathId = :ouathId")
+	Contabilidade findByOuathId(@Param("ouathId") BigInteger oauthId);
 	
 }
