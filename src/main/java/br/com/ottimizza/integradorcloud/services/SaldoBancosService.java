@@ -95,9 +95,10 @@ public class SaldoBancosService {
     }
 
     public PagRecRestantesDTO contarPagamentosRecebimentosRestantes(String cnpjEmpresa) throws Exception {
+        LocalDate dataHoje = LocalDate.now();
         return PagRecRestantesDTO.builder()
-                .pagamentosRestantes(livroCaixaRepository.buscaPagamentosPendentes(cnpjEmpresa, LocalDate.now()))
-                .recebimentosRestantes(livroCaixaRepository.buscaRecebimentosPendentes(cnpjEmpresa, LocalDate.now()))
+                .pagamentosRestantes(livroCaixaRepository.buscaPagamentosPendentes(cnpjEmpresa, dataHoje))
+                .recebimentosRestantes(livroCaixaRepository.buscaRecebimentosPendentes(cnpjEmpresa, dataHoje))
             .build();
     }
 
