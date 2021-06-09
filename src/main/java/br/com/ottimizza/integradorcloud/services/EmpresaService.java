@@ -83,6 +83,7 @@ public class EmpresaService {
         nomeResumido = nomeResumido.replaceFirst(nomeResumido.substring(0, 1), nomeResumido.substring(0, 1).toUpperCase());
         
         SFEmpresa empresaCRM = null;
+        System.out.println("EMPRESA: "+empresaDTO.toString());
         try{
             empresaCRM = salesForceClient.getEmpresa(nomeResumido, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
         }
