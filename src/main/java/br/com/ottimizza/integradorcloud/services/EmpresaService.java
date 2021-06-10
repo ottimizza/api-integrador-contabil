@@ -82,8 +82,11 @@ public class EmpresaService {
     	String nomeResumido = empresaDTO.getNomeResumido().trim();
         nomeResumido = nomeResumido.replaceFirst(nomeResumido.substring(0, 1), nomeResumido.substring(0, 1).toUpperCase());
         
+        Empresa empresaBanco = empresaRepository.buscaEmpresa(empresaDTO.getCnpj(), empresaDTO.getAccountingId()).orElse(null);
+        if(empresaBanco != null)
+            throw new IllegalArgumentException("Empresa já encontrada, volte e informe outro cnpj!");
+
         SFEmpresa empresaCRM = null;
-        System.out.println("EMPRESA: "+empresaDTO.toString());
         try{
             empresaCRM = salesForceClient.getEmpresa(nomeResumido, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
         }
