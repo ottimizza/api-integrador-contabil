@@ -149,7 +149,8 @@ public class EmpresaService {
         UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
 
         filter.setAccountingId(userInfo.getOrganization().getId());
-       
+        if(filter.getNomeCompleto() != null && !filter.getNomeCompleto().equals(""))
+            filter.setNomeCompleto(filter.getNomeCompleto().toUpperCase());
 
         ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
         Example<Empresa> example = Example.of(EmpresaMapper.fromDto(filter), matcher);
