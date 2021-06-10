@@ -84,7 +84,7 @@ public class EmpresaService {
         
         Empresa empresaBanco = empresaRepository.buscaEmpresa(empresaDTO.getCnpj(), empresaDTO.getAccountingId()).orElse(null);
         if(empresaBanco != null)
-            throw new IllegalArgumentException("Empresa já encontrada, volte e informe outro cnpj!");
+            throw new IllegalArgumentException("Empresa já cadastrada para integração!");
 
         SFEmpresa empresaCRM = null;
         try{
