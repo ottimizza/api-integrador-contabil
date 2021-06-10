@@ -31,12 +31,14 @@ import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaImportadoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
 import br.com.ottimizza.integradorcloud.domain.mappers.GrupoRegraMapper;
 import br.com.ottimizza.integradorcloud.domain.mappers.LivroCaixaMapper;
+import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
 import br.com.ottimizza.integradorcloud.domain.models.GrupoRegra;
 import br.com.ottimizza.integradorcloud.domain.models.LivroCaixa;
 import br.com.ottimizza.integradorcloud.domain.models.banco.Banco;
 import br.com.ottimizza.integradorcloud.domain.models.banco.BancosPadroes;
 import br.com.ottimizza.integradorcloud.domain.models.banco.SaldoBancos;
 import br.com.ottimizza.integradorcloud.repositories.BancosPadroesRepository;
+import br.com.ottimizza.integradorcloud.repositories.ContabilidadeRepository;
 import br.com.ottimizza.integradorcloud.repositories.banco.BancoRepository;
 import br.com.ottimizza.integradorcloud.repositories.livro_caixa.LivroCaixaRepository;
 import br.com.ottimizza.integradorcloud.repositories.saldo_bancos.SaldoBancosRepository;
@@ -59,6 +61,9 @@ public class LivroCaixaService {
 
 	@Inject 
 	SaldoBancosRepository saldoRepository;
+
+	@Inject 
+	ContabilidadeRepository contabilidadeRepository;
 
 	@Inject
 	OAuthClient oAuthClient; 
@@ -109,7 +114,8 @@ public class LivroCaixaService {
 	public LivroCaixaDTO buscaPorId(BigInteger livroCaixaId, OAuth2Authentication authentication) throws Exception {
 		UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
 		LivroCaixa livroCaixa = repository.findById(livroCaixaId).orElseThrow(() -> new NoResultException("Livro Caixa nao encontrado!"));
-		if(!livroCaixa.getCriadoPor().equals(user.getUsername()))
+		Contabilidade contabilidade = contabilidadeRepository.findByOuathId(user.getOrganization().getId());
+		if(!livroCaixa.getCnpjContabilidade().equals(contabilidade.getCnpj()))
 			return null;
 			
 		return LivroCaixaMapper.fromEntity(livroCaixa);
