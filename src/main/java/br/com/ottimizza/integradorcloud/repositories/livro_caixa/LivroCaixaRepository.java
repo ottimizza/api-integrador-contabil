@@ -26,7 +26,8 @@ public interface LivroCaixaRepository extends JpaRepository<LivroCaixa, BigInteg
 				 +"WHERE lc.cnpj_empresa = :cnpjEmpresa "
 				 +"AND lc.tipo_movimento = 'PAG' "
 				 +"AND lc.status = 0  "
-				 +"AND lc.data_movimento <= :dataMovimento ", nativeQuery = true)
+				 +"AND lc.data_movimento <= :dataMovimento "
+				 +"AND lc.integrado_contabilidade = false ", nativeQuery = true)
 	Double buscaPagamentosPendentes(@Param("cnpjEmpresa") String cnpjEmpresa,
 									@Param("dataMovimento") LocalDate dataMovimento);
 
@@ -35,7 +36,8 @@ public interface LivroCaixaRepository extends JpaRepository<LivroCaixa, BigInteg
 				 +"WHERE lc.cnpj_empresa = :cnpjEmpresa "
 				 +"AND lc.tipo_movimento = 'REC' "
 				 +"AND lc.status = 0  "
-				 +"AND lc.data_movimento <= :dataMovimento ", nativeQuery = true)
+				 +"AND lc.data_movimento <= :dataMovimento "
+				 +"AND lc.integrado_contabilidade = false ", nativeQuery = true)
     Double buscaRecebimentosPendentes(@Param("cnpjEmpresa") String cnpjEmpresa,
 									  @Param("dataMovimento") LocalDate dataMovimento);
 				  
