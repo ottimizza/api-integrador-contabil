@@ -2,6 +2,8 @@ package br.com.ottimizza.integradorcloud.domain.models;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -52,9 +54,22 @@ public class Empresa implements Serializable {
 
     private Boolean possuiOmc;
 
+    @Column(name = "data_criacao")
+	private LocalDateTime dataCriacao;
+
+	@Column(name = "data_atualizacao")
+	private LocalDateTime dataAtualizacao;
+
+    @Column(name = "criado_por")
+    private String criadoPor;
+
     @PrePersist @PreUpdate
     public void prePersist() {
+        if(this.dataCriacao == null){
+			this.dataCriacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
+		}
     	nomeCompleto = codigoERP+" - "+razaoSocial.toUpperCase(); 
+        this.dataAtualizacao = LocalDateTime.now(ZoneId.of("Brazil/East"));
     }
     
 }
