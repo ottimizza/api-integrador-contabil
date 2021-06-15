@@ -81,6 +81,19 @@ public class EmpresaService {
     	String empresaOauthString = "";
     	String nomeResumido = empresaDTO.getNomeResumido().trim();
         nomeResumido = nomeResumido.replaceFirst(nomeResumido.substring(0, 1), nomeResumido.substring(0, 1).toUpperCase());
+        
+        Empresa empresaBanco = empresaRepository.buscaEmpresa(empresaDTO.getCnpj(), empresaDTO.getAccountingId()).orElse(null);
+        if(empresaBanco != null)
+            throw new IllegalArgumentException("Empresa já cadastrada para integração!");
+
+        SFEmpresa empresaCRM = null;
+        try{
+            empresaCRM = salesForceClient.getEmpresa(nomeResumido, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
+        }
+        catch(Exception ex) { }
+        if(empresaCRM != null && !empresaCRM.getCnpj().equals(empresaDTO.getCnpj()))
+            throw new IllegalArgumentException("Nome resumido já encontrado, informe outro!");
+
     	try {
     		empresaOauth = oauthClient.buscaEmpresa(empresaDTO.getCnpj(),userInfo.getOrganization().getId(), 2, ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecords().get(0);
     	} catch(Exception ex) { }
@@ -136,7 +149,8 @@ public class EmpresaService {
         UserDTO userInfo = oauthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
 
         filter.setAccountingId(userInfo.getOrganization().getId());
-       
+        if(filter.getNomeCompleto() != null && !filter.getNomeCompleto().equals(""))
+            filter.setNomeCompleto(filter.getNomeCompleto().toUpperCase());
 
         ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING);
         Example<Empresa> example = Example.of(EmpresaMapper.fromDto(filter), matcher);

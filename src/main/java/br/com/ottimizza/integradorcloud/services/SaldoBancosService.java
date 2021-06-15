@@ -95,9 +95,10 @@ public class SaldoBancosService {
     }
 
     public PagRecRestantesDTO contarPagamentosRecebimentosRestantes(String cnpjEmpresa) throws Exception {
+        LocalDate dataHoje = LocalDate.now();
         return PagRecRestantesDTO.builder()
-                .pagamentosRestantes(livroCaixaRepository.buscaPagamentosPendentes(cnpjEmpresa, LocalDate.now()))
-                .recebimentosRestantes(livroCaixaRepository.buscaRecebimentosPendentes(cnpjEmpresa, LocalDate.now()))
+                .pagamentosRestantes(livroCaixaRepository.buscaPagamentosPendentes(cnpjEmpresa, dataHoje))
+                .recebimentosRestantes(livroCaixaRepository.buscaRecebimentosPendentes(cnpjEmpresa, dataHoje))
             .build();
     }
 
@@ -113,6 +114,48 @@ public class SaldoBancosService {
     public String deletaSaldo(BigInteger id) throws Exception {
         repository.deleteById(id);
         return "SaldoBanco removido com sucesso!";
+    }
+
+    public SaldoBancosDTO salvaSaldoPorCodigoBanco(String codigoBanco, String cnpjEmpresa, String cnpjContabilidade, SaldoBancosDTO saldoBancoDto) throws Exception {
+        StringBuilder obj = new StringBuilder();
+        int contador = 1;
+        
+        Banco bancoEmpresa = bancoRepository.findByCodigoAndCnpjs(codigoBanco, cnpjEmpresa, cnpjContabilidade);
+        SaldoBancos saldoBanco = SaldoBancos.builder()
+                .bancoId(bancoEmpresa.getId())
+                .data(saldoBancoDto.getData())
+                .saldo(saldoBancoDto.getSaldo())
+            .build();
+
+        SaldoBancos saldoBancoOld = repository.buscaPorBancoData(bancoEmpresa.getId(), saldoBancoDto.getData());
+        if(saldoBancoOld != null) {
+            saldoBanco.setId(saldoBancoOld.getId());
+            saldoBanco.setDataCriacao(saldoBancoOld.getDataCriacao());
+        }
+        SaldoBancosDTO retorno = SaldoBancosMapper.fromEntity(repository.save(saldoBanco));
+
+        List<LivroCaixaDTO> livrosCaixas = LivroCaixaMapper.fromEntities(livroCaixaRepository.findByCnpjEmpresaBancoData(bancoEmpresa.getCnpjEmpresa(), bancoEmpresa.getId(), retorno.getData().minusDays(1)));
+        int qntLivros = livrosCaixas.size();
+		obj.append("[");
+		BigInteger bancoLivroCaixaId = BigInteger.ZERO;
+		Banco bancoLivroCaixa = new Banco();
+		for(LivroCaixaDTO lc : livrosCaixas){
+			if(lc.getBancoId() != bancoLivroCaixaId){
+				bancoLivroCaixa = bancoRepository.findById(lc.getBancoId()).orElseThrow(() -> new NoResultException("Banco nao encontrado!"));
+			}
+			lc.setDescricaoBanco(bancoLivroCaixa.getDescricao());
+			if(contador == qntLivros){
+				obj.append(lc.toString());
+			}
+			else{
+				obj.append(lc.toString()+",");
+			}
+			contador ++;
+			bancoLivroCaixaId = lc.getBancoId();
+		}
+		obj.append("]");
+		kafkaClient.integradaLivrosCaixas(obj.toString());
+        return retorno;
     }
 
 }

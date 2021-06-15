@@ -26,7 +26,8 @@ public interface LivroCaixaRepository extends JpaRepository<LivroCaixa, BigInteg
 				 +"WHERE lc.cnpj_empresa = :cnpjEmpresa "
 				 +"AND lc.tipo_movimento = 'PAG' "
 				 +"AND lc.status = 0  "
-				 +"AND lc.data_movimento <= :dataMovimento ", nativeQuery = true)
+				 +"AND lc.data_movimento <= :dataMovimento "
+				 +"AND lc.integrado_contabilidade = false ", nativeQuery = true)
 	Double buscaPagamentosPendentes(@Param("cnpjEmpresa") String cnpjEmpresa,
 									@Param("dataMovimento") LocalDate dataMovimento);
 
@@ -35,7 +36,8 @@ public interface LivroCaixaRepository extends JpaRepository<LivroCaixa, BigInteg
 				 +"WHERE lc.cnpj_empresa = :cnpjEmpresa "
 				 +"AND lc.tipo_movimento = 'REC' "
 				 +"AND lc.status = 0  "
-				 +"AND lc.data_movimento <= :dataMovimento ", nativeQuery = true)
+				 +"AND lc.data_movimento <= :dataMovimento "
+				 +"AND lc.integrado_contabilidade = false ", nativeQuery = true)
     Double buscaRecebimentosPendentes(@Param("cnpjEmpresa") String cnpjEmpresa,
 									  @Param("dataMovimento") LocalDate dataMovimento);
 				  
@@ -45,4 +47,8 @@ public interface LivroCaixaRepository extends JpaRepository<LivroCaixa, BigInteg
 
 	@Query(value = "SELECT lc.* FROM livros_caixas lc WHERE lc.cnpj_empresa = :cnpjEmpresa AND lc.fk_banco_id = :bancoId AND data_movimento <= :data AND lc.integrado_contabilidade = false", nativeQuery = true)
 	List<LivroCaixa> findByCnpjEmpresaBancoData(@Param("cnpjEmpresa") String cnpjEmpresa, @Param("bancoId") BigInteger bancoId, @Param("data") LocalDate data);
+
+	@Query(value = "DELETE FROM livros_caixas WHERE lc.descricao ILIKE('%TESTEOTT%')", nativeQuery = true)
+	void deleteTestes();
+
 }

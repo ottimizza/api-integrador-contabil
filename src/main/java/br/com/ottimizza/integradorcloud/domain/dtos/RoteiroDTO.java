@@ -48,7 +48,7 @@ public class RoteiroDTO implements Serializable{
 	private Boolean checkList;
 	
 	private String usuario;
-	
+
 	private Short tipoProjeto;
 	
 	private LocalDateTime dataCriacao;
@@ -57,6 +57,9 @@ public class RoteiroDTO implements Serializable{
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String nomeCompleto;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Boolean utilizaOMC;
 	
 	public Roteiro patch(Roteiro roteiro) {
 		

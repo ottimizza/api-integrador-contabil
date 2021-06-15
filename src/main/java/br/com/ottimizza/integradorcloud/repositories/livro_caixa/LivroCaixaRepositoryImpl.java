@@ -107,12 +107,12 @@ public class LivroCaixaRepositoryImpl implements LivroCaixaRepositoryCustom{
 		sql.append("		 grupo_regras.id DESC ");
 		sql.append("LIMIT 1");
 		
-		Query query = em.createNativeQuery(sql.toString());
+		Query query = em.createNativeQuery(sql.toString(), GrupoRegra.class);
 		
 		query.setParameter("livroCaixaId", livroCaixaId);
 		query.setParameter("cnpjContabilidade", cnpjContabilidade);
 		query.setParameter("cnpjEmpresa", cnpjEmpresa);
-		
+
 		return (GrupoRegra) query.getSingleResult();
 	}
 

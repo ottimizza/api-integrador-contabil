@@ -60,9 +60,13 @@ public class LivroCaixaDTO implements Serializable {
 
     private List<String> termos;
 
+	private String contaMovimento;
+
 	private String criadoPor;
 
 	private LocalDateTime dataCriacao;
+
+	private LocalDateTime dataAtualizacao;
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String dataString;
@@ -90,10 +94,14 @@ public class LivroCaixaDTO implements Serializable {
 		if(descricao != null && !descricao.equals(""))
 			livroCaixa.setDescricao(descricao);
 
-		if(status != null) {
+		if(status != null) 
 			livroCaixa.setStatus(status);
+		
 			
-		}
+		if(tipoMovimento != null && !tipoMovimento.equals(""))
+			livroCaixa.setTipoMovimento(tipoMovimento);
+
+		
 		return livroCaixa;
 	}
 

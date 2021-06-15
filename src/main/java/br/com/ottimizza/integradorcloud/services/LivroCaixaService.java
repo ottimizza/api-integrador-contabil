@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.ottimizza.integradorcloud.client.DeParaClient;
 import br.com.ottimizza.integradorcloud.client.KafkaClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
 import br.com.ottimizza.integradorcloud.client.StorageS3Client;
@@ -23,6 +24,7 @@ import br.com.ottimizza.integradorcloud.domain.commands.livro_caixa.ImprortacaoL
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.ArquivoS3DTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.DeParaContaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.GrupoRegraDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.LivroCaixaImportadoDTO;
@@ -71,14 +73,22 @@ public class LivroCaixaService {
 
 	@Inject
 	KafkaClient kafkaClient;
+
+	@Inject
+	DeParaClient deParaClient;
 	
 	public LivroCaixaDTO salva(LivroCaixaDTO livroCaixa, OAuth2Authentication authentication) throws Exception {
-		UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+		validaLivroCaixa(livroCaixa);
+		if(!livroCaixa.getDescricao().contains("TESTEOTT")) {
+			UserDTO user = oAuthClient.getUserInfo(ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+			if(user.getUsername() != null && !user.getUsername().equals(""))
+				livroCaixa.setCriadoPor(user.getUsername());
+		}
 		SaldoBancos ultimoSaldo = saldoRepository.buscaPorBancoDataMaior(livroCaixa.getBancoId(), livroCaixa.getDataMovimento());
 		if(ultimoSaldo != null) {
 			throw new IllegalArgumentException("O mês informado já foi encerrado e dados enviados a contabilidade.");
 		}
-		livroCaixa.setCriadoPor(user.getUsername());
+		
 		LivroCaixa retorno = repository.save(LivroCaixaMapper.fromDTO(livroCaixa));
 		return LivroCaixaMapper.fromEntity(retorno);
 	}
@@ -111,13 +121,27 @@ public class LivroCaixaService {
 		return LivroCaixaMapper.fromEntity(livroCaixa);
 	}
 
-	public GrupoRegraDTO sugerirRegra(BigInteger livroCaixaId, String cnpjContabilidade, String cnpjEmpresa) throws Exception {
+	public LivroCaixaDTO sugerirContaMovimento(BigInteger livroCaixaId, String cnpjContabilidade, String cnpjEmpresa, OAuth2Authentication authentication) throws Exception {
+		LivroCaixa livroCaixa = repository.findById(livroCaixaId).orElseThrow(() -> new NoResultException("Livro Caixa nao encontrado!"));
 		try {
 			GrupoRegra regraSugerida = repository.sugerirRegra(livroCaixaId, cnpjContabilidade, cnpjEmpresa);
-			return GrupoRegraMapper.fromEntity(regraSugerida);
+			livroCaixa.setContaMovimento(regraSugerida.getContaMovimento());
+			return LivroCaixaMapper.fromEntity(repository.save(livroCaixa));
 		}
 		catch(Exception ex) {
-			return null;
+			List<DeParaContaDTO> deParaList = deParaClient.buscaDePara(livroCaixa.getDescricao(), cnpjEmpresa, cnpjContabilidade, ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecords();
+			DeParaContaDTO dePara = null;
+			if(deParaList.size() > 0)
+				dePara = deParaList.get(0);
+			if(dePara != null) {
+				if(dePara.getContaCredito() != null && !dePara.getContaCredito().equals(""))
+					livroCaixa.setContaMovimento(dePara.getContaCredito());
+				else
+					livroCaixa.setContaMovimento(dePara.getContaDebito());
+
+				return LivroCaixaMapper.fromEntity(repository.save(livroCaixa));
+			}
+			return LivroCaixaMapper.fromEntity(livroCaixa);
 		}
 	}
 	
@@ -225,11 +249,14 @@ public class LivroCaixaService {
 	public List<LivroCaixa> importarLivrosCaixas(ImprortacaoLivroCaixas importLivrosCaixas) throws Exception {
 		List<LivroCaixa> livrosCaixas = new ArrayList<>();
 		Banco banco = new Banco();
-
+		
 		try {
-			banco =  bancoRepository.findByCodigoAndCnpjEmpresa(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa());
-		} catch (Exception e) {
+			banco =  bancoRepository.findByCodigoAndCnpjs(importLivrosCaixas.getBanco(), importLivrosCaixas.getCnpjEmpresa(), importLivrosCaixas.getCnpjContabilidade());
+		} catch (Exception e) { System.out.println("*** Falaha ao buscar banco empresa por cnpjs!"); }
+		
+		if(banco == null) {
 			BancosPadroes bancoPadrao = new BancosPadroes();
+			
 			try {
 				bancoPadrao = bancosPadroesRepository.findByCodigo(importLivrosCaixas.getBanco());
 			} catch (Exception e2) { 
@@ -256,6 +283,7 @@ public class LivroCaixaService {
 						.valorPago(lc.getValor())
 						.dataMovimento(lc.getData())
 						.idExterno(lc.getIdExterno())
+						.criadoPor(lc.getCriadoPor())
 						.status(LivroCaixa.Status.PAGO)
 						.origem(1)
 					.build();
@@ -264,6 +292,33 @@ public class LivroCaixaService {
 		}
 		List<LivroCaixa> retorno = repository.saveAll(livrosCaixas);
 		return retorno;
+	}
+
+	public Boolean validaLivroCaixa(LivroCaixaDTO livroCaixa) throws Exception {
+
+		if(livroCaixa.getCnpjContabilidade() == null || livroCaixa.getCnpjContabilidade().equals(""))
+			throw new IllegalArgumentException("Informe o cnpj da contabilidade!");
+
+		if(livroCaixa.getCnpjEmpresa() == null || livroCaixa.getCnpjEmpresa().equals(""))
+			throw new IllegalArgumentException("Informe o cnpj da empresa!");
+		
+		if(livroCaixa.getDataMovimento() == null)
+			throw new IllegalArgumentException("Informe a data movimento!");
+
+		if(livroCaixa.getBancoId() == null)
+			throw new IllegalArgumentException("Informe o banco do lancamento!");
+		
+		if(livroCaixa.getDescricao() == null || livroCaixa.getDescricao().equals(""))
+			throw new IllegalArgumentException("Informe a descricao do lancamento!");
+
+		if(livroCaixa.getValorOriginal() == null)
+			throw new IllegalArgumentException("Informe o valor do lancamento!");
+
+		return true;
+	}
+
+	public void deletaTestesOTT() throws Exception {
+		repository.deleteTestes();
 	}
 
 }

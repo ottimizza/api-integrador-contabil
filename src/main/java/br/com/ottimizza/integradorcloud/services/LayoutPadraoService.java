@@ -1,6 +1,8 @@
 package br.com.ottimizza.integradorcloud.services;
 
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;

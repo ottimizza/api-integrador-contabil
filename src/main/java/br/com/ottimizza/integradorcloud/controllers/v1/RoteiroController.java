@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaArquivoRequest;
+import br.com.ottimizza.integradorcloud.domain.commands.roteiro.SalvaRoteiroLayout;
 import br.com.ottimizza.integradorcloud.domain.criterias.PageCriteria;
 import br.com.ottimizza.integradorcloud.domain.dtos.LayoutPadraoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.RoteiroDTO;
@@ -58,12 +59,11 @@ public class RoteiroController {
 		return ResponseEntity.ok(new GenericResponse<>(roteiroService.uploadPlanilha(roteiroId, salvaArquivo, arquivo, authorization, authentication)));
 	}
 
-	@PostMapping("/{roteiroId}/layouts")
-	ResponseEntity<?> salvarLayoutsPadroes(@PathVariable("roteiroId") BigInteger roteiroId,
-										   @RequestBody List<LayoutPadraoDTO> layouts,
+	@PostMapping("/layouts")
+	ResponseEntity<?> salvarLayoutsPadroes(@RequestBody SalvaRoteiroLayout roteiro,
 										   OAuth2Authentication authentication) throws Exception {
         return ResponseEntity.ok(new GenericResponse<>(
-				roteiroService.atualizaLayoutRoteiro(roteiroId, layouts, authentication)
+				roteiroService.salvarRoteiroLayouts(roteiro.getRoteiro(), roteiro.getLayouts(), authentication)
 			));
 	}
 	
