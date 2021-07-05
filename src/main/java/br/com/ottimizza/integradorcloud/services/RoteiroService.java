@@ -318,12 +318,17 @@ public class RoteiroService {
 		//------------------------------------
 		List<RoteiroDTO> retorno = new ArrayList<>();
 		Roteiro roteiro = null;
-		for(String tipoRot : tiposRoteiro) {			
+		for(String tipoRot : tiposRoteiro) {	
+			Short tipoProjeto = null;
 			String tipoRoteiro = tipoRot.substring(tipoRot.indexOf(" ")).substring(1, 4);
 			roteiroDTO.setTipoRoteiro(tipoRoteiro);
+			if(roteiroDTO.getTipoRoteiro().contains("PAG"))
+				tipoProjeto = 1;
+			else 
+				tipoProjeto = 2;
+			roteiroDTO.setTipoProjeto(tipoProjeto);
 			roteiro = repository.save(RoteiroMapper.fromDTO(roteiroDTO));
 			String chaveOic = empresa.getCnpj()+"-"+tipoRoteiro;
-
 			SFRoteiro roteiroSF;
 			try{
 				roteiroSF = sfClient.getRoteiro(chaveOic, ServiceUtils.getAuthorizationHeader(authentication)).getBody();
