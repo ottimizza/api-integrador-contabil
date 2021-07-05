@@ -67,6 +67,11 @@ kafka:
     name: kafka-service
     url: ${KAFKA_SERVER_URL:https://ottimizza-queue-events.herokuapp.com}
 
+whatsapp-notification:
+  service:
+    name: whatsapp-notification-service
+    url: ${WHATSAPP_SERVER_URL:https://api-whatsapp-notifications.herokuapp.com}
+
 email-oud-finalizado: ${EMAIL_OUD_FINALIZADO:projetooic@ottimizza.com.br}
 
 email-envio-checklist: ${EMAIL_ENVIO_CHECKLIST:preentrega@ottimizza.com.br}

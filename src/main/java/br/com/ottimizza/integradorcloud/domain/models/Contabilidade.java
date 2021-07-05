@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -38,5 +40,25 @@ public class Contabilidade implements Serializable {
 	private String salesForceId;
 	
 	private BigInteger ouathId;
+
+	private Short parceiro;
+
+	private String urlParceiro;
+
+	private String token;
+
+	private String celular;
+
+	public static class Parceiro { 
+        public static final Short TOUSCHAT = 0;
+        public static final Short DIGISAC = 1;
+		public static final Short NENHUM = 99;
+    }
+
+	@PrePersist @PreUpdate
+    public void prePersist() {
+    	if(this.parceiro == null)
+			this.parceiro = Parceiro.NENHUM;
+    }
 
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
@@ -33,7 +34,9 @@ import com.google.common.collect.Lists;
 
 import br.com.ottimizza.integradorcloud.client.DeParaClient;
 import br.com.ottimizza.integradorcloud.client.EmailSenderClient;
+import br.com.ottimizza.integradorcloud.client.IsGdClient;
 import br.com.ottimizza.integradorcloud.client.OAuthClient;
+import br.com.ottimizza.integradorcloud.client.WhatsAppClient;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.ImportacaoLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.PorcentagemLancamentosRequest;
 import br.com.ottimizza.integradorcloud.domain.commands.lancamento.TotalLanvamentosArquivoRequest;
@@ -44,16 +47,20 @@ import br.com.ottimizza.integradorcloud.domain.dtos.EmailDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.LancamentoDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.OrganizationDTO;
 import br.com.ottimizza.integradorcloud.domain.dtos.UserDTO;
+import br.com.ottimizza.integradorcloud.domain.dtos.WhatsAppNotificationDTO;
 import br.com.ottimizza.integradorcloud.domain.exceptions.LancamentoNaoEncontradoException;
 import br.com.ottimizza.integradorcloud.domain.mappers.ArquivoMapper;
 import br.com.ottimizza.integradorcloud.domain.mappers.LancamentoMapper;
 import br.com.ottimizza.integradorcloud.domain.models.Arquivo;
+import br.com.ottimizza.integradorcloud.domain.models.Contabilidade;
 import br.com.ottimizza.integradorcloud.domain.models.Empresa;
 import br.com.ottimizza.integradorcloud.domain.models.KPILancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Lancamento;
 import br.com.ottimizza.integradorcloud.domain.models.Regra;
+import br.com.ottimizza.integradorcloud.domain.models.Contabilidade.Parceiro;
 import br.com.ottimizza.integradorcloud.domain.responses.GenericPageableResponse;
 import br.com.ottimizza.integradorcloud.repositories.ArquivoRepository;
+import br.com.ottimizza.integradorcloud.repositories.ContabilidadeRepository;
 import br.com.ottimizza.integradorcloud.repositories.EmpresaRepository;
 import br.com.ottimizza.integradorcloud.repositories.grupo_regra.GrupoRegraRepository;
 import br.com.ottimizza.integradorcloud.repositories.lancamento.LancamentoRepository;
@@ -79,6 +86,9 @@ public class LancamentoService {
 	EmpresaRepository empresaRepository;
 
 	@Inject
+	ContabilidadeRepository contabilidadeRepository;
+
+	@Inject
 	DeParaClient deParaContaClient;
 
 	@Inject
@@ -86,6 +96,12 @@ public class LancamentoService {
 	
 	@Inject
 	EmailSenderClient emailSenderClient;
+
+	@Inject 
+	WhatsAppClient whatsAppClient;
+
+	@Inject
+	IsGdClient isGdClient;
 	
 	@Value("${oauth.service.url}")
 	private String OAUTH2_SERVER_URL;
@@ -411,6 +427,59 @@ public class LancamentoService {
 		Arquivo arquivo = arquivoRepository.findById(arquivoId).orElse(null);
 		lancamentoRepository.atualizaStatus(arquivoId, arquivo.getCnpjEmpresa());
 		return "Lancamentos inativados com sucesso!";
+	}
+
+	public String questionarLancamento(BigInteger lancamentoId, String url, OAuth2Authentication authentication) throws Exception {
+		UserDTO user = null;
+		Lancamento lancamento = lancamentoRepository.findById(lancamentoId).orElseThrow(() -> new NoResultException("Lancamento nao encontrado!"));
+		Contabilidade contabilidade = contabilidadeRepository.buscaPorCnpj(lancamento.getCnpjContabilidade());
+		Empresa empresa = empresaRepository.buscarPorCNPJ(lancamento.getCnpjEmpresa()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
+
+		String urldownloadURL = isGdClient.shortURL("simple",url);
+		String mensagem = "Aqui é da "+contabilidade.getNome()+" e temos uma dúvida de um lançamento. Clique aqui para ver e detalhar, "+urldownloadURL;
+
+		user = oauthClient.getUserByOrganizationIdAndPhone(empresa.getOrganizationId(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+		if(user == null)
+			user = oauthClient.getUserByOrganizationId(empresa.getOrganizationId(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
+
+		if(user.getPhone() != null && contabilidade.getParceiro() != 99) {
+			String numero = user.getPhone();
+			numero = numero.replaceAll("\\W+",""); //removendo qualquer caracter especial
+			if(numero.length() < 12)
+				numero = "55"+numero;
+
+			String parceiro = "";
+			WhatsAppNotificationDTO notificacao = null;
+			if(contabilidade.getParceiro() == Parceiro.DIGISAC) {
+				parceiro = "digisac";
+				notificacao = WhatsAppNotificationDTO.builder()
+						.number(numero)
+						.message(mensagem)
+						.token(contabilidade.getUrlParceiro()+";"+contabilidade.getToken()+";"+contabilidade.getCelular())
+					.build();
+			}
+			else if(contabilidade.getParceiro() == Parceiro.TOUSCHAT) {
+				parceiro = "touschat";
+				notificacao = WhatsAppNotificationDTO.builder()
+					.number(numero)
+					.message(mensagem)
+					.token(contabilidade.getToken())
+				.build();
+			}
+
+			whatsAppClient.enviaMensagem(parceiro, notificacao);
+			return "Notificacao enviada para whatsapp.";
+		}
+		else {
+			EmailDTO email = EmailDTO.builder()
+					.body(mensagem)
+					.to(user.getUsername())
+					.subject("Dúvida sobre lançamento - "+contabilidade.getNome())
+				.build();
+			emailSenderClient.sendMail(email);
+			
+			return "Notificacao enviada por email.";
+		}
 	}
 
 	private boolean validaLancamento(Lancamento lancamento) throws Exception {

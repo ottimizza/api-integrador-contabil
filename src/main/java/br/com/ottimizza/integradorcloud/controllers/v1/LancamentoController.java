@@ -135,4 +135,13 @@ public class LancamentoController {
     		));
     }
 
+    @PostMapping("/{lancamentoId}/questionar")
+    public ResponseEntity<?> questionarLancamento(@PathVariable BigInteger lancamentoId,
+                                                  @Valid String url,
+                                                  OAuth2Authentication authentication) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<>(
+                lancamentoService.questionarLancamento(lancamentoId, url, authentication)
+            ));                                                  
+    }
+
 }

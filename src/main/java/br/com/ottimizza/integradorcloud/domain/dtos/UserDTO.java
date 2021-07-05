@@ -6,13 +6,16 @@ import java.math.BigInteger;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 // @formatter:off
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
+@Builder
+@NoArgsConstructor @AllArgsConstructor
 public class UserDTO implements Serializable {
 
     static final long serialVersionUID = 1L;

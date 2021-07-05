@@ -56,6 +56,13 @@ public interface OAuthClient {
     public HttpEntity<OrganizationDTO> patchOrganization(@PathVariable("id") BigInteger id, 
     													 @RequestBody OrganizationDTO organizationDTO, 
     													 @RequestHeader("Authorization") String authorization);																			 
-    																		
     
+    @GetMapping("/api/v1/users/{organizationId}/has_phone")
+    public HttpEntity<GenericResponse<UserDTO>> getUserByOrganizationIdAndPhone(@PathVariable BigInteger organizationId,
+                                                       @RequestHeader("Authorization") String authorization);
+
+    @GetMapping("/api/v1/users/{organizationId}/organization")
+    public HttpEntity<GenericResponse<UserDTO>> getUserByOrganizationId(@PathVariable BigInteger organizationId,
+                                                       @RequestHeader("Authorization") String authorization);    
+
 }
