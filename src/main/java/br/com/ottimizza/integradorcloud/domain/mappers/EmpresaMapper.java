@@ -68,7 +68,8 @@ public class EmpresaMapper {
     			.Contabilidade_Id(empresa.getContabilidadeCrmId())
     			.Nome_Empresa(empresa.getRazaoSocial())
     			.Cnpj(empresa.getCnpj())
-    			.Envolvidos("Kleber")
+    			.Envolvidos("Analista")
+                .Proximo_Passo_Depende("Ottimizza")
     			.Proximo_Passo(LocalDateTime.now().plusDays(2).toString())
     		.build();
     }
