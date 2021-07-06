@@ -5,6 +5,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +28,13 @@ public class LancamentoQuestionarController {
                                                   @RequestBody LancamentoDTO lancamentoDTO) throws Exception {
         return ResponseEntity.ok(new GenericResponse<>(
                 lancamentoService.salvarQuestionamento(uuid, lancamentoDTO)
+            ));
+    }
+
+    @GetMapping("/{uuid}")
+    public ResponseEntity<?> fetchByUUID(@PathVariable UUID uuid) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<>(
+                lancamentoService.buscaPorUUID(uuid)
             ));
     }
     

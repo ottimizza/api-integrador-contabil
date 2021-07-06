@@ -145,11 +145,5 @@ public class LancamentoController {
             ));                                                  
     }
 
-    @GetMapping("/uuid/{uuid}")
-    public ResponseEntity<?> fetchByUUID(@PathVariable UUID uuid) throws Exception {
-        return ResponseEntity.ok(new GenericResponse<>(
-                lancamentoService.buscaPorUUID(uuid)
-            ));
-    }
 
 }
