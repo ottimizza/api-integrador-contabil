@@ -436,8 +436,9 @@ public class LancamentoService {
 		Contabilidade contabilidade = contabilidadeRepository.buscaPorCnpj(lancamento.getCnpjContabilidade());
 		Empresa empresa = empresaRepository.buscarPorCNPJ(lancamento.getCnpjEmpresa()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
 
-		url = url+lancamento.getUuid();
-		String urldownloadURL = isGdClient.shortURL("simple",url);
+		
+		//String urldownloadURL = isGdClient.shortURL("simple",url);
+		String urldownloadURL = url = url+lancamento.getUuid();
 		String mensagem = "Aqui é da "+contabilidade.getNome()+" e temos uma dúvida de um lançamento. Clique aqui para ver e detalhar, "+urldownloadURL;
 
 		user = oauthClient.getUserByOrganizationIdAndPhone(empresa.getOrganizationId(), ServiceUtils.getAuthorizationHeader(authentication)).getBody().getRecord();
