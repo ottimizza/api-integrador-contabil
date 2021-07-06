@@ -31,6 +31,9 @@ public class EmpresaMapper {
                 .organizationId(empresaDTO.getOrganizationId())
                 .accountingId(empresaDTO.getAccountingId())
                 .possuiOmc(empresaDTO.getPossuiOmc())
+                .criadoPor(empresaDTO.getCriadoPor())
+                .dataCriacao(empresaDTO.getDataCriacao())
+                .dataAtualizacao(empresaDTO.getDataAtualizacao())
             .build(); 
     }
 
@@ -51,6 +54,9 @@ public class EmpresaMapper {
                 .organizationId(empresa.getOrganizationId())
                 .accountingId(empresa.getAccountingId())
                 .possuiOmc(empresa.getPossuiOmc())
+                .criadoPor(empresa.getCriadoPor())
+                .dataCriacao(empresa.getDataCriacao())
+                .dataAtualizacao(empresa.getDataAtualizacao())
             .build(); 
     }
 

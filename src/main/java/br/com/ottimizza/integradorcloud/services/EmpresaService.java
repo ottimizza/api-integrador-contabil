@@ -81,6 +81,7 @@ public class EmpresaService {
     	String empresaOauthString = "";
     	String nomeResumido = empresaDTO.getNomeResumido().trim();
         nomeResumido = nomeResumido.replaceFirst(nomeResumido.substring(0, 1), nomeResumido.substring(0, 1).toUpperCase());
+        empresaDTO.setCriadoPor(userInfo.getUsername());
         
         Empresa empresaBanco = empresaRepository.buscaEmpresa(empresaDTO.getCnpj(), empresaDTO.getAccountingId()).orElse(null);
         if(empresaBanco != null)

@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.domain.dtos;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -36,6 +37,12 @@ public class EmpresaDTO implements Serializable {
 
     private Boolean possuiOmc;
     
+    private LocalDateTime dataCriacao;
+
+	private LocalDateTime dataAtualizacao;
+
+    private String criadoPor;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String contabilidadeCrmId;
     

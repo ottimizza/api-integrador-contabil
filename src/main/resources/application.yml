@@ -77,13 +77,18 @@ email-oud-finalizado: ${EMAIL_OUD_FINALIZADO:projetooic@ottimizza.com.br}
 email-envio-checklist: ${EMAIL_ENVIO_CHECKLIST:preentrega@ottimizza.com.br}
 
 security:
-  oauth2:
-    client:
-      clientId: ${oauth2-config.client-id}
-      clientSecret: ${oauth2-config.client-secret}
-      accessTokenUri: ${oauth2-config.server-url}/oauth/token
-      userAuthorizationUri: ${oauth2-config.server-url}/oauth/authorize
+  jwt:
+    # Chave pública para validação de Token JWT. :)
+    # . . Pode ser um caminho: classpath:public-key.txt
+    public-key: ${JWT_PUBLIC_KEY}
+  
+  #oauth2:
+  #  client:
+  #    clientId: ${oauth2-config.client-id}
+  #    clientSecret: ${oauth2-config.client-secret}
+  #    accessTokenUri: ${oauth2-config.server-url}/oauth/token
+  #    userAuthorizationUri: ${oauth2-config.server-url}/oauth/authorize
 
-    resource:
-      userInfoUri: ${oauth2-config.server-url}/user/info
-      tokenInfoUri: ${oauth2-config.server-url}/oauth/check_token
+  #  resource:
+  #    userInfoUri: ${oauth2-config.server-url}/user/info
+  #    tokenInfoUri: ${oauth2-config.server-url}/oauth/check_token
