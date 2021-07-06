@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -435,6 +436,7 @@ public class LancamentoService {
 		Contabilidade contabilidade = contabilidadeRepository.buscaPorCnpj(lancamento.getCnpjContabilidade());
 		Empresa empresa = empresaRepository.buscarPorCNPJ(lancamento.getCnpjEmpresa()).orElseThrow(() -> new NoResultException("Empresa nao encontrada!"));
 
+		url = url+lancamento.getUuid();
 		String urldownloadURL = isGdClient.shortURL("simple",url);
 		String mensagem = "Aqui é da "+contabilidade.getNome()+" e temos uma dúvida de um lançamento. Clique aqui para ver e detalhar, "+urldownloadURL;
 
@@ -480,6 +482,18 @@ public class LancamentoService {
 			
 			return "Notificacao enviada por email.";
 		}
+	}
+
+	public LancamentoDTO buscaPorUUID(UUID uuid) throws Exception {
+		return LancamentoMapper.fromEntity(lancamentoRepository.findByUUID(uuid));
+	}
+
+	public LancamentoDTO salvarQuestionamento(UUID uuid, LancamentoDTO lancamentoDTO) throws Exception {
+		Lancamento lancamento = lancamentoRepository.findByUUID(uuid);
+		String complemento = lancamento.getComplemento01();
+		complemento = complemento+" "+lancamentoDTO.getComplemento01();
+		lancamento.setComplemento01(complemento);
+		return LancamentoMapper.fromEntity(lancamentoRepository.save(lancamento));
 	}
 
 	private boolean validaLancamento(Lancamento lancamento) throws Exception {

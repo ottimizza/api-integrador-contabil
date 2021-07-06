@@ -55,6 +55,7 @@ public class GrupoRegra implements Serializable {
     
     @Column(name = "conta_movimento")
     private String contaMovimento;
+    
 
     @Column(name = "tipo_lancamento")
     private Short tipoLancamento;
@@ -92,6 +93,16 @@ public class GrupoRegra implements Serializable {
     @Type(type = "list-array")
     @Column(name = "campos", columnDefinition = "varchar[]")
     private List<String> camposRegras;
+
+    private String contaPortador;
+    
+    private String contaDesconto;
+
+    private String contaJuros;
+
+    private String contaMulta;
+
+    private String inverteContas;
 
     @PrePersist
     @PreUpdate

@@ -54,4 +54,13 @@ public class GrupoRegraDTO implements Serializable {
 
     private List<String> camposRegras;
     
+    private String contaPortador;
+    
+    private String contaDesconto;
+
+    private String contaJuros;
+
+    private String contaMulta;
+
+    private String inverteContas;
 }

@@ -2,6 +2,7 @@ package br.com.ottimizza.integradorcloud.repositories.lancamento;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -124,4 +125,6 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, BigInteg
 								       @Param("cnpjContabilidade") String cnpjContabilidade,
 									   @Param("tipoMovimento") String tipoMovimento);
     
+    @Query(value = "SELECT * FROM lancamentos l WHERE l.uuid = :uuid", nativeQuery = true)
+    Lancamento findByUUID(@Param("uuid") UUID uuid);
 }

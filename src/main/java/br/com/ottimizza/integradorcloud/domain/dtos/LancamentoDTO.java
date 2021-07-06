@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
@@ -89,6 +92,9 @@ public class LancamentoDTO implements Serializable {
     private String camposLancamento;
     
     private List<String> campos;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private UUID uuid;
 
     public Lancamento patch(Lancamento lancamento) {
         if (contaMovimento != null && !contaMovimento.equals("")) {

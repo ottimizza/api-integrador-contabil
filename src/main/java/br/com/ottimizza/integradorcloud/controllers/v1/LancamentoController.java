@@ -3,6 +3,7 @@ package br.com.ottimizza.integradorcloud.controllers.v1;
 import java.math.BigInteger;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -142,6 +143,13 @@ public class LancamentoController {
         return ResponseEntity.ok(new GenericResponse<>(
                 lancamentoService.questionarLancamento(lancamentoId, url, authentication)
             ));                                                  
+    }
+
+    @GetMapping("/uuid/{uuid}")
+    public ResponseEntity<?> fetchByUUID(@PathVariable UUID uuid) throws Exception {
+        return ResponseEntity.ok(new GenericResponse<>(
+                lancamentoService.buscaPorUUID(uuid)
+            ));
     }
 
 }

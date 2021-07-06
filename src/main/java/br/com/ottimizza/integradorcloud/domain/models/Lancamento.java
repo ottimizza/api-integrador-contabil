@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -146,9 +147,14 @@ public class Lancamento implements Serializable {
     @Type(type = "list-array")
     @Column(name = "campos", columnDefinition = "varchar[]")
     private List<String> campos;
+    
+    @Column(name = "uuid")
+    private UUID uuid;
 
     @PrePersist
     public void prePersist() {
+        this.uuid = UUID.randomUUID();
+
         this.dataCriacao = new Date();
         this.dataAtualizacao = new Date();
         
@@ -193,4 +199,20 @@ public class Lancamento implements Serializable {
         public static final Short PULAR         = 4;
     }
 
+    public Lancamento(String descricao, String portador, LocalDate dataMovimento, Double valorOriginal, String documento,
+            String complemento01, String complemento02, String complemento03,
+            String complemento04, String complemento05) {
+        this.dataMovimento = dataMovimento;
+        this.documento = documento;
+        this.descricao = descricao;
+        this.portador = portador;
+        this.valorOriginal = valorOriginal;
+        this.complemento01 = complemento01;
+        this.complemento02 = complemento02;
+        this.complemento03 = complemento03;
+        this.complemento04 = complemento04;
+        this.complemento05 = complemento05;
+    }
+
+    
 }

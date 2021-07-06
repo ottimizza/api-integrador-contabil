@@ -35,6 +35,11 @@ public class GrupoRegraMapper {
 				.ativo(grupoRegraDTO.getAtivo())
 				.usuario(grupoRegraDTO.getUsuario())
 				.camposRegras(grupoRegraDTO.getCamposRegras())
+				.contaDesconto(grupoRegraDTO.getContaDesconto())
+				.contaJuros(grupoRegraDTO.getContaJuros())
+				.contaMulta(grupoRegraDTO.getContaMulta())
+				.contaPortador(grupoRegraDTO.getContaPortador())
+				.inverteContas(grupoRegraDTO.getInverteContas())
             .build();
     }
 
@@ -54,6 +59,11 @@ public class GrupoRegraMapper {
 				.ativo(grupoRegra.getAtivo())
 				.usuario(grupoRegra.getUsuario())
 				.camposRegras(grupoRegra.getCamposRegras())
+				.contaDesconto(grupoRegra.getContaDesconto())
+				.contaJuros(grupoRegra.getContaJuros())
+				.contaMulta(grupoRegra.getContaMulta())
+				.contaPortador(grupoRegra.getContaPortador())
+				.inverteContas(grupoRegra.getInverteContas())
             .build();   
     }
     
@@ -110,6 +120,11 @@ public class GrupoRegraMapper {
     			.O_texto_05__c(txt05)
     			.Sequencia_das_Regras__c(sequenciaRegras)
     			.Ordem_OUD__c(grupoRegra.getPosicao())
+				.Conta_Desconto__c(grupoRegra.getContaDesconto())
+				.Conta_Juros__c(grupoRegra.getContaJuros())
+				.Conta_Multa__c(grupoRegra.getContaMulta())
+				.Conta_Portador__c(grupoRegra.getContaPortador())
+				.Inverte_Contas__c(grupoRegra.getInverteContas())
     		.build();
     	
     	if(comIdExterno) s.setID_Externo__c(grupoRegra.getId().toString());
@@ -173,6 +188,11 @@ public class GrupoRegraMapper {
     			.O_texto_05__c(txt05)
     			.Sequencia_das_Regras__c(sequenciaRegras)
     			.Ordem_OUD__c(grupoRegra.getPosicao())
+				.Conta_Desconto__c(grupoRegra.getContaDesconto())
+				.Conta_Juros__c(grupoRegra.getContaJuros())
+				.Conta_Multa__c(grupoRegra.getContaMulta())
+				.Conta_Portador__c(grupoRegra.getContaPortador())
+				.Inverte_Contas__c(grupoRegra.getInverteContas())
     		.build();
     	
     	if(comIdExterno) s.setID_Externo__c(grupoRegra.getId().toString());

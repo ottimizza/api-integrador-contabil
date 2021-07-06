@@ -30,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         String[] _allowed = Arrays.asList(new String[] {
-                "/", "/oauth/**", "/auth/**", "/integra/**" 
+                "/", "/oauth/**", "/auth/**", "/integra/**", "/questionar/**" 
         }).toArray(new String[] {});
 
          String[] _protected = Arrays.asList(new String[] {
