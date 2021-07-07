@@ -44,6 +44,7 @@ public class LancamentoMapper {
             .accountingId(lancamento.getAccountingId())
             .regraId(lancamento.getRegraId())
             .campos(lancamento.getCampos())
+            .uuid(lancamento.getUuid())
         .build();
     }
 
@@ -83,6 +84,7 @@ public class LancamentoMapper {
                 .accountingId(lancamento.getAccountingId())
                 .regraId(lancamento.getRegraId())
                 .campos(lancamento.getCampos())
+                .uuid(lancamento.getUuid())
             .build();
     }
 
