@@ -39,7 +39,6 @@ public class GrupoRegraMapper {
 				.contaJuros(grupoRegraDTO.getContaJuros())
 				.contaMulta(grupoRegraDTO.getContaMulta())
 				.contaPortador(grupoRegraDTO.getContaPortador())
-				.inverteContas(grupoRegraDTO.getInverteContas())
             .build();
     }
 
@@ -63,7 +62,6 @@ public class GrupoRegraMapper {
 				.contaJuros(grupoRegra.getContaJuros())
 				.contaMulta(grupoRegra.getContaMulta())
 				.contaPortador(grupoRegra.getContaPortador())
-				.inverteContas(grupoRegra.getInverteContas())
             .build();   
     }
     
@@ -124,7 +122,6 @@ public class GrupoRegraMapper {
 				.Conta_Juros__c(grupoRegra.getContaJuros())
 				.Conta_Multa__c(grupoRegra.getContaMulta())
 				.Conta_Portador__c(grupoRegra.getContaPortador())
-				.Inverte_Contas__c(grupoRegra.getInverteContas())
     		.build();
     	
     	if(comIdExterno) s.setID_Externo__c(grupoRegra.getId().toString());
@@ -192,7 +189,6 @@ public class GrupoRegraMapper {
 				.Conta_Juros__c(grupoRegra.getContaJuros())
 				.Conta_Multa__c(grupoRegra.getContaMulta())
 				.Conta_Portador__c(grupoRegra.getContaPortador())
-				.Inverte_Contas__c(grupoRegra.getInverteContas())
     		.build();
     	
     	if(comIdExterno) s.setID_Externo__c(grupoRegra.getId().toString());

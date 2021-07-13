@@ -87,7 +87,5 @@ public class SFParticularidade implements Serializable{
     @JsonProperty(value="Conta_Multa__c")
     private String Conta_Multa__c;
 
-    @JsonProperty(value="Inverte_Contas__c")
-    private String Inverte_Contas__c;
 
 }

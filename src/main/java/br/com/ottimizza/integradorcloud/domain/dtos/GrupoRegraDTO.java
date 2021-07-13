@@ -62,5 +62,4 @@ public class GrupoRegraDTO implements Serializable {
 
     private String contaMulta;
 
-    private String inverteContas;
 }

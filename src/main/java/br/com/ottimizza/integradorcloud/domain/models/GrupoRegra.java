@@ -102,8 +102,6 @@ public class GrupoRegra implements Serializable {
 
     private String contaMulta;
 
-    private String inverteContas;
-
     @PrePersist
     @PreUpdate
     public void preUpdate() {
