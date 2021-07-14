@@ -276,7 +276,6 @@ public class RegraService {
 
     private boolean validaGrupoRegra(GrupoRegraDTO grupoRegraDTO) throws IllegalArgumentException {
         String idRoteiro = grupoRegraDTO.getIdRoteiro();
-        String contaMovimento = grupoRegraDTO.getContaMovimento();
         Short tipoLancamento = grupoRegraDTO.getTipoLancamento();
         String cnpjEmpresa = grupoRegraDTO.getCnpjEmpresa();
         String cnpjContabilidade = grupoRegraDTO.getCnpjContabilidade();
@@ -286,9 +285,6 @@ public class RegraService {
         }
         if (Objects.isNull(cnpjEmpresa) || cnpjEmpresa.isEmpty()) {
             throw new IllegalArgumentException("Informe o CNPJ da Empresa!");
-        }
-        if (Objects.isNull(contaMovimento) || contaMovimento.isEmpty()) {
-            throw new IllegalArgumentException("Informe a Conta Movimento!");
         }
         if (!Arrays.asList(Lancamento.Tipo.PAGAMENTO, Lancamento.Tipo.RECEBIMENTO).contains(tipoLancamento)) {
             throw new IllegalArgumentException("Informe o Tipo de Lançamento! Pagamentos(1) ou Recebimentos(2).");
